@@ -8,4 +8,8 @@
     <Exec Command="xcopy /y &quot;$(ProjectDir)$(OutDir)&quot; &quot;$(ProjectDir)\..\..\MMORPGClient\Assets\Common&quot;" />
   </Target>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Unity-Azure-Network-Engine\Core\ReliableUdp\ReliableUdp.csproj" />
+  </ItemGroup>
+
 </Project>
