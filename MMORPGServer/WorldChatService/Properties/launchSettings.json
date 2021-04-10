@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WorldChatService": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /y &quot;$(ProjectDir)$(OutDir)&quot; &quot;$(ProjectDir)\..\..\MMORPGClient\Assets\Common&quot;" />
+  </Target>
+
+</Project>
