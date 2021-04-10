@@ -11,3 +11,13 @@ https://www.youtube.com/playlist?list=PL7NJAOUPKXUtjgY_039m9OgPnWL5nCG8S
 - Service Bus
 - Cosmos DB
 - Custom UDP Library
+
+# Discord
+
+Join our Community!
+https://discord.gg/dWcTvzswf8
+
+# Youtube
+
+Learn all about the theory behind it and how I develop the game.
+https://www.youtube.com/playlist?list=PL7NJAOUPKXUtjgY_039m9OgPnWL5nCG8S
