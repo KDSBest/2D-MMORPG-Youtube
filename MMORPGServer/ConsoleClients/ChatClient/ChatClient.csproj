@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Unity-Azure-Network-Engine\Core\ReliableUdp\ReliableUdp.csproj" />
+    <ProjectReference Include="..\..\Common\Common.csproj" />
+  </ItemGroup>
+
+</Project>

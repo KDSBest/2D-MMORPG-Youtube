@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonServer", "CommonServe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReliableUdp", "..\Unity-Azure-Network-Engine\Core\ReliableUdp\ReliableUdp.csproj", "{A84CEB7A-AAA1-47DB-A8E4-C4117C3250A3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConsoleClients", "ConsoleClients", "{23BA4E2D-2A4E-4CF8-B5AB-1CC4930D2314}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatClient", "ConsoleClients\ChatClient\ChatClient.csproj", "{A50CEF26-0DC9-4773-84A2-FF5643B336FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,10 @@ Global
 		{A84CEB7A-AAA1-47DB-A8E4-C4117C3250A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A84CEB7A-AAA1-47DB-A8E4-C4117C3250A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A84CEB7A-AAA1-47DB-A8E4-C4117C3250A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A50CEF26-0DC9-4773-84A2-FF5643B336FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A50CEF26-0DC9-4773-84A2-FF5643B336FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A50CEF26-0DC9-4773-84A2-FF5643B336FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A50CEF26-0DC9-4773-84A2-FF5643B336FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +51,7 @@ Global
 		{4EE25BE6-6670-4B7F-A5FF-92FFAEBA79B0} = {FB1A3CEA-689B-4534-96A6-6849A78149B5}
 		{36475DB1-7A34-436F-88C7-E7EF75334134} = {FB1A3CEA-689B-4534-96A6-6849A78149B5}
 		{A84CEB7A-AAA1-47DB-A8E4-C4117C3250A3} = {FB1A3CEA-689B-4534-96A6-6849A78149B5}
+		{A50CEF26-0DC9-4773-84A2-FF5643B336FA} = {23BA4E2D-2A4E-4CF8-B5AB-1CC4930D2314}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4AECCA7D-7BE8-4E27-8C1A-7AF83E0DF34D}
