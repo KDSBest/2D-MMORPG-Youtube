@@ -8,12 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Unity-Azure-Network-Engine\Core\ReliableUdp\ReliableUdp.csproj" />
     <ProjectReference Include="..\CommonServer\CommonServer.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Unity-Azure-Network-Engine\Core\ReliableUdp\ReliableUdp.csproj" />
   </ItemGroup>
 
 </Project>

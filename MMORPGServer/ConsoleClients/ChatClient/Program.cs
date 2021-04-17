@@ -15,7 +15,7 @@ namespace ChatClient
             var chatMessage = new ChatMessage();
             var writer = new UdpDataWriter();
             var udp = new UdpManager(new ChatClientListener(), ProtocolConstants.ConnectionKey);
-            var peer = udp.Connect("localhost", 3333);
+            var peer = udp.Connect("host.docker.internal", 30000);
 
             int delayMs = 50;
             int maxWaitMs = 5000;
@@ -29,6 +29,16 @@ namespace ChatClient
 
                 currentMaxWait -= delayMs;
                 udp.PollEvents();
+            }
+
+            if(peer.ConnectionState == ConnectionState.Connected)
+			{
+                Console.WriteLine("Connected!");
+            }
+            else
+			{
+                Console.WriteLine("Connection failed!");
+                return;
             }
 
             var updateThread = Task.Run(async () =>

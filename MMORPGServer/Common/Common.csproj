@@ -4,12 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Debug'">
     <Exec Command="xcopy /y &quot;$(ProjectDir)$(OutDir)&quot; &quot;$(ProjectDir)\..\..\MMORPGClient\Assets\Common&quot;" />
   </Target>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Unity-Azure-Network-Engine\Core\ReliableUdp\ReliableUdp.csproj" />
+    <ProjectReference Include="..\Unity-Azure-Network-Engine\Core\ReliableUdp\ReliableUdp.csproj" />
   </ItemGroup>
 
 </Project>

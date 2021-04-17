@@ -16,6 +16,7 @@ namespace ChatClient
 
         public void OnNetworkError(UdpEndPoint endPoint, int socketErrorCode)
         {
+            Console.WriteLine($"Error: Socket error {socketErrorCode}!");
         }
 
         public void OnNetworkLatencyUpdate(UdpPeer peer, int latency)
@@ -27,7 +28,7 @@ namespace ChatClient
             var chatMessage = new ChatMessage();
             if(chatMessage.Read(reader))
             {
-                Console.WriteLine(chatMessage.Message);
+                Console.WriteLine($"{chatMessage.InstanceId}: {chatMessage.Message}");
             }
         }
 
@@ -45,6 +46,7 @@ namespace ChatClient
 
         public void OnPeerDisconnected(UdpPeer peer, DisconnectInfo disconnectInfo)
         {
+            Console.WriteLine("Error: Peer disconnected!");
         }
     }
 }

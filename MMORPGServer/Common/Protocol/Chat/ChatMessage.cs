@@ -9,13 +9,17 @@ namespace Common.Protocol.Chat
     {
         public string Message { get; set; }
 
+        public Guid InstanceId { get; set; }
+
         public ChatMessage()
         {
-
+            InstanceId = Guid.Empty;
         }
+
         public void Write(UdpDataWriter writer)
         {
             writer.Put((byte)MessageType.Chat);
+            writer.Put(InstanceId.ToString());
             writer.Put(Message);
         }
 
@@ -28,6 +32,8 @@ namespace Common.Protocol.Chat
 
             reader.GetByte();
 
+            string guid = reader.GetString();
+            InstanceId = new Guid(guid);
             Message = reader.GetString();
 
             return true;
