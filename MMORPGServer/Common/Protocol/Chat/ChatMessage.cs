@@ -7,27 +7,23 @@ namespace Common.Protocol.Chat
 {
     public class ChatMessage : BaseUdpPackage
     {
+        public string Sender { get; set; } = string.Empty;
         public string Message { get; set; }
-
-        public Guid InstanceId { get; set; }
 
         public ChatMessage() : base(MessageType.Chat)
         {
-            InstanceId = Guid.Empty;
         }
 
         protected override void WriteData(UdpDataWriter writer)
         {
-            writer.Put(InstanceId.ToString());
             writer.Put(Message);
+            writer.Put(Sender);
         }
 
         protected override bool ReadData(UdpDataReader reader)
         {
-            string guid = reader.GetString();
-            InstanceId = new Guid(guid);
             Message = reader.GetString();
-
+            Sender = reader.GetString();
             return true;
         }
     }

@@ -1,15 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.2" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\CommonServer\CommonServer.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Unity-Azure-Network-Engine\Core\ReliableUdp\ReliableUdp.csproj" />
   </ItemGroup>

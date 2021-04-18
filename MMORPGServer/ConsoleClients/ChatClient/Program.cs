@@ -1,8 +1,5 @@
-﻿using Common.Protocol;
-using Common.Protocol.Chat;
-using ReliableUdp;
-using ReliableUdp.Enums;
-using ReliableUdp.Utility;
+﻿using Common.Client;
+using Common.Protocol.Login;
 using System;
 using System.Threading.Tasks;
 
@@ -12,62 +9,64 @@ namespace ChatClient
     {
         public static async Task Main(string[] args)
         {
-            var chatMessage = new ChatMessage();
-            var writer = new UdpDataWriter();
-            var udp = new UdpManager(new ChatClientListener(), ProtocolConstants.ConnectionKey);
-            var peer = udp.Connect("host.docker.internal", 30000);
+            Console.WriteLine("Enter Email:");
+            string email = Console.ReadLine();
+            Console.WriteLine("Enter Password:");
+            string password = Console.ReadLine();
 
-            int delayMs = 50;
-            int maxWaitMs = 5000;
-            int currentMaxWait = maxWaitMs;
-            bool disconnect = false;
-            while(peer.ConnectionState == ConnectionState.InProgress && currentMaxWait > 0)
+            var loginClient = new LoginClient();
+            bool connected = await loginClient.ConnectAsync("localhost", 3334);
+            if (connected)
             {
-                Console.WriteLine("Connecting...");
-
-                await Task.Delay(delayMs);
-
-                currentMaxWait -= delayMs;
-                udp.PollEvents();
-            }
-
-            if(peer.ConnectionState == ConnectionState.Connected)
-			{
-                Console.WriteLine("Connected!");
+                Console.WriteLine("Connected to Login Server.");
             }
             else
-			{
-                Console.WriteLine("Connection failed!");
+            {
+                Console.WriteLine("Connection to Login Server failed.");
                 return;
             }
 
-            var updateThread = Task.Run(async () =>
+            Console.WriteLine("Process Handshake.");
+            while(!loginClient.IsConnectedAndLoginWorkflow)
+			{
+                await Task.Delay(50);
+			}
+
+            var result = await loginClient.LoginAsync(email, password);
+            if(result.Response != LoginRegisterResponse.Successful)
+			{
+                Console.WriteLine($"Login failed with {result.Response}.");
+                return;
+			}
+
+            Console.WriteLine($"Token: {result.Token}");
+            await loginClient.DisconnectAsync();
+
+            var chatClient = new Common.Client.ChatClient();
+            connected = await chatClient.ConnectAsync("localhost", 3333, result.Token);
+            if (connected)
             {
-                while (peer.ConnectionState == ConnectionState.Connected && !disconnect)
-                {
-                    await Task.Delay(delayMs);
-                    udp.PollEvents();
-                }
-            });
-
-            while (peer.ConnectionState == ConnectionState.Connected && !disconnect)
+                Console.WriteLine("Connected to Chat Server.");
+            }
+            else
             {
-                chatMessage.Message = Console.ReadLine();
-                if(string.IsNullOrEmpty(chatMessage.Message))
-                {
-                    disconnect = true;
-                    continue;
-                }
-
-                writer.Reset();
-                chatMessage.Write(writer);
-
-                peer.Send(writer, ChannelType.ReliableOrdered);
+                Console.WriteLine("Connection to Chat Server failed.");
+                return;
             }
 
-            updateThread.Wait(maxWaitMs);
+            while (chatClient.IsConnected)
+			{
+				string msg = Console.ReadLine();
+				if (string.IsNullOrEmpty(msg))
+				{
+                    await chatClient.DisconnectAsync();
+					continue;
+				}
 
-            Console.WriteLine("Disconnected.");
-        }
+                chatClient.SendChatMessage(msg);
+			}
+
+			Console.WriteLine("Disconnected.");
+		}
     }
 }

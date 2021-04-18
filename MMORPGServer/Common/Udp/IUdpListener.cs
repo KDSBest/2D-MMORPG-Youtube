@@ -1,6 +1,6 @@
 ﻿using ReliableUdp;
 
-namespace CommonServer.Udp
+namespace Common.Udp
 {
     public interface IUdpListener : IUdpEventListener
     {
