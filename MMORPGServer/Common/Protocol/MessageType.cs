@@ -7,6 +7,8 @@ namespace Common.Protocol
 
     public enum MessageType : byte
     {
-        Chat = 1
+        RSAPublicKey = 1,
+        AESParameter = 2,
+        Chat = 50
     }
 }

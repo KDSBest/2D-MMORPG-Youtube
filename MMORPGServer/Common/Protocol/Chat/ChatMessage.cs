@@ -5,33 +5,25 @@ using System.Text;
 
 namespace Common.Protocol.Chat
 {
-    public class ChatMessage : IUdpPackage
+    public class ChatMessage : BaseUdpPackage
     {
         public string Message { get; set; }
 
         public Guid InstanceId { get; set; }
 
-        public ChatMessage()
+        public ChatMessage() : base(MessageType.Chat)
         {
             InstanceId = Guid.Empty;
         }
 
-        public void Write(UdpDataWriter writer)
+        protected override void WriteData(UdpDataWriter writer)
         {
-            writer.Put((byte)MessageType.Chat);
             writer.Put(InstanceId.ToString());
             writer.Put(Message);
         }
 
-        public bool Read(UdpDataReader reader)
+        protected override bool ReadData(UdpDataReader reader)
         {
-            if (reader.PeekByte() != (byte)MessageType.Chat)
-            {
-                return false;
-            }
-
-            reader.GetByte();
-
             string guid = reader.GetString();
             InstanceId = new Guid(guid);
             Message = reader.GetString();
