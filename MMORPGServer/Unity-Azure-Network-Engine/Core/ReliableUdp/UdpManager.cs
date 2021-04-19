@@ -11,6 +11,7 @@ using ReliableUdp.Enums;
 using ReliableUdp.Packet;
 using ReliableUdp.Utility;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace ReliableUdp
 {
@@ -105,12 +106,11 @@ namespace ReliableUdp
             //10065 no route to host
             if (errorCode != 0 && errorCode != 10040 && errorCode != 10065)
             {
-                UdpPeer fromPeer;
-                if (this.peers.TryGetValue(remoteEndPoint, out fromPeer))
-                {
-                    DisconnectPeer(fromPeer, DisconnectReason.SocketSendError, errorCode, false, null, 0, 0);
-                }
-                this.CreateErrorEvent(remoteEndPoint, errorCode);
+				if (this.peers.TryGetValue(remoteEndPoint, out UdpPeer fromPeer))
+				{
+					DisconnectPeer(fromPeer, DisconnectReason.SocketSendError, errorCode, false, null, 0, 0);
+				}
+				this.CreateErrorEvent(remoteEndPoint, errorCode);
                 return false;
             }
             if (errorCode == 10040)
@@ -354,15 +354,14 @@ namespace ReliableUdp
 
         public void ReceiveAckFromPeer(UdpPacket packet, UdpEndPoint remoteEndPoint, ChannelType channel)
         {
-            UdpPeer fromPeer;
-            if (this.peers.TryGetValue(remoteEndPoint, out fromPeer))
-            {
+			if (this.peers.TryGetValue(remoteEndPoint, out UdpPeer fromPeer))
+			{
 #if UDP_DEBUGGING
                 System.Diagnostics.Debug.WriteLine($"Received ack message.");
 #endif
-                this.CreateReceiveAckEvent(packet, channel, fromPeer);
-            }
-        }
+				this.CreateReceiveAckEvent(packet, channel, fromPeer);
+			}
+		}
 
         public void SendTo(long id, UdpDataWriter writer, Enums.ChannelType channelType)
         {
@@ -373,12 +372,11 @@ namespace ReliableUdp
         {
             lock (this.peers)
             {
-                UdpPeer peer;
-                if (peers.TryGetValue(id, out peer))
-                {
-                    peer.Send(data, start, length, channelType);
-                }
-            }
+				if (peers.TryGetValue(id, out UdpPeer peer))
+				{
+					peer.Send(data, start, length, channelType);
+				}
+			}
         }
 
         /// <summary>
@@ -545,16 +543,15 @@ namespace ReliableUdp
         /// <summary>
         /// Receive all pending events. Call this in game update code
         /// </summary>
-        public void PollEvents()
+        public async Task PollEventsAsync()
         {
             while (this.netEventsQueue.Count > 0)
             {
-                UdpEvent evt;
-                if (this.netEventsQueue.TryDequeue(out evt))
-                {
-                    ProcessEvent(evt);
-                }
-            }
+				if (this.netEventsQueue.TryDequeue(out UdpEvent evt))
+				{
+					await ProcessEventAsync(evt);
+				}
+			}
         }
 
         /// <summary>
@@ -582,13 +579,12 @@ namespace ReliableUdp
             }
             lock (this.peers)
             {
-                UdpPeer alreadyConnectedPeer = null;
-                if (this.peers.TryGetValue(target, out alreadyConnectedPeer) || this.peers.Count >= this.maxConnections)
-                {
-                    return alreadyConnectedPeer;
-                }
+				if (this.peers.TryGetValue(target, out UdpPeer alreadyConnectedPeer) || this.peers.Count >= this.maxConnections)
+				{
+					return alreadyConnectedPeer;
+				}
 
-                var newPeer = new UdpPeer(this, target, 0);
+				var newPeer = new UdpPeer(this, target, 0);
                 this.peers.Add(target, newPeer);
                 return newPeer;
             }
@@ -808,12 +804,12 @@ namespace ReliableUdp
             this.netEventsQueue.Enqueue(evt);
         }
 
-        private void ProcessEvent(UdpEvent evt)
+        private async Task ProcessEventAsync(UdpEvent evt)
         {
             switch (evt.Type)
             {
                 case UdpEventType.Connect:
-                    this.netEventListener.OnPeerConnected(evt.Peer);
+                    await this.netEventListener.OnPeerConnectedAsync(evt.Peer);
                     break;
                 case UdpEventType.Disconnect:
                     var info = new DisconnectInfo
@@ -822,22 +818,22 @@ namespace ReliableUdp
                         AdditionalData = evt.DataReader,
                         SocketErrorCode = evt.AdditionalData
                     };
-                    this.netEventListener.OnPeerDisconnected(evt.Peer, info);
+                    await this.netEventListener.OnPeerDisconnectedAsync(evt.Peer, info);
                     break;
                 case UdpEventType.Receive:
-                    this.netEventListener.OnNetworkReceive(evt.Peer, evt.DataReader, evt.Channel);
+                    await this.netEventListener.OnNetworkReceiveAsync(evt.Peer, evt.DataReader, evt.Channel);
                     break;
                 case UdpEventType.ReceiveUnconnected:
-                    this.netEventListener.OnNetworkReceiveUnconnected(evt.RemoteEndPoint, evt.DataReader);
+                    await this.netEventListener.OnNetworkReceiveUnconnectedAsync(evt.RemoteEndPoint, evt.DataReader);
                     break;
                 case UdpEventType.ReceiveAck:
-                    this.netEventListener.OnNetworkReceiveAck(evt.Peer, evt.DataReader, evt.Channel);
+                    await this.netEventListener.OnNetworkReceiveAckAsync(evt.Peer, evt.DataReader, evt.Channel);
                     break;
                 case UdpEventType.Error:
-                    this.netEventListener.OnNetworkError(evt.RemoteEndPoint, evt.AdditionalData);
+                    await this.netEventListener.OnNetworkErrorAsync(evt.RemoteEndPoint, evt.AdditionalData);
                     break;
                 case UdpEventType.ConnectionLatencyUpdated:
-                    this.netEventListener.OnNetworkLatencyUpdate(evt.Peer, evt.AdditionalData);
+                    await this.netEventListener.OnNetworkLatencyUpdateAsync(evt.Peer, evt.AdditionalData);
                     break;
             }
 

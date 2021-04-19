@@ -16,46 +16,49 @@ namespace Common.Client.Workflow
 	{
 		public CryptoProvider Crypto { get; set; }
 		public UdpManager UdpManager { get; set; }
-		public Action<UdpPeer, IWorkflow> SwitchWorkflow { get; set; }
+		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 
 		private Action<LoginRegisterResponseMessage> callback;
 
-		public void OnStart(UdpPeer peer)
+		public async Task OnStartAsync(UdpPeer peer)
 		{
 		}
 
-		public void OnDisconnected(DisconnectInfo disconnectInfo)
+		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
 		}
 
-		public void OnLatencyUpdate(int latency)
+		public async Task OnLatencyUpdateAsync(int latency)
 		{
 		}
 
-		public void OnReceive(UdpDataReader reader, ChannelType channel)
+		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
 			var response = new LoginRegisterResponseMessage();
 			if(response.Read(reader))
 			{
-				if (callback != null)
-					callback(response);
+				callback?.Invoke(response);
 			}
 		}
 
 		public async Task LoginAsync(string email, string password, Action<LoginRegisterResponseMessage> callback)
 		{
-			var loginMsg = new LoginMessage();
-			loginMsg.EMailEnc = Crypto.Encrypt(email);
-			loginMsg.PasswordEnc = Crypto.Encrypt(password);
+			var loginMsg = new LoginMessage
+			{
+				EMailEnc = Crypto.Encrypt(email),
+				PasswordEnc = Crypto.Encrypt(password)
+			};
 			UdpManager.SendMsg(loginMsg, ChannelType.ReliableOrdered);
 			this.callback = callback;
 		}
 
 		public async Task RegisterAsync(string email, string password, Action<LoginRegisterResponseMessage> callback)
 		{
-			var loginMsg = new RegisterMessage();
-			loginMsg.EMailEnc = Crypto.Encrypt(email);
-			loginMsg.PasswordEnc = Crypto.Encrypt(password);
+			var loginMsg = new RegisterMessage
+			{
+				EMailEnc = Crypto.Encrypt(email),
+				PasswordEnc = Crypto.Encrypt(password)
+			};
 			UdpManager.SendMsg(loginMsg, ChannelType.ReliableOrdered);
 			this.callback = callback;
 		}

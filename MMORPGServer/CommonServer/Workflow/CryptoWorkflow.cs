@@ -17,35 +17,39 @@ namespace CommonServer.Workflow
 	{
 		public CryptoProvider Crypto { get; set; } = new CryptoProvider();
 		public UdpManager UdpManager { get; set; }
-		public Action<UdpPeer, IWorkflow> SwitchWorkflow { get; set; }
+		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 		private UdpPeer peer;
 
-		public void OnDisconnected(DisconnectInfo disconnectInfo)
+		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
 		}
 
-		public void OnLatencyUpdate(int latency)
+		public async Task OnLatencyUpdateAsync(int latency)
 		{
 		}
 
-		public void OnReceive(UdpDataReader reader, ChannelType channel)
+		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
 			AESParameterMessage aesParameterMsg = new AESParameterMessage();
 			if(aesParameterMsg.Read(reader))
 			{
 				Crypto.DecryptAesParameter(aesParameterMsg.AESParameter);
 
-				ICryptoWorkflow wf = new T();
-				wf.Crypto = this.Crypto;
-				SwitchWorkflow(this.peer, wf);
+				ICryptoWorkflow wf = new T
+				{
+					Crypto = this.Crypto
+				};
+				await SwitchWorkflowAsync(this.peer, wf);
 			}
 		}
 
-		public void OnStart(UdpPeer peer)
+		public async Task OnStartAsync(UdpPeer peer)
 		{
 			this.peer = peer;
-			var rsaPublicMsg = new RSAPublicKeyMessage();
-			rsaPublicMsg.PublicKey = Crypto.GetPublicCspBlob();
+			var rsaPublicMsg = new RSAPublicKeyMessage
+			{
+				PublicKey = Crypto.GetPublicCspBlob()
+			};
 			this.UdpManager.SendMsg(peer.ConnectId, rsaPublicMsg, ChannelType.ReliableOrdered);
 		}
 	}

@@ -16,38 +16,37 @@ namespace Common.Client.Workflow
 	public class ChatWorkflow : IWorkflow
 	{
 		public UdpManager UdpManager { get; set; }
-		public Action<UdpPeer, IWorkflow> SwitchWorkflow { get; set; }
+		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 
 		public Action<ChatMessage> OnNewChatMessage { get; set; }
 
-		public void OnStart(UdpPeer peer)
+		public async Task OnStartAsync(UdpPeer peer)
 		{
 		}
 
-		public void OnDisconnected(DisconnectInfo disconnectInfo)
+		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
 		}
 
-		public void OnLatencyUpdate(int latency)
+		public async Task OnLatencyUpdateAsync(int latency)
 		{
 		}
 
-		public void OnReceive(UdpDataReader reader, ChannelType channel)
+		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
 			var chatMsg = new ChatMessage();
 			if(chatMsg.Read(reader))
 			{
-				if(OnNewChatMessage != null)
-				{
-					OnNewChatMessage(chatMsg);
-				}
+				OnNewChatMessage?.Invoke(chatMsg);
 			}
 		}
 
 		public void SendChatMessage(string message)
 		{
-			var msg = new ChatMessage();
-			msg.Message = message;
+			var msg = new ChatMessage
+			{
+				Message = message
+			};
 			UdpManager.SendMsg(msg, ChannelType.Reliable);
 		}
 	}

@@ -2,12 +2,13 @@
 using ReliableUdp.Utility;
 using StackExchange.Redis;
 using System;
+using CommonServer.Configuration;
 
 namespace CommonServer.Redis
 {
     public static class RedisPubSub
     {
-        private static ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(RedisConfiguration.ConnectionString);
+        private static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(RedisConfiguration.ConnectionString);
 
         private static void Subscribe<T>(string nameOrPattern, RedisChannel.PatternMode mode, Action<RedisChannel, T> action) where T : IUdpPackage, new()
         {
@@ -41,7 +42,7 @@ namespace CommonServer.Redis
 
         private static void Publish<T>(string nameOrPattern, RedisChannel.PatternMode mode, T val) where T : IUdpPackage
         {
-            UdpDataWriter writer = new UdpDataWriter();
+            var writer = new UdpDataWriter();
             val.Write(writer);
             redis.GetSubscriber().PublishAsync(new RedisChannel(nameOrPattern, mode), writer.CopyData()).FireAndForget();
         }

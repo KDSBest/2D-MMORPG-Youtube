@@ -151,10 +151,12 @@ namespace ReliableUdp
             this.LocalEndPoint = new UdpEndPoint((IPEndPoint)this.udpSocketv4.LocalEndPoint);
 
             this.running = true;
-            this.threadv4 = new Thread(ReceiveLogic);
-            this.threadv4.Name = "SocketThreadv4(" + port + ")";
-            this.threadv4.IsBackground = true;
-            this.threadv4.Start(this.udpSocketv4);
+			this.threadv4 = new Thread(ReceiveLogic)
+			{
+				Name = "SocketThreadv4(" + port + ")",
+				IsBackground = true
+			};
+			this.threadv4.Start(this.udpSocketv4);
 
             if (!ipv6Support)
                 return true;
@@ -203,10 +205,12 @@ namespace ReliableUdp
                 }
 #endif
 
-                this.threadv6 = new Thread(ReceiveLogic);
-                this.threadv6.Name = "SocketThreadv6(" + port + ")";
-                this.threadv6.IsBackground = true;
-                this.threadv6.Start(this.udpSocketv6);
+				this.threadv6 = new Thread(ReceiveLogic)
+				{
+					Name = "SocketThreadv6(" + port + ")",
+					IsBackground = true
+				};
+				this.threadv6.Start(this.udpSocketv6);
             }
 
             return true;

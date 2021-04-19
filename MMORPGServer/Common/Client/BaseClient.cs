@@ -14,7 +14,6 @@ namespace Common.Client
 	public class BaseClient<TWorkflow> : BaseUdpListener<TWorkflow> where TWorkflow : IWorkflow, new()
 	{
 		public UdpPeer Peer { get; set; }
-		public UdpManager UdpManager { get; set; }
 		private const int delayMs = 50;
 		private const int maxWaitMs = 5000;
 		private int currentMaxWait = maxWaitMs;
@@ -42,7 +41,7 @@ namespace Common.Client
 					await Task.Delay(delayMs);
 
 					currentMaxWait -= delayMs;
-					this.UdpManager.PollEvents();
+					await this.UdpManager.PollEventsAsync();
 				}
 
 				if (this.Peer.ConnectionState == ConnectionState.Connected)
@@ -51,8 +50,10 @@ namespace Common.Client
 
 					if(!string.IsNullOrEmpty(token))
 					{
-						var jwtMsg = new JwtMessage();
-						jwtMsg.Token = token;
+						var jwtMsg = new JwtMessage
+						{
+							Token = token
+						};
 						this.UdpManager.SendMsg(jwtMsg, ChannelType.Reliable);
 						Console.WriteLine("Jwt Token send.");
 					}
@@ -63,18 +64,18 @@ namespace Common.Client
 					return false;
 				}
 
-				updateThread = PollEvents();
+				updateThread = PollEventsAsync();
 
 				return true;
 			});
 		}
 
-		public async Task PollEvents()
+		public async Task PollEventsAsync()
 		{
 			while (Peer.ConnectionState == ConnectionState.Connected && !disconnect)
 			{
 				await Task.Delay(delayMs);
-				this.UdpManager.PollEvents();
+				await this.UdpManager.PollEventsAsync();
 			}
 		}
 
@@ -88,14 +89,14 @@ namespace Common.Client
 		{
 			var cts = new CancellationTokenSource();
 			var token = cts.Token;
-			Task waitingForResponse = WaitFor(condition, token);
+			Task waitingForResponse = WaitForAsync(condition, token);
 			if (!waitingForResponse.Wait(maxWaitMs))
 			{
 				cts.Cancel();
 			}
 		}
 
-		protected async Task WaitFor(Func<bool> condition, CancellationToken token)
+		protected async Task WaitForAsync(Func<bool> condition, CancellationToken token)
 		{
 			while (!condition() && !token.IsCancellationRequested)
 			{

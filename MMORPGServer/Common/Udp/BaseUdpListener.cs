@@ -21,47 +21,48 @@ namespace Common.Udp
 		{
 		}
 
-        public void Update()
+        public async Task UpdateAsync()
         {
-            UdpManager.PollEvents();
+            await UdpManager.PollEventsAsync();
         }
 
-        public void OnNetworkReceive(UdpPeer peer, UdpDataReader reader, ChannelType channel)
+        public async Task OnNetworkReceiveAsync(UdpPeer peer, UdpDataReader reader, ChannelType channel)
         {
-            Workflows[peer.ConnectId].OnReceive(reader, channel);
+            await Workflows[peer.ConnectId].OnReceiveAsync(reader, channel);
         }
 
-        public void OnPeerDisconnected(UdpPeer peer, DisconnectInfo disconnectInfo)
+        public async Task OnPeerDisconnectedAsync(UdpPeer peer, DisconnectInfo disconnectInfo)
         {
-            Workflows[peer.ConnectId].OnDisconnected(disconnectInfo);
+            await Workflows[peer.ConnectId].OnDisconnectedAsync(disconnectInfo);
         }
 
-        public void OnNetworkError(UdpEndPoint endPoint, int socketErrorCode)
+        public async Task OnNetworkErrorAsync(UdpEndPoint endPoint, int socketErrorCode)
         {
             Console.WriteLine($"Error {endPoint.Host}:{endPoint.Port} - {socketErrorCode}");
         }
 
-        public void OnNetworkLatencyUpdate(UdpPeer peer, int latency)
+        public async Task OnNetworkLatencyUpdateAsync(UdpPeer peer, int latency)
         {
-            Workflows[peer.ConnectId].OnLatencyUpdate(latency);
+            await Workflows[peer.ConnectId].OnLatencyUpdateAsync(latency);
         }
 
-        public void OnNetworkReceiveAck(UdpPeer peer, UdpDataReader reader, ChannelType channel)
-        {
-        }
-
-        public void OnNetworkReceiveUnconnected(UdpEndPoint remoteEndPoint, UdpDataReader reader)
+        public async Task OnNetworkReceiveAckAsync(UdpPeer peer, UdpDataReader reader, ChannelType channel)
         {
         }
 
-        public void OnPeerConnected(UdpPeer peer)
+        public async Task OnNetworkReceiveUnconnectedAsync(UdpEndPoint remoteEndPoint, UdpDataReader reader)
         {
-            IWorkflow wf = new T();
+        }
 
-            wf.UdpManager = this.UdpManager;
-            wf.SwitchWorkflow = SwitchWorkflow;
+        public async Task OnPeerConnectedAsync(UdpPeer peer)
+        {
+			IWorkflow wf = new T
+			{
+				UdpManager = this.UdpManager,
+                SwitchWorkflowAsync = SwitchWorkflowAsync
+			};
 
-            SwitchWorkflow(peer, wf);
+			await SwitchWorkflowAsync(peer, wf);
         }
 
         public virtual void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
@@ -69,11 +70,11 @@ namespace Common.Udp
 
 		}
 
-        private void SwitchWorkflow(UdpPeer peer, IWorkflow newWorkflow)
+        private async Task SwitchWorkflowAsync(UdpPeer peer, IWorkflow newWorkflow)
 		{
             newWorkflow.UdpManager = this.UdpManager;
-            newWorkflow.SwitchWorkflow = SwitchWorkflow;
-            newWorkflow.OnStart(peer);
+            newWorkflow.SwitchWorkflowAsync = SwitchWorkflowAsync;
+            await newWorkflow.OnStartAsync(peer);
             Workflows.AddOrUpdate(peer.ConnectId, newWorkflow, (connectionId, oldValue) => newWorkflow);
             OnWorkflowSwitch(peer, newWorkflow);
         }

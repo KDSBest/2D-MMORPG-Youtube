@@ -6,6 +6,7 @@ using CommonServer.Redis;
 using CommonServer.Workflow;
 using ReliableUdp.Enums;
 using StackExchange.Redis;
+using CommonServer.Configuration;
 
 namespace WorldChatService
 {

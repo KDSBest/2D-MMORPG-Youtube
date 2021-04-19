@@ -2,6 +2,7 @@
 using Common.Protocol.Login;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace ChatClient
 {
@@ -32,23 +33,33 @@ namespace ChatClient
                 await Task.Delay(50);
 			}
 
-            var result = await loginClient.LoginAsync(email, password);
-            if(result.Response != LoginRegisterResponse.Successful)
+            var result = await loginClient.RegisterAsync(email, password);
+            if(result.Response == LoginRegisterResponse.AlreadyRegistered)
+			{
+                Console.WriteLine($"Register failed with {result.Response}.");
+                Console.WriteLine($"Try Login...");
+                result = await loginClient.LoginAsync(email, password);
+            }
+
+            if (result.Response != LoginRegisterResponse.Successful)
 			{
                 Console.WriteLine($"Login failed with {result.Response}.");
                 return;
 			}
 
+            Console.WriteLine($"Register/Login successful.");
             Console.WriteLine($"Token: {result.Token}");
             await loginClient.DisconnectAsync();
 
-            var chatClient = new Common.Client.ChatClient();
-            chatClient.OnNewChatMessage = (msg) =>
-            {
-                Console.WriteLine($"{msg.Sender}: {msg.Message}");
-            };
+			var chatClient = new Common.Client.ChatClient
+			{
+				OnNewChatMessage = (msg) =>
+				{
+					Console.WriteLine($"{msg.Sender}: {msg.Message}");
+				}
+			};
 
-            connected = await chatClient.ConnectAsync("localhost", 3333, result.Token);
+			connected = await chatClient.ConnectAsync("localhost", 3333, result.Token);
             if (connected)
             {
                 Console.WriteLine("Connected to Chat Server.");

@@ -18,24 +18,24 @@ namespace CommonServer.Workflow
 	public class JwtWorkflow<T> : IJwtWorkflow where T : IJwtWorkflow, new()
 	{
 		public UdpManager UdpManager { get; set; }
-		public Action<UdpPeer, IWorkflow> SwitchWorkflow { get; set; }
+		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 
 		private UdpPeer peer;
 
-		public void OnStart(UdpPeer peer)
+		public async Task OnStartAsync(UdpPeer peer)
 		{
 			this.peer = peer;
 		}
 
-		public void OnDisconnected(DisconnectInfo disconnectInfo)
+		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
 		}
 
-		public void OnLatencyUpdate(int latency)
+		public async Task OnLatencyUpdateAsync(int latency)
 		{
 		}
 
-		public void OnReceive(UdpDataReader reader, ChannelType channel)
+		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
 			var tokenMessage = new JwtMessage();
 			if (tokenMessage.Read(reader))
@@ -45,7 +45,7 @@ namespace CommonServer.Workflow
 				{
 					this.OnToken(tokenMessage.Token);
 					wf.OnToken(tokenMessage.Token);
-					SwitchWorkflow(this.peer, wf);
+					await SwitchWorkflowAsync(this.peer, wf);
 				}
 			}
 		}

@@ -17,36 +17,41 @@ namespace Common.Client.Workflow
 	{
 		public CryptoProvider Crypto { get; set; }
 		public UdpManager UdpManager { get; set; }
-		public Action<UdpPeer, IWorkflow> SwitchWorkflow { get; set; }
+		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 		private UdpPeer peer;
 
-		public void OnDisconnected(DisconnectInfo disconnectInfo)
+		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
 		}
 
-		public void OnLatencyUpdate(int latency)
+		public async Task OnLatencyUpdateAsync(int latency)
 		{
 		}
 
-		public void OnReceive(UdpDataReader reader, ChannelType channel)
+
+		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
 			RSAPublicKeyMessage rsaPublicMsg = new RSAPublicKeyMessage();
 			if(rsaPublicMsg.Read(reader))
 			{
 				Crypto = new CryptoProvider(rsaPublicMsg.PublicKey);
 
-				AESParameterMessage aesParameterMessage = new AESParameterMessage();
-				aesParameterMessage.AESParameter = Crypto.EncryptAesParameter();
+				AESParameterMessage aesParameterMessage = new AESParameterMessage
+				{
+					AESParameter = Crypto.EncryptAesParameter()
+				};
 
 				this.UdpManager.SendMsg(aesParameterMessage, ChannelType.ReliableOrdered);
 
-				ICryptoWorkflow wf = new T();
-				wf.Crypto = this.Crypto;
-				SwitchWorkflow(this.peer, wf);
+				ICryptoWorkflow wf = new T
+				{
+					Crypto = this.Crypto
+				};
+				await SwitchWorkflowAsync(this.peer, wf);
 			}
 		}
 
-		public void OnStart(UdpPeer peer)
+		public async Task OnStartAsync(UdpPeer peer)
 		{
 			this.peer = peer;
 		}

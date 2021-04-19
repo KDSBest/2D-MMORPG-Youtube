@@ -1,4 +1,5 @@
 ﻿using Common.Protocol;
+using CommonServer.CosmosDb;
 using CommonServer.Udp;
 using System;
 using System.Threading.Tasks;
@@ -11,17 +12,20 @@ namespace LoginService
 		{
             try
             {
+                Console.WriteLine("Initialize CosmosDb Connection.");
+                UserInformationRepository repo = new UserInformationRepository();
+
                 UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new LoginUdpListener());
 
                 Console.WriteLine("Open Login Service");
-                await udpManagerListener.Start(3334);
+                await udpManagerListener.StartAsync(3334);
 
-                udpManagerListener.Update();
+                await udpManagerListener.UpdateAsync();
                 Console.WriteLine("Login Service is Running...");
 
                 while (udpManagerListener.IsRunning)
                 {
-                    udpManagerListener.Update();
+                    await udpManagerListener.UpdateAsync();
                     await Task.Delay(50);
                 }
 
@@ -30,6 +34,7 @@ namespace LoginService
             catch (Exception ex)
             {
                 Console.WriteLine($"ERROR: {ex}");
+                Console.ReadLine();
             }
         }
 	}

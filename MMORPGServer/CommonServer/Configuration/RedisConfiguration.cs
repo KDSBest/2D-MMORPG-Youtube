@@ -1,4 +1,4 @@
-﻿namespace CommonServer
+﻿namespace CommonServer.Configuration
 {
     public static class RedisConfiguration
     {

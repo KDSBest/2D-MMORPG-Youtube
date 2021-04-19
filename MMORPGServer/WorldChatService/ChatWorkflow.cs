@@ -7,10 +7,7 @@ using ReliableUdp;
 using ReliableUdp.Enums;
 using ReliableUdp.Utility;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
+using CommonServer.Configuration;
 using System.Threading.Tasks;
 
 namespace WorldChatService
@@ -18,22 +15,22 @@ namespace WorldChatService
 	public class ChatWorkflow : IJwtWorkflow
 	{
 		public UdpManager UdpManager { get; set; }
-		public Action<UdpPeer, IWorkflow> SwitchWorkflow { get; set; }
+		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 		private string email = string.Empty;
 
-		public void OnStart(UdpPeer peer)
+		public async Task OnStartAsync(UdpPeer peer)
 		{
 		}
 
-		public void OnDisconnected(DisconnectInfo disconnectInfo)
+		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
 		}
 
-		public void OnLatencyUpdate(int latency)
+		public async Task OnLatencyUpdateAsync(int latency)
 		{
 		}
 
-		public void OnReceive(UdpDataReader reader, ChannelType channel)
+		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
 			var chatMessage = new ChatMessage();
 			if (chatMessage.Read(reader))

@@ -3,8 +3,10 @@
 	public enum LoginRegisterResponse : byte
 	{
         Successful = 0,
-        Failure = 1,
-        AlreadyRegistered = 2
+        WrongPasswordOrEmail = 1,
+        AlreadyRegistered = 2,
+		InvalidEMail = 3,
+		PasswordTooWeak = 4
 	}
 
 }

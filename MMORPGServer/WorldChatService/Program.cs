@@ -14,14 +14,14 @@ namespace WorldChatService
                 UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new ChatUdpListener());
 
                 Console.WriteLine("Open Chat Service");
-                await udpManagerListener.Start(3333);
+                await udpManagerListener.StartAsync(3333);
 
-                udpManagerListener.Update();
+                await udpManagerListener.UpdateAsync();
                 Console.WriteLine("Chat Service is Running...");
 
                 while (udpManagerListener.IsRunning)
                 {
-                    udpManagerListener.Update();
+                    await udpManagerListener.UpdateAsync();
                     await Task.Delay(50);
                 }
 
@@ -30,6 +30,7 @@ namespace WorldChatService
             catch(Exception ex)
 			{
                 Console.WriteLine($"ERROR: {ex}");
+                Console.ReadLine();
 			}
         }
     }

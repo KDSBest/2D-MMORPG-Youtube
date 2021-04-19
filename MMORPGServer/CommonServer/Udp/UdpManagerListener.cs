@@ -33,20 +33,20 @@ namespace CommonServer.Udp
 
             if(string.IsNullOrEmpty(connKey))
             {
-                throw new ArgumentException(nameof(connKey));
+                throw new ArgumentException($"{nameof(connKey)} is empty or null.");
             }
 
             this.connKey = connKey;
             this.udpListener = udpListener;
         }
 
-        public void Update()
+        public async Task UpdateAsync()
         {
             if (this.udpListener != null && this.udp != null)
-                this.udpListener.Update();
+                await this.udpListener.UpdateAsync();
         }
 
-        public async Task Start(int port)
+        public async Task StartAsync(int port)
         {
             try
             {
