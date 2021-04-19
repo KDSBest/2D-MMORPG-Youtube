@@ -9,7 +9,7 @@
   </Target>
 
   <ItemGroup>
-    <ProjectReference Include="..\Unity-Azure-Network-Engine\Core\ReliableUdp\ReliableUdp.csproj" />
+    <ProjectReference Include="..\UnityAzureNetworkEngine\Core\ReliableUdp\ReliableUdp.csproj" />
   </ItemGroup>
 
 </Project>

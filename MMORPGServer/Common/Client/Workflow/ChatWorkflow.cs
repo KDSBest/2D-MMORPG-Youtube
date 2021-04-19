@@ -1,14 +1,10 @@
-﻿using Common.Crypto;
-using Common.Extensions;
+﻿using Common.Extensions;
 using Common.Protocol.Chat;
-using Common.Protocol.Login;
 using Common.Workflow;
 using ReliableUdp;
 using ReliableUdp.Enums;
 using ReliableUdp.Utility;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Common.Client.Workflow

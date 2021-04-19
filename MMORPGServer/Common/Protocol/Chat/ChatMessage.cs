@@ -1,11 +1,8 @@
 ﻿using ReliableUdp.Utility;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Common.Protocol.Chat
 {
-    public class ChatMessage : BaseUdpPackage
+	public class ChatMessage : BaseUdpPackage
     {
         public string Sender { get; set; } = string.Empty;
         public string Message { get; set; }

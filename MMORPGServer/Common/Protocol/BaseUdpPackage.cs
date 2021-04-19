@@ -1,11 +1,8 @@
 ﻿using ReliableUdp.Utility;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Common.Protocol
 {
-    public abstract class BaseUdpPackage : IUdpPackage
+	public abstract class BaseUdpPackage : IUdpPackage
     {
         private MessageType type;
 

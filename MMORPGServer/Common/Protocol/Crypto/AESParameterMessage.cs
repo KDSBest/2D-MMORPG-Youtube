@@ -1,11 +1,8 @@
 ﻿using ReliableUdp.Utility;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Common.Protocol.Crypto
 {
-    public class AESParameterMessage : BaseUdpPackage
+	public class AESParameterMessage : BaseUdpPackage
     {
         public string AESParameter { get; set; }
 

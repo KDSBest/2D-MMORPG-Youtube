@@ -1,13 +1,11 @@
 ﻿using Common.Udp;
 using ReliableUdp;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CommonServer.Udp
 {
-    public class UdpManagerListener
+	public class UdpManagerListener
     {
         private UdpManager udp;
         private readonly string connKey;

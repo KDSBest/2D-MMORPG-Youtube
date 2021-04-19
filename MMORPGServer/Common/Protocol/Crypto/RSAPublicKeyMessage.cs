@@ -1,11 +1,8 @@
 ﻿using ReliableUdp.Utility;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Common.Protocol.Crypto
 {
-    public class RSAPublicKeyMessage : BaseUdpPackage
+	public class RSAPublicKeyMessage : BaseUdpPackage
     {
         public string PublicKey { get; set; }
 

@@ -1,4 +1,3 @@
-[submodule "Unity-Azure-Network-Engine"]
-	path = MMORPGServer/Unity-Azure-Network-Engine
+[submodule "MMORPGServer/UnityAzureNetworkEngine"]
+	path = MMORPGServer/UnityAzureNetworkEngine
 	url = https://github.com/KDSBest/Unity-Azure-Network-Engine.git
-	branch = master

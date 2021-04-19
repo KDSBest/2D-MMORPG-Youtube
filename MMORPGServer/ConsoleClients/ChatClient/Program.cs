@@ -2,11 +2,10 @@
 using Common.Protocol.Login;
 using System;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace ChatClient
 {
-    public class Program
+	public class Program
     {
         public static async Task Main(string[] args)
         {

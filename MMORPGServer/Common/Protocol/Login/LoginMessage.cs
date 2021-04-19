@@ -1,11 +1,8 @@
 ﻿using ReliableUdp.Utility;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Common.Protocol.Login
 {
-    public class LoginMessage : BaseUdpPackage
+	public class LoginMessage : BaseUdpPackage
     {
         public string EMailEnc { get; set; }
         public string PasswordEnc { get; set; }
