@@ -18,6 +18,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "charts", "charts", "{A4CE3468-7AC1-4131-988B-521742526064}"
 	ProjectSection(SolutionItems) = preProject
 		charts\external-redis.yaml = charts\external-redis.yaml
+		charts\login.yaml = charts\login.yaml
 		charts\worldchat.yaml = charts\worldchat.yaml
 	EndProjectSection
 EndProject
@@ -27,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{DEB55D2E-C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{4C94DF36-3E7A-4062-9B05-B67B5A75C2CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginService", "LoginService\LoginService.csproj", "{0C177C74-3BF3-4667-A8E2-0BC4043503CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoginService", "LoginService\LoginService.csproj", "{0C177C74-3BF3-4667-A8E2-0BC4043503CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

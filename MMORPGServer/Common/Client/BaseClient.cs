@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Common.Client
 {
-	public class BaseClient<T, TWorkflow> where T : BaseUdpListener<TWorkflow>, new() where TWorkflow : IWorkflow, new()
+	public class BaseClient<TWorkflow> : BaseUdpListener<TWorkflow> where TWorkflow : IWorkflow, new()
 	{
 		public UdpPeer Peer { get; set; }
 		public UdpManager UdpManager { get; set; }
@@ -20,7 +20,6 @@ namespace Common.Client
 		private int currentMaxWait = maxWaitMs;
 		private bool disconnect = false;
 		private Task updateThread;
-		protected T UdpListener { get; set; }
 
 		public bool IsConnected
 		{
@@ -34,8 +33,7 @@ namespace Common.Client
 		{
 			return await Task.Run<bool>(async () =>
 			{
-				UdpListener = new T();
-				this.UdpManager = new UdpManager(UdpListener, ProtocolConstants.ConnectionKey);
+				this.UdpManager = new UdpManager(this, ProtocolConstants.ConnectionKey);
 				this.Peer = this.UdpManager.Connect(host, port);
 
 				while (this.Peer.ConnectionState == ConnectionState.InProgress && currentMaxWait > 0)

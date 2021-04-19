@@ -18,7 +18,7 @@ namespace Common.Client.Workflow
 		public UdpManager UdpManager { get; set; }
 		public Action<UdpPeer, IWorkflow> SwitchWorkflow { get; set; }
 
-		private Action<LoginRegisterResponseMessage> callback;
+		public Action<ChatMessage> OnNewChatMessage { get; set; }
 
 		public void OnStart(UdpPeer peer)
 		{
@@ -34,10 +34,13 @@ namespace Common.Client.Workflow
 
 		public void OnReceive(UdpDataReader reader, ChannelType channel)
 		{
-			var response = new ChatMessage();
-			if(response.Read(reader))
+			var chatMsg = new ChatMessage();
+			if(chatMsg.Read(reader))
 			{
-				Console.WriteLine($"{response.Sender}: {response.Message}");
+				if(OnNewChatMessage != null)
+				{
+					OnNewChatMessage(chatMsg);
+				}
 			}
 		}
 

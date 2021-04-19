@@ -64,12 +64,18 @@ namespace Common.Udp
             SwitchWorkflow(peer, wf);
         }
 
+        public virtual void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
+		{
+
+		}
+
         private void SwitchWorkflow(UdpPeer peer, IWorkflow newWorkflow)
 		{
             newWorkflow.UdpManager = this.UdpManager;
             newWorkflow.SwitchWorkflow = SwitchWorkflow;
             newWorkflow.OnStart(peer);
             Workflows.AddOrUpdate(peer.ConnectId, newWorkflow, (connectionId, oldValue) => newWorkflow);
+            OnWorkflowSwitch(peer, newWorkflow);
         }
     }
 }

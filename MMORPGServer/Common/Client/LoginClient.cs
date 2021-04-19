@@ -1,6 +1,8 @@
 ﻿using Common.Client.Workflow;
 using Common.Protocol.Login;
 using Common.Udp;
+using Common.Workflow;
+using ReliableUdp;
 using ReliableUdp.Utility;
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 namespace Common.Client
 {
 
-	public class LoginClient : BaseClient<BaseUdpListener<CryptoWorkflow<LoginWorkflow>>, CryptoWorkflow<LoginWorkflow>>
+	public class LoginClient : BaseClient<CryptoWorkflow<LoginWorkflow>>
 	{
 
 		public bool IsConnectedAndLoginWorkflow
@@ -22,12 +24,11 @@ namespace Common.Client
 			}
 		}
 
-		public LoginWorkflow Workflow
+		public LoginWorkflow Workflow { get; set; }
+
+		public override void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
 		{
-			get
-			{
-				return this.UdpListener.Workflows[this.Peer.ConnectId] as LoginWorkflow;
-			}
+			Workflow = newWorkflow as LoginWorkflow;
 		}
 
 		public async Task<LoginRegisterResponseMessage> LoginAsync(string email, string password)

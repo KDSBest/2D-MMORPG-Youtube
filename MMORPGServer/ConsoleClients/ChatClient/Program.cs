@@ -43,6 +43,11 @@ namespace ChatClient
             await loginClient.DisconnectAsync();
 
             var chatClient = new Common.Client.ChatClient();
+            chatClient.OnNewChatMessage = (msg) =>
+            {
+                Console.WriteLine($"{msg.Sender}: {msg.Message}");
+            };
+
             connected = await chatClient.ConnectAsync("localhost", 3333, result.Token);
             if (connected)
             {

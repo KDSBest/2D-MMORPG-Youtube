@@ -1,6 +1,9 @@
 ﻿using Common.Client.Workflow;
+using Common.Protocol.Chat;
 using Common.Protocol.Login;
 using Common.Udp;
+using Common.Workflow;
+using ReliableUdp;
 using ReliableUdp.Utility;
 using System;
 using System.Collections.Generic;
@@ -11,14 +14,18 @@ using System.Threading.Tasks;
 namespace Common.Client
 {
 
-	public class ChatClient : BaseClient<BaseUdpListener<ChatWorkflow>, ChatWorkflow>
+	public class ChatClient : BaseClient<ChatWorkflow>
 	{
+		public ChatWorkflow Workflow { get; set; }
 
-		public ChatWorkflow Workflow
+		public Action<ChatMessage> OnNewChatMessage { get; set; }
+
+		public override void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
 		{
-			get
+			Workflow = newWorkflow as ChatWorkflow;
+			if(Workflow != null)
 			{
-				return this.UdpListener.Workflows[this.Peer.ConnectId] as ChatWorkflow;
+				Workflow.OnNewChatMessage = OnNewChatMessage;
 			}
 		}
 
