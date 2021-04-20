@@ -1,37 +1,17 @@
 ﻿using Microsoft.Azure.Cosmos;
 using CommonServer.Configuration;
+using System;
 
 namespace CommonServer.CosmosDb
 {
     public class CosmosClientSinglton
     {
-        private static CosmosClientSinglton instance;
+        private static readonly Lazy<CosmosClientSinglton> instance = new Lazy<CosmosClientSinglton>(() => new CosmosClientSinglton());
 
-        private static readonly object lockObject = new object();
+        public static CosmosClientSinglton Instance { get { return instance.Value; } }
+
         public Database Database { get; private set; }
         public Container LoginContainer { get; private set; }
-
-        /// <summary>
-        /// Gets the instance.
-        /// </summary>
-        public static CosmosClientSinglton Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    lock (lockObject)
-                    {
-                        if (instance == null)
-                        {
-                            instance = new CosmosClientSinglton();
-                        }
-                    }
-                }
-
-                return instance;
-            }
-        }
 
         private CosmosClientSinglton()
         {
