@@ -4,7 +4,7 @@ namespace CommonServer.CosmosDb
 {
     public class UserInformationRepository : CosmosDbRepository<UserInformation>
     {
-        public UserInformationRepository() : base(CosmosClientSinglton.Instance.LoginContainer)
+        public UserInformationRepository() : base(CosmosClientSinglton.Instance.UserContainer)
         {
 
         }

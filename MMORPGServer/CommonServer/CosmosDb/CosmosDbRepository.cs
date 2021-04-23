@@ -15,7 +15,6 @@ namespace CommonServer.CosmosDb
 
         public async Task<T> GetAsync(string key)
         {
-
             try
             {
                 var result = await Container.ReadItemAsync<T>(key, new PartitionKey(key));

@@ -6,5 +6,6 @@
         public static readonly string JwtSecret = "HelloWorld!HelloWorld!HelloWorld!HelloWorld!";
 
         public static readonly string EmailClaimType = "email";
+        public static readonly string CharClaimType = "char";
     }
 }

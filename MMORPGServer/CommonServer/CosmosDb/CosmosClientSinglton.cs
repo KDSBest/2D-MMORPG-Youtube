@@ -11,13 +11,15 @@ namespace CommonServer.CosmosDb
         public static CosmosClientSinglton Instance { get { return instance.Value; } }
 
         public Database Database { get; private set; }
-        public Container LoginContainer { get; private set; }
+        public Container UserContainer { get; private set; }
+        public Container CharacterContainer { get; private set; }
 
         private CosmosClientSinglton()
         {
-            var docDb = new CosmosClient(CosmosDbConfiguration.DocumentDbEndpointUrl, CosmosDbConfiguration.DocumentDbKey);
-            Database = docDb.CreateDatabaseIfNotExistsAsync(CosmosDbConfiguration.DocumentDb).Result.Database;
-            LoginContainer = Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.DocumentDbLoginDbCollection, "/id").Result.Container;
+            var cosmosDb = new CosmosClient(CosmosDbConfiguration.CosmosDbEndpointUrl, CosmosDbConfiguration.CosmosDbKey);
+            Database = cosmosDb.CreateDatabaseIfNotExistsAsync(CosmosDbConfiguration.CosmosDb).Result.Database;
+            UserContainer = Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbUserDbCollection, "/id").Result.Container;
+            CharacterContainer = Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbCharacterDbCollection, "/id").Result.Container;
         }
 
     }

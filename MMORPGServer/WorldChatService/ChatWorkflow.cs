@@ -16,7 +16,7 @@ namespace WorldChatService
 	{
 		public UdpManager UdpManager { get; set; }
 		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
-		private string email = string.Empty;
+		private string name = string.Empty;
 
 		public async Task OnStartAsync(UdpPeer peer)
 		{
@@ -35,14 +35,14 @@ namespace WorldChatService
 			var chatMessage = new ChatMessage();
 			if (chatMessage.Read(reader))
 			{
-				chatMessage.Sender = email;
+				chatMessage.Sender = name;
 				RedisPubSub.Publish<ChatMessage>(RedisConfiguration.WorldChatChannelPrefix, chatMessage);
 			}
 		}
 
 		public void OnToken(string token)
 		{
-			email = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
+			name = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
 		}
 	}
 }

@@ -50,6 +50,45 @@ namespace ChatClient
             Console.WriteLine($"Token: {result.Token}");
             await loginClient.DisconnectAsync();
 
+            string charToken = string.Empty;
+            var charClient = new Common.Client.CharacterClient
+            {
+                OnNewCharacterMessage = (msg) =>
+				{
+                    Console.WriteLine($"Character: {msg.Character}");
+
+                    if(!string.IsNullOrEmpty(msg.Token))
+					{
+                        charToken = msg.Token;
+					}
+				}
+            };
+
+            connected = await charClient.ConnectAsync("localhost", 3335, result.Token);
+            if (connected)
+            {
+                Console.WriteLine("Connected to Char Server.");
+            }
+            else
+            {
+                Console.WriteLine("Connection to Char Server failed.");
+                return;
+            }
+
+            while (string.IsNullOrEmpty(charToken))
+			{
+                Console.WriteLine("Enter char name:");
+                string name = Console.ReadLine();
+
+                charClient.SendCharacterCreation(new Common.Protocol.Character.CharacterInformation()
+                {
+                    Name = name
+                });
+
+                Console.WriteLine("Wait 1 sec for server to resond.");
+                await Task.Delay(1000);
+			}
+
 			var chatClient = new Common.Client.ChatClient
 			{
 				OnNewChatMessage = (msg) =>
@@ -58,7 +97,7 @@ namespace ChatClient
 				}
 			};
 
-			connected = await chatClient.ConnectAsync("localhost", 3333, result.Token);
+			connected = await chatClient.ConnectAsync("localhost", 3333, charToken);
             if (connected)
             {
                 Console.WriteLine("Connected to Chat Server.");
