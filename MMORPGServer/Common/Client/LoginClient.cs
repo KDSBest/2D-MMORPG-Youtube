@@ -1,5 +1,6 @@
 ﻿using Common.Client.Workflow;
 using Common.Protocol.Login;
+using Common.PublishSubscribe;
 using Common.Workflow;
 using ReliableUdp;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace Common.Client
 
 	public class LoginClient : BaseClient<CryptoWorkflow<LoginWorkflow>>
 	{
+		private IPubSub pubsub;
 
 		public bool IsConnectedAndLoginWorkflow
 		{
@@ -18,45 +20,38 @@ namespace Common.Client
 			}
 		}
 
+		public LoginClient(IPubSub pubsub)
+		{
+			this.pubsub = pubsub;
+		}
+
 		public LoginWorkflow Workflow { get; set; }
 
 		public override void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
 		{
 			Workflow = newWorkflow as LoginWorkflow;
+			if(Workflow != null)
+			{
+				Workflow.PubSub = pubsub;
+			}
 		}
 
-		public async Task<LoginRegisterResponseMessage> LoginAsync(string email, string password)
+		public async Task LoginAsync(string email, string password)
 		{
 			var wf = Workflow;
 			if (wf == null)
-				return null;
+				return;
 
-			LoginRegisterResponseMessage response = null;
-			await wf.LoginAsync(email, password, (resp) =>
-			{
-				response = resp;
-			});
-
-			WaitForResponse(() => response != null);
-
-			return response;
+			await wf.LoginAsync(email, password);
 		}
 
-		public async Task<LoginRegisterResponseMessage> RegisterAsync(string email, string password)
+		public async Task RegisterAsync(string email, string password)
 		{
 			var wf = Workflow;
 			if (wf == null)
-				return null;
+				return;
 
-			LoginRegisterResponseMessage response = null;
-			await wf.RegisterAsync(email, password, (resp) =>
-			{
-				response = resp;
-			});
-
-			WaitForResponse(() => response != null);
-
-			return response;
+			await wf.RegisterAsync(email, password);
 		}
 
 	}

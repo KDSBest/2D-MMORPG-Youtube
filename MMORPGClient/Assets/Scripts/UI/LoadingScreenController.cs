@@ -1,6 +1,7 @@
 using Assets.Scripts;
 using Assets.Scripts.PubSubEvents.StartUI;
 using Common.IoC;
+using Common.PublishSubscribe;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,30 +9,33 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LoadingScreenController : MonoBehaviour
+namespace Assets.Scripts.UI
 {
-    private IPubSub pubsub;
-    public GameObject LoadingScreen;
-    public TMP_Text ActionText;
-    public Slider ProgressBar;
-
-    public void OnEnable()
+    public class LoadingScreenController : MonoBehaviour
     {
-        DILoader.Initialize();
-        pubsub = DI.Instance.Resolve<IPubSub>();
+        private IPubSub pubsub;
+        public GameObject LoadingScreen;
+        public TMP_Text ActionText;
+        public Slider ProgressBar;
 
-        pubsub.Subscribe<ControlLoadingScreen>(OnControlLoadingScreen, this.name);
-    }
+        public void OnEnable()
+        {
+            DILoader.Initialize();
+            pubsub = DI.Instance.Resolve<IPubSub>();
 
-    public void OnDisable()
-    {
-        pubsub.Unsubscribe<ControlLoadingScreen>(this.name);
-    }
+            pubsub.Subscribe<ControlLoadingScreen>(OnControlLoadingScreen, this.name);
+        }
 
-    public void OnControlLoadingScreen(ControlLoadingScreen data)
-    {
-        LoadingScreen.SetActive(data.Visible);
-        ActionText.text = data.CurrentAction;
-        ProgressBar.value = data.Percentage;
+        public void OnDisable()
+        {
+            pubsub.Unsubscribe<ControlLoadingScreen>(this.name);
+        }
+
+        public void OnControlLoadingScreen(ControlLoadingScreen data)
+        {
+            LoadingScreen.SetActive(data.Visible);
+            ActionText.text = data.CurrentAction;
+            ProgressBar.value = data.Percentage;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Common.Crypto;
 using Common.Extensions;
 using Common.Protocol.Login;
+using Common.PublishSubscribe;
 using Common.Workflow;
 using ReliableUdp;
 using ReliableUdp.Enums;
@@ -16,7 +17,7 @@ namespace Common.Client.Workflow
 		public UdpManager UdpManager { get; set; }
 		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 
-		private Action<LoginRegisterResponseMessage> callback;
+		public IPubSub PubSub { get; set; }
 
 		public async Task OnStartAsync(UdpPeer peer)
 		{
@@ -35,11 +36,11 @@ namespace Common.Client.Workflow
 			var response = new LoginRegisterResponseMessage();
 			if(response.Read(reader))
 			{
-				callback?.Invoke(response);
+				PubSub.Publish(response);
 			}
 		}
 
-		public async Task LoginAsync(string email, string password, Action<LoginRegisterResponseMessage> callback)
+		public async Task LoginAsync(string email, string password)
 		{
 			var loginMsg = new LoginMessage
 			{
@@ -47,10 +48,9 @@ namespace Common.Client.Workflow
 				PasswordEnc = Crypto.Encrypt(password)
 			};
 			UdpManager.SendMsg(loginMsg, ChannelType.ReliableOrdered);
-			this.callback = callback;
 		}
 
-		public async Task RegisterAsync(string email, string password, Action<LoginRegisterResponseMessage> callback)
+		public async Task RegisterAsync(string email, string password)
 		{
 			var loginMsg = new RegisterMessage
 			{
@@ -58,7 +58,6 @@ namespace Common.Client.Workflow
 				PasswordEnc = Crypto.Encrypt(password)
 			};
 			UdpManager.SendMsg(loginMsg, ChannelType.ReliableOrdered);
-			this.callback = callback;
 		}
 	}
 }

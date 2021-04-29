@@ -18,7 +18,7 @@ namespace Assets.Scripts
 
 		public static void ExecuteQueue()
 		{
-			while(actions.TryDequeue(out Action action))
+			while (actions.TryDequeue(out Action action))
 			{
 				action();
 			}

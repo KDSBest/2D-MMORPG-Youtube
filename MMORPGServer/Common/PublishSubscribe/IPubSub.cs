@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Assets.Scripts
+namespace Common.PublishSubscribe
 {
 	public interface IPubSub
 	{
@@ -8,4 +10,5 @@ namespace Assets.Scripts
 		void Subscribe<T>(Action<T> subscriptionTyped, string name);
 		void Unsubscribe<T>(string name);
 	}
+
 }

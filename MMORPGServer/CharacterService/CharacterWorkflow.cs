@@ -33,6 +33,10 @@ namespace CharacterService
 			{
 				await SendPlayerHisCharacterAsync(true);
 			}
+			else
+			{
+				SendPlayerCharacter(new CharacterInformation());
+			}
 		}
 
 		private async Task SendPlayerHisCharacterAsync(bool sendToken)
@@ -43,10 +47,10 @@ namespace CharacterService
 			if (sendToken)
 			{
 				token = JwtTokenHelper.GenerateToken(new List<Claim>
-			{
-				new Claim(SecurityConfiguration.EmailClaimType, email),
-				new Claim(SecurityConfiguration.CharClaimType, c.Name)
-			});
+				{
+					new Claim(SecurityConfiguration.EmailClaimType, email),
+					new Claim(SecurityConfiguration.CharClaimType, c.Name)
+				});
 			}
 
 			SendPlayerCharacter(c, token);
@@ -56,7 +60,7 @@ namespace CharacterService
 		{
 			var c = await repo.GetByNameAsync(charName);
 
-			if(c != null)
+			if (c != null)
 			{
 				SendPlayerCharacter(c);
 			}
@@ -81,9 +85,9 @@ namespace CharacterService
 		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
 			var charReq = new CharacterRequestMessage();
-			if(charReq.Read(reader))
+			if (charReq.Read(reader))
 			{
-				foreach(string name in charReq.Names)
+				foreach (string name in charReq.Names)
 				{
 					await SendPlayerCharacterAsync(name);
 				}
@@ -94,7 +98,7 @@ namespace CharacterService
 			if (charMessage.Read(reader))
 			{
 				charMessage.Character.Id = email;
-
+				charMessage.Character.Name = charMessage.Character.Name.Trim();
 				if (string.IsNullOrEmpty(charMessage.Character.Name))
 				{
 					SendPlayerCharacter(charMessage.Character);
@@ -104,6 +108,13 @@ namespace CharacterService
 				if (await repo.ExistsAsync(email))
 				{
 					await SendPlayerHisCharacterAsync(false);
+					return;
+				}
+
+				if (await repo.GetByNameAsync(charMessage.Character.Name) != null)
+				{
+					charMessage.Character.Name = "NameAlreadyRegistered!";
+					SendPlayerCharacter(charMessage.Character);
 					return;
 				}
 

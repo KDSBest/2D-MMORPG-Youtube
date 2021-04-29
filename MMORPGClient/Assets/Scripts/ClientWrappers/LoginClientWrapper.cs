@@ -1,22 +1,24 @@
 ﻿using Assets.Scripts.PubSubEvents.LoginClient;
 using Common.Client;
 using Common.IoC;
+using Common.PublishSubscribe;
 using System.Threading.Tasks;
 
 namespace Assets.Scripts.ClientWrappers
 {
 	public class LoginClientWrapper
 	{
-		public LoginClient loginClient = new LoginClient();
+		public LoginClient client;
 		private const string PUBSUBNAME = "LoginClientWrapper";
 
-		public bool IsInitialized { get { return loginClient.IsConnectedAndLoginWorkflow; } }
+		public bool IsInitialized { get { return client.IsConnectedAndLoginWorkflow; } }
 
 		private IPubSub pubsub;
 		public LoginClientWrapper()
 		{
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
+			client = new LoginClient(pubsub);
 			pubsub.Subscribe<TryLogin>(OnTryLogin, PUBSUBNAME);
 			pubsub.Subscribe<TryRegister>(OnTryRegister, PUBSUBNAME);
 		}
@@ -26,13 +28,7 @@ namespace Assets.Scripts.ClientWrappers
 			// Async without await in unity still blocks UI, so we have to create our own Task to make this work
 			Task.Run(() =>
 			{
-				loginClient.RegisterAsync(data.Email, data.Password).ContinueWith((resp) =>
-				{
-					UnityDispatcher.RunOnMainThread(() =>
-					{
-						pubsub.Publish(resp.Result);
-					});
-				});
+				client.RegisterAsync(data.Email, data.Password);
 			});
 		}
 
@@ -41,19 +37,13 @@ namespace Assets.Scripts.ClientWrappers
 			// Async without await in unity still blocks UI, so we have to create our own Task to make this work
 			Task.Run(() =>
 			{
-				loginClient.LoginAsync(data.Email, data.Password).ContinueWith((resp) =>
-				{
-					UnityDispatcher.RunOnMainThread(() =>
-					{
-						pubsub.Publish(resp.Result);
-					});
-				});
+				client.LoginAsync(data.Email, data.Password);
 			});
 		}
 
 		public async Task<bool> ConnectAsync(string host, int port)
 		{
-			return await loginClient.ConnectAsync(host, port);
+			return await client.ConnectAsync(host, port);
 		}
 	}
 }

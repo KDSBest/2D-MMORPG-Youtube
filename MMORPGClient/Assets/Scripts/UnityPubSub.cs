@@ -1,9 +1,13 @@
+using Common.PublishSubscribe;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
-	public class PubSub : IPubSub
+	public class UnityPubSub : IPubSub
 	{
 		private ConcurrentDictionary<Type, ConcurrentDictionary<string, object>> registrations = new ConcurrentDictionary<Type, ConcurrentDictionary<string, object>>();
 
@@ -22,13 +26,16 @@ namespace Assets.Scripts
 
 		public void Publish<T>(T data)
 		{
-			var registration = registrations.GetOrAdd(typeof(T), (t) => new ConcurrentDictionary<string, object>());
-
-			var regs = registration.ToArray();
-			foreach (var reg in regs)
+			UnityDispatcher.RunOnMainThread(() =>
 			{
-				((Action<T>)reg.Value)(data);
-			}
+				var registration = registrations.GetOrAdd(typeof(T), (t) => new ConcurrentDictionary<string, object>());
+
+				var regs = registration.ToArray();
+				foreach (var reg in regs)
+				{
+					((Action<T>)reg.Value)(data);
+				}
+			});
 		}
 
 		public void Unsubscribe<T>(string name)
@@ -37,5 +44,4 @@ namespace Assets.Scripts
 			registration.TryRemove(name, out object removed);
 		}
 	}
-
 }
