@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LiberationSans SDF Material
-  m_Shader: {fileID: 4800000, guid: fe393ace9b354375a9cb14cdbbc28be4, type: 3}
+  m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
   m_ShaderKeywords: OUTLINE_ON
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
@@ -56,7 +56,7 @@ Material:
     - _CullMode: 0
     - _Diffuse: 0.5
     - _DiffusePower: 1
-    - _FaceDilate: 0.2
+    - _FaceDilate: 0
     - _FaceShininess: 0
     - _FaceUVSpeedX: 0
     - _FaceUVSpeedY: 0
@@ -80,8 +80,8 @@ Material:
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
     - _ScaleRatioA: 0.9
-    - _ScaleRatioB: 1
-    - _ScaleRatioC: 0.55125
+    - _ScaleRatioB: 0.73125
+    - _ScaleRatioC: 0.51751596
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -94,8 +94,8 @@ Material:
     - _StencilWriteMask: 255
     - _TextureHeight: 1024
     - _TextureWidth: 1024
-    - _UnderlayDilate: 0
-    - _UnderlayOffsetX: 0
+    - _UnderlayDilate: 1
+    - _UnderlayOffsetX: 0.413
     - _UnderlayOffsetY: 0
     - _UnderlaySoftness: 0
     - _UseUIAlphaClip: 0
@@ -107,7 +107,7 @@ Material:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
-    - _FaceColor: {r: 0.9254902, g: 0.9411765, b: 0.94509804, a: 1}
+    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
     - _MaskEdgeColor: {r: 1, g: 1, b: 1, a: 1}
@@ -116,7 +116,7 @@ Material:
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.48235294}
+    - _UnderlayColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 0.48235294}
   m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:
