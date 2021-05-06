@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ScaleUpProblem": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

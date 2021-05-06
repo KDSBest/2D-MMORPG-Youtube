@@ -1,0 +1,23 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scaleupproblem
+  labels:
+    app: scaleupproblem
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scaleupproblem
+  template:
+    metadata:
+      labels:
+        app: scaleupproblem
+    spec:
+      containers:
+      - name: scaleupproblem
+        imagePullPolicy: IfNotPresent
+        image: scaleupproblem:latest
+#        resources:
+#          limits:
+#            cpu: "500m"
