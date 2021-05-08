@@ -7,7 +7,6 @@ namespace Common.Crypto
 {
 	public class CryptoProvider
 	{
-		private CspParameters cspp = new CspParameters();
 		private RSACryptoServiceProvider rsa;
 		private Aes aes;
 		private static readonly char splitCharacter = ':';
@@ -19,7 +18,7 @@ namespace Common.Crypto
 
 		public CryptoProvider(string cspBlobBase64)
 		{
-			rsa = new RSACryptoServiceProvider(cspp);
+			rsa = new RSACryptoServiceProvider();
 			aes = Aes.Create();
 
 			if (!string.IsNullOrEmpty(cspBlobBase64))

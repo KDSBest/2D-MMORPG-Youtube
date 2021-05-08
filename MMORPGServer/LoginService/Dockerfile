@@ -6,8 +6,8 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["LoginService/LoginService.csproj", "LoginService/"]
-COPY ["Unity-Azure-Network-Engine/Core/ReliableUdp/ReliableUdp.csproj", "Unity-Azure-Network-Engine/Core/ReliableUdp/"]
 COPY ["Common/Common.csproj", "Common/"]
+COPY ["UnityAzureNetworkEngine/Core/ReliableUdp/ReliableUdp.csproj", "UnityAzureNetworkEngine/Core/ReliableUdp/"]
 COPY ["CommonServer/CommonServer.csproj", "CommonServer/"]
 RUN dotnet restore "LoginService/LoginService.csproj"
 COPY . .

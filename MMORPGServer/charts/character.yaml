@@ -1,44 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: worldchat
+  name: character
   labels:
-    app: worldchat
+    app: character
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: worldchat
+      app: character
   template:
     metadata:
       labels:
-        app: worldchat
+        app: character
     spec:
       containers:
-      - name: worldchatservice
+      - name: characterservice
         imagePullPolicy: IfNotPresent
-        image: worldchatservice:latest
+        image: characterservice:latest
         ports:
-        - name: worldchat
-          containerPort: 3333
+        - name: character
+          containerPort: 3335
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: worldchat-svc
+  name: character-svc
   labels:
-    app: worldchat
+    app: character
 spec:
   type: NodePort
   selector:
-    app: worldchat
+    app: character
 # issue with docker for windows https://github.com/docker/for-win/issues/9028
 # in azure we need this
 #  sessionAffinity: ClientIP
   ports:
-  - name: worldchat
+  - name: character
     protocol: UDP
-    port: 30002
-    targetPort: 3333
-    nodePort: 30002
+    port: 30001
+    targetPort: 3335
+    nodePort: 30001

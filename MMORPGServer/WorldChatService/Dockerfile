@@ -6,6 +6,9 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["WorldChatService/WorldChatService.csproj", "WorldChatService/"]
+COPY ["Common/Common.csproj", "Common/"]
+COPY ["UnityAzureNetworkEngine/Core/ReliableUdp/ReliableUdp.csproj", "UnityAzureNetworkEngine/Core/ReliableUdp/"]
+COPY ["CommonServer/CommonServer.csproj", "CommonServer/"]
 RUN dotnet restore "WorldChatService/WorldChatService.csproj"
 COPY . .
 WORKDIR "/src/WorldChatService"

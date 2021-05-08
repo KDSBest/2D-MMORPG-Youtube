@@ -39,6 +39,6 @@ spec:
   ports:
   - name: login
     protocol: UDP
-    port: 30001
+    port: 30000
     targetPort: 3334
-    nodePort: 30001
+    nodePort: 30000

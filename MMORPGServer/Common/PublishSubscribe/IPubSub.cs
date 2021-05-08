@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Common.PublishSubscribe
 {
@@ -8,6 +9,7 @@ namespace Common.PublishSubscribe
 	{
 		void Publish<T>(T data);
 		void Subscribe<T>(Action<T> subscriptionTyped, string name);
+		void Subscribe<T>(Func<T, Task> subscriptionTyped, string name);
 		void Unsubscribe<T>(string name);
 	}
 

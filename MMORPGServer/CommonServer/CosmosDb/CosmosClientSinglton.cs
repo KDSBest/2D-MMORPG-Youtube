@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.Cosmos;
 using CommonServer.Configuration;
 using System;
+using System.Net.Http;
 
 namespace CommonServer.CosmosDb
 {
@@ -16,7 +17,21 @@ namespace CommonServer.CosmosDb
 
         private CosmosClientSinglton()
         {
-            var cosmosDb = new CosmosClient(CosmosDbConfiguration.CosmosDbEndpointUrl, CosmosDbConfiguration.CosmosDbKey);
+            // TODO: remove and clean up cert in cosmos emulator to accept host: https://host.docker.internal:8081
+            CosmosClientOptions cosmosClientOptions = new CosmosClientOptions()
+            {
+                HttpClientFactory = () =>
+                {
+                    HttpMessageHandler httpMessageHandler = new HttpClientHandler()
+                    {
+                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    };
+                    return new HttpClient(httpMessageHandler);
+                },
+                ConnectionMode = ConnectionMode.Gateway
+            };
+
+            var cosmosDb = new CosmosClient(CosmosDbConfiguration.CosmosDbEndpointUrl, CosmosDbConfiguration.CosmosDbKey, cosmosClientOptions);
             Database = cosmosDb.CreateDatabaseIfNotExistsAsync(CosmosDbConfiguration.CosmosDb).Result.Database;
             UserContainer = Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbUserDbCollection, "/id").Result.Container;
             CharacterContainer = Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbCharacterDbCollection, "/id").Result.Container;
