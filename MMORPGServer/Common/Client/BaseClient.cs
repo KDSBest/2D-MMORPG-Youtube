@@ -20,7 +20,7 @@ namespace Common.Client
 		private bool disconnect = false;
 		private Task updateThread;
 
-		public bool IsConnected
+		public virtual bool IsConnected
 		{
 			get
 			{

@@ -10,19 +10,17 @@ namespace Common.Client
 
 	public class LoginClient : BaseClient<CryptoWorkflow<LoginWorkflow>>
 	{
-		private IPubSub pubsub;
 
-		public bool IsConnectedAndLoginWorkflow
+		public override bool IsConnected
 		{
 			get
 			{
-				return IsConnected && Workflow != null;
+				return base.IsConnected && Workflow != null;
 			}
 		}
 
-		public LoginClient(IPubSub pubsub)
+		public LoginClient()
 		{
-			this.pubsub = pubsub;
 		}
 
 		public LoginWorkflow Workflow { get; set; }
@@ -30,28 +28,6 @@ namespace Common.Client
 		public override void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
 		{
 			Workflow = newWorkflow as LoginWorkflow;
-			if(Workflow != null)
-			{
-				Workflow.PubSub = pubsub;
-			}
-		}
-
-		public async Task LoginAsync(string email, string password)
-		{
-			var wf = Workflow;
-			if (wf == null)
-				return;
-
-			await wf.LoginAsync(email, password);
-		}
-
-		public async Task RegisterAsync(string email, string password)
-		{
-			var wf = Workflow;
-			if (wf == null)
-				return;
-
-			await wf.RegisterAsync(email, password);
 		}
 
 	}

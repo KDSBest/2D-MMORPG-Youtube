@@ -1,4 +1,7 @@
 ﻿using Common.Client;
+using Common.IoC;
+using Common.Protocol.Character;
+using Common.Protocol.Chat;
 using Common.Protocol.Login;
 using Common.PublishSubscribe;
 using System;
@@ -7,20 +10,22 @@ using System.Threading.Tasks;
 namespace ChatClient
 {
 	public class Program
-    {
+	{
 		private static bool isRunning = true;
 		private static string email;
 		private static string password;
 		private static LoginClient loginClient;
 
-        public static async Task Main(string[] args)
-        {
+		public static async Task Main(string[] args)
+		{
 			var pubsub = new PubSub();
+			DI.Instance.Register<IPubSub>(() => pubsub, RegistrationType.Singleton);
+
 			Console.WriteLine("Enter Email:");
 			email = Console.ReadLine();
 			Console.WriteLine("Enter Password:");
 			password = Console.ReadLine();
-			loginClient = new LoginClient(pubsub);
+			loginClient = new LoginClient();
 			bool connected = await loginClient.ConnectAsync("localhost", 30000);
 			if (connected)
 			{
@@ -33,15 +38,15 @@ namespace ChatClient
 			}
 
 			Console.WriteLine("Process Handshake.");
-			while (!loginClient.IsConnectedAndLoginWorkflow)
+			while (!loginClient.IsConnected)
 			{
 				await Task.Delay(50);
 			}
 
 			pubsub.Subscribe<LoginRegisterResponseMessage>(OnRegisteredLogin, "Main");
 
-			await loginClient.RegisterAsync(email, password);
-			while(isRunning)
+			await loginClient.Workflow.RegisterAsync(email, password);
+			while (isRunning)
 			{
 				await Task.Delay(1000);
 			}
@@ -53,7 +58,7 @@ namespace ChatClient
 			{
 				Console.WriteLine($"Register failed with {result.Response}.");
 				Console.WriteLine($"Try Login...");
-				await loginClient.LoginAsync(email, password);
+				await loginClient.Workflow.LoginAsync(email, password);
 				return;
 			}
 
@@ -68,18 +73,17 @@ namespace ChatClient
 			await loginClient.DisconnectAsync();
 
 			string charToken = string.Empty;
-			var charClient = new Common.Client.CharacterClient
+			DI.Instance.Resolve<IPubSub>().Subscribe<CharacterMessage>(async (msg) =>
 			{
-				OnNewCharacterMessage = (msg) =>
-				{
-					Console.WriteLine($"Character: {msg.Character}");
+				Console.WriteLine($"Character: {msg.Character}");
 
-					if (!string.IsNullOrEmpty(msg.Token))
-					{
-						charToken = msg.Token;
-					}
+				if (!string.IsNullOrEmpty(msg.Token))
+				{
+					charToken = msg.Token;
 				}
-			};
+			}, "Main");
+
+			var charClient = new Common.Client.CharacterClient();
 
 			bool connected = await charClient.ConnectAsync("localhost", 30001, result.Token);
 			if (connected)
@@ -97,7 +101,7 @@ namespace ChatClient
 				Console.WriteLine("Enter char name:");
 				string name = Console.ReadLine();
 
-				charClient.SendCharacterCreation(new Common.Protocol.Character.CharacterInformation()
+				charClient.Workflow.SendCharacterCreation(new Common.Protocol.Character.CharacterInformation()
 				{
 					Name = name
 				});
@@ -106,23 +110,13 @@ namespace ChatClient
 				await Task.Delay(1000);
 			}
 
-			var chatClient = new Common.Client.ChatClient
-			{
-				OnNewChatMessage = (msg) =>
-				{
-					Console.WriteLine($"{msg.Sender}: {msg.Message}");
-				}
-			};
 
-			Console.WriteLine("Connect to chat 1? Enter y for yes or anything else for chat 2.");
-			int chatPort = 30003;
-			if (Console.ReadLine() == "y")
+			DI.Instance.Resolve<IPubSub>().Subscribe<ChatMessage>(async (msg) =>
 			{
-				chatPort = 30002;
-			}
-
-			Console.WriteLine($"Connect to chat on port: {chatPort}");
-			connected = await chatClient.ConnectAsync("localhost", chatPort, charToken);
+				Console.WriteLine($"{msg.Sender}: {msg.Message}");
+			}, "Main");
+			var chatClient = new Common.Client.ChatClient();
+			connected = await chatClient.ConnectAsync("localhost", 30002, charToken);
 			if (connected)
 			{
 				Console.WriteLine("Connected to Chat Server.");
@@ -142,7 +136,7 @@ namespace ChatClient
 					continue;
 				}
 
-				chatClient.SendChatMessage(msg);
+				chatClient.Workflow.SendChatMessage(msg);
 			}
 
 			isRunning = false;

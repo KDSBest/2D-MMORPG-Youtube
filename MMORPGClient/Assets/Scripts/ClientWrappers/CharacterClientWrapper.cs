@@ -23,19 +23,12 @@ namespace Assets.Scripts.ClientWrappers
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			pubsub.Subscribe<CharacterInformation>(OnNewCharacterInformation, PUBSUBNAME);
-			client.OnNewCharacterMessage = OnNewCharacterMessage;
 		}
 
 		private void OnNewCharacterInformation(CharacterInformation charInfo)
 		{
-			client.SendCharacterCreation(charInfo);
+			client.Workflow.SendCharacterCreation(charInfo);
 		}
-
-		private void OnNewCharacterMessage(CharacterMessage character)
-		{
-			pubsub.Publish<CharacterMessage>(character);
-		}
-
 
 		public async Task<bool> ConnectAsync(string host, int port, string token)
 		{

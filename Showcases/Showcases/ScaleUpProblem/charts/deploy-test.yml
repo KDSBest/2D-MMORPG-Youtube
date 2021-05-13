@@ -20,4 +20,4 @@ spec:
         image: scaleupproblem:latest
 #        resources:
 #          limits:
-#            cpu: "500m"
+#            cpu: "4000m"

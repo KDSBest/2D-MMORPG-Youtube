@@ -11,35 +11,19 @@ namespace Common.Client
 
 	public class CharacterClient : BaseClient<CharacterWorkflow>
 	{
-		public CharacterWorkflow Workflow { get; set; }
+		public override bool IsConnected
+		{
+			get
+			{
+				return base.IsConnected && Workflow != null;
+			}
+		}
 
-		public Action<CharacterMessage> OnNewCharacterMessage { get; set; }
+		public CharacterWorkflow Workflow { get; set; }
 
 		public override void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
 		{
 			Workflow = newWorkflow as CharacterWorkflow;
-			if(Workflow != null)
-			{
-				Workflow.OnNewCharacterMessage = OnNewCharacterMessage;
-			}
-		}
-
-		public void SendCharacterRequest(List<string> names)
-		{
-			var wf = Workflow;
-			if (wf == null)
-				return;
-
-			wf.SendCharacterRequest(names);
-		}
-
-		public void SendCharacterCreation(CharacterInformation c)
-		{
-			var wf = Workflow;
-			if (wf == null)
-				return;
-
-			wf.SendCharacterCreation(c);
 		}
 	}
 }

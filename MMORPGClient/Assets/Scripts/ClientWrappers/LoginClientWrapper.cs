@@ -11,14 +11,14 @@ namespace Assets.Scripts.ClientWrappers
 		public LoginClient client;
 		private const string PUBSUBNAME = "LoginClientWrapper";
 
-		public bool IsInitialized { get { return client.IsConnectedAndLoginWorkflow; } }
+		public bool IsInitialized { get { return client.IsConnected; } }
 
 		private IPubSub pubsub;
 		public LoginClientWrapper()
 		{
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
-			client = new LoginClient(pubsub);
+			client = new LoginClient();
 			pubsub.Subscribe<TryLogin>(OnTryLogin, PUBSUBNAME);
 			pubsub.Subscribe<TryRegister>(OnTryRegister, PUBSUBNAME);
 		}
@@ -28,7 +28,7 @@ namespace Assets.Scripts.ClientWrappers
 			// Async without await in unity still blocks UI, so we have to create our own Task to make this work
 			Task.Run(() =>
 			{
-				client.RegisterAsync(data.Email, data.Password);
+				client.Workflow.RegisterAsync(data.Email, data.Password);
 			});
 		}
 
@@ -37,7 +37,7 @@ namespace Assets.Scripts.ClientWrappers
 			// Async without await in unity still blocks UI, so we have to create our own Task to make this work
 			Task.Run(() =>
 			{
-				client.LoginAsync(data.Email, data.Password);
+				client.Workflow.LoginAsync(data.Email, data.Password);
 			});
 		}
 

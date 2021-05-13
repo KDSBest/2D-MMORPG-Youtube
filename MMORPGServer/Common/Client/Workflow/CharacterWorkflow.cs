@@ -1,5 +1,7 @@
 ﻿using Common.Extensions;
+using Common.IoC;
 using Common.Protocol.Character;
+using Common.PublishSubscribe;
 using Common.Workflow;
 using ReliableUdp;
 using ReliableUdp.Enums;
@@ -14,11 +16,11 @@ namespace Common.Client.Workflow
 	{
 		public UdpManager UdpManager { get; set; }
 		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
-
-		public Action<CharacterMessage> OnNewCharacterMessage { get; set; }
+		public IPubSub PubSub { get; set; }
 
 		public async Task OnStartAsync(UdpPeer peer)
 		{
+			PubSub = DI.Instance.Resolve<IPubSub>();
 		}
 
 		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
@@ -34,7 +36,7 @@ namespace Common.Client.Workflow
 			var charMsg = new CharacterMessage();
 			if(charMsg.Read(reader))
 			{
-				OnNewCharacterMessage?.Invoke(charMsg);
+				PubSub.Publish(charMsg);
 				return;
 			}
 		}

@@ -1,5 +1,6 @@
 ﻿using Common.Crypto;
 using Common.Extensions;
+using Common.IoC;
 using Common.Protocol.Login;
 using Common.PublishSubscribe;
 using Common.Workflow;
@@ -21,6 +22,7 @@ namespace Common.Client.Workflow
 
 		public async Task OnStartAsync(UdpPeer peer)
 		{
+			PubSub = DI.Instance.Resolve<IPubSub>();
 		}
 
 		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)

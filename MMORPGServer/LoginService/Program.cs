@@ -1,4 +1,5 @@
 ﻿using Common.Protocol;
+using CommonServer.Configuration;
 using CommonServer.CosmosDb;
 using CommonServer.Udp;
 using System;
@@ -18,7 +19,7 @@ namespace LoginService
                 UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new LoginUdpListener());
 
                 Console.WriteLine("Open Login Service");
-                await udpManagerListener.StartAsync(3334);
+                await udpManagerListener.StartAsync(PortConfiguration.LoginPort);
 
                 await udpManagerListener.UpdateAsync();
                 Console.WriteLine("Login Service is Running...");

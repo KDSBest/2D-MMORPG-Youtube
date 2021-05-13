@@ -30,7 +30,11 @@ namespace Common.Udp
 
         public async Task OnPeerDisconnectedAsync(UdpPeer peer, DisconnectInfo disconnectInfo)
         {
-            await Workflows[peer.ConnectId].OnDisconnectedAsync(disconnectInfo);
+            IWorkflow workflow;
+            if(Workflows.TryRemove(peer.ConnectId, out workflow))
+			{
+                await workflow.OnDisconnectedAsync(disconnectInfo);
+            }
         }
 
         public async Task OnNetworkErrorAsync(UdpEndPoint endPoint, int socketErrorCode)

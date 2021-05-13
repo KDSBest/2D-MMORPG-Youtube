@@ -20,8 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "charts", "charts", "{A4CE34
 		charts\character.yaml = charts\character.yaml
 		charts\external-redis.yaml = charts\external-redis.yaml
 		charts\login.yaml = charts\login.yaml
+		mapField.yaml = mapField.yaml
+		mapTown.yaml = mapTown.yaml
 		charts\worldchat.yaml = charts\worldchat.yaml
-		charts\worldchat2.yaml = charts\worldchat2.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{DEB55D2E-C53A-4AEE-BD66-4856EB9E8F20}"
@@ -33,6 +34,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReliableUdp", "UnityAzureNetworkEngine\Core\ReliableUdp\ReliableUdp.csproj", "{F9EE5557-E7BF-49A3-91AD-5AAD579782E8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharacterService", "CharacterService\CharacterService.csproj", "{702EBDBE-6EEF-4E88-AA51-890CB8331ADB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapService", "MapService\MapService.csproj", "{045A4424-7989-4F8D-9D25-BC35FF7F6C80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +75,10 @@ Global
 		{702EBDBE-6EEF-4E88-AA51-890CB8331ADB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{702EBDBE-6EEF-4E88-AA51-890CB8331ADB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{702EBDBE-6EEF-4E88-AA51-890CB8331ADB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{045A4424-7989-4F8D-9D25-BC35FF7F6C80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{045A4424-7989-4F8D-9D25-BC35FF7F6C80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{045A4424-7989-4F8D-9D25-BC35FF7F6C80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{045A4424-7989-4F8D-9D25-BC35FF7F6C80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

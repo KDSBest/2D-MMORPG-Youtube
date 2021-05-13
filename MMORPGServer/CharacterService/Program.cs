@@ -1,4 +1,5 @@
 ﻿using Common.Protocol;
+using CommonServer.Configuration;
 using CommonServer.CosmosDb;
 using CommonServer.Udp;
 using System;
@@ -18,7 +19,7 @@ namespace CharacterService
                 UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new CharacterUdpListener());
 
                 Console.WriteLine("Open Character Service");
-                await udpManagerListener.StartAsync(3335);
+                await udpManagerListener.StartAsync(PortConfiguration.CharacterPort);
 
                 await udpManagerListener.UpdateAsync();
                 Console.WriteLine("Character Service is Running...");

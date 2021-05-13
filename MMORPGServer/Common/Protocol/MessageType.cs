@@ -11,6 +11,9 @@
         Jwt = 13,
         Chat = 50,
         Character = 60,
-        CharacterRequest = 61
+        CharacterRequest = 61,
+        PlayerState = 80,
+        TimeSync = 81,
+        RemoveState = 82
     }
 }

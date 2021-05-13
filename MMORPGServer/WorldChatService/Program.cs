@@ -1,4 +1,5 @@
 ﻿using Common.Protocol;
+using CommonServer.Configuration;
 using CommonServer.Udp;
 using System;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace WorldChatService
                 UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new ChatUdpListener());
 
                 Console.WriteLine("Open Chat Service");
-                await udpManagerListener.StartAsync(3333);
+                await udpManagerListener.StartAsync(PortConfiguration.WorldChatPort);
 
                 await udpManagerListener.UpdateAsync();
                 Console.WriteLine("Chat Service is Running...");
