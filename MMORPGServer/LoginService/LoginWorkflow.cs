@@ -135,15 +135,15 @@ namespace LoginService
 				return;
 			}
 
-			if (await CheckEmailIsNew(email))
+			var user = await repo.GetAsync(email);
+			if(user == null)
 			{
 				loginRegisterResponseMessage.Response = LoginRegisterResponse.WrongPasswordOrEmail;
 				UdpManager.SendMsg(peer.ConnectId, loginRegisterResponseMessage, ChannelType.ReliableOrdered);
 				return;
 			}
 
-			var user = await repo.GetAsync(email);
-			if(!PasswordHash.CheckPassword(user.PasswordHash, password))
+			if (!PasswordHash.CheckPassword(user.PasswordHash, password))
 			{
 				loginRegisterResponseMessage.Response = LoginRegisterResponse.WrongPasswordOrEmail;
 				UdpManager.SendMsg(peer.ConnectId, loginRegisterResponseMessage, ChannelType.ReliableOrdered);
