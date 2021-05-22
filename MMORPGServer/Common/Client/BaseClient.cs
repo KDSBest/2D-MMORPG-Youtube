@@ -1,4 +1,5 @@
-﻿using Common.Extensions;
+﻿using Common.Client.Interfaces;
+using Common.Extensions;
 using Common.Protocol;
 using Common.Protocol.Crypto;
 using Common.Udp;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Common.Client
 {
-	public class BaseClient<TWorkflow> : BaseUdpListener<TWorkflow> where TWorkflow : IWorkflow, new()
+	public class BaseClient<TWorkflow> : BaseUdpListener<TWorkflow>, IBaseClient where TWorkflow : IWorkflow, new()
 	{
 		public UdpPeer Peer { get; set; }
 		private const int delayMs = 50;
@@ -48,7 +49,7 @@ namespace Common.Client
 				{
 					Console.WriteLine("Connected!");
 
-					if(!string.IsNullOrEmpty(token))
+					if (!string.IsNullOrEmpty(token))
 					{
 						var jwtMsg = new JwtMessage
 						{

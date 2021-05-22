@@ -13,8 +13,6 @@ namespace Assets.Scripts
 {
 	public class FrameworkBehaviour : MonoBehaviour
     {
-        public LoginClientWrapper login = new LoginClientWrapper();
-        public CharacterClientWrapper charClient = new CharacterClientWrapper();
         private const int waitMS = 50;
         private IPubSub pubsub;
 
@@ -66,6 +64,7 @@ namespace Assets.Scripts
 
             UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToLogin);
 
+            var charClient = DI.Instance.Resolve<ICharacterClientWrapper>();
             Task<bool> connectTask = charClient.ConnectAsync("localhost", 30001, token);
 
             while (!connectTask.Wait(waitMS))
@@ -94,13 +93,14 @@ namespace Assets.Scripts
 
         public IEnumerator InitLoginClient()
 		{
+            var loginClient = DI.Instance.Resolve<ILoginClientWrapper>();
 			UpdateProgress(0, DI.Instance.Resolve<ILanguage>().Starting);
 
 			yield return new WaitForEndOfFrame();
 
 			UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToLogin);
 
-            Task<bool> connectTask = login.ConnectAsync("localhost", 30000);
+            Task<bool> connectTask = loginClient.ConnectAsync("localhost", 30000);
 
             while(!connectTask.Wait(waitMS))
 			{
@@ -116,7 +116,7 @@ namespace Assets.Scripts
             yield return new WaitForEndOfFrame();
 
             UpdateProgress(0.6f, DI.Instance.Resolve<ILanguage>().EncryptionHandshake);
-            while (!login.IsInitialized)
+            while (!loginClient.IsInitialized)
             {
                 yield return new WaitForEndOfFrame();
             }

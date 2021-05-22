@@ -1,5 +1,5 @@
 ﻿using Assets.Scripts.PubSubEvents.LoginClient;
-using Common.Client;
+using Common.Client.Interfaces;
 using Common.IoC;
 using Common.Protocol.Character;
 using Common.Protocol.Login;
@@ -10,9 +10,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.ClientWrappers
 {
-	public class CharacterClientWrapper
+	public class CharacterClientWrapper : ICharacterClientWrapper
 	{
-		public CharacterClient client = new CharacterClient();
+		public ICharacterClient client;
 		private const string PUBSUBNAME = "CharacterClientWrapper";
 
 		public bool IsInitialized { get { return client.IsConnected; } }
@@ -23,6 +23,7 @@ namespace Assets.Scripts.ClientWrappers
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			pubsub.Subscribe<CharacterInformation>(OnNewCharacterInformation, PUBSUBNAME);
+			client = DI.Instance.Resolve<ICharacterClient>();
 		}
 
 		private void OnNewCharacterInformation(CharacterInformation charInfo)

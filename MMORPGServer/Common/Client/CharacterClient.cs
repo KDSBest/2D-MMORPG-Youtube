@@ -1,4 +1,5 @@
-﻿using Common.Client.Workflow;
+﻿using Common.Client.Interfaces;
+using Common.Client.Workflow;
 using Common.Protocol.Character;
 using Common.Protocol.Chat;
 using Common.Workflow;
@@ -9,7 +10,7 @@ using System.Collections.Generic;
 namespace Common.Client
 {
 
-	public class CharacterClient : BaseClient<CharacterWorkflow>
+	public class CharacterClient : BaseClient<CharacterWorkflow>, ICharacterClient
 	{
 		public override bool IsConnected
 		{

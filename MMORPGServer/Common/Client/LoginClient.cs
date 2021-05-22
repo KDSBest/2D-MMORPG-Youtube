@@ -1,4 +1,5 @@
-﻿using Common.Client.Workflow;
+﻿using Common.Client.Interfaces;
+using Common.Client.Workflow;
 using Common.Protocol.Login;
 using Common.PublishSubscribe;
 using Common.Workflow;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace Common.Client
 {
 
-	public class LoginClient : BaseClient<CryptoWorkflow<LoginWorkflow>>
+	public class LoginClient : BaseClient<CryptoWorkflow<LoginWorkflow>>, ILoginClient
 	{
 
 		public override bool IsConnected

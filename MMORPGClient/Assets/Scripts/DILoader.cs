@@ -1,4 +1,7 @@
-﻿using Assets.Scripts.Language;
+﻿using Assets.Scripts.ClientWrappers;
+using Assets.Scripts.Language;
+using Common.Client;
+using Common.Client.Interfaces;
 using Common.IoC;
 using Common.PublishSubscribe;
 using UnityEngine;
@@ -17,6 +20,10 @@ namespace Assets.Scripts
 			Debug.Log("Init DI");
 			DI.Instance.Register<ILanguage>(() => new LanguageEn(), RegistrationType.Singleton);
 			DI.Instance.Register<IPubSub>(() => new UnityPubSub(), RegistrationType.Singleton);
+			DI.Instance.Register<ILoginClient>(() => new LoginClient(), RegistrationType.Singleton);
+			DI.Instance.Register<ICharacterClient>(() => new CharacterClient(), RegistrationType.Singleton);
+			DI.Instance.Register<ILoginClientWrapper>(() => new LoginClientWrapper(), RegistrationType.Singleton);
+			DI.Instance.Register<ICharacterClientWrapper>(() => new CharacterClientWrapper(), RegistrationType.Singleton);
 
 			isInitialized = true;
 		}

@@ -1,4 +1,5 @@
-﻿using Common.Client.Workflow;
+﻿using Common.Client.Interfaces;
+using Common.Client.Workflow;
 using Common.Protocol.Chat;
 using Common.Workflow;
 using ReliableUdp;
@@ -7,7 +8,7 @@ using System;
 namespace Common.Client
 {
 
-	public class ChatClient : BaseClient<ChatWorkflow>
+	public class ChatClient : BaseClient<ChatWorkflow>, IChatClient
 	{
 		public override bool IsConnected
 		{

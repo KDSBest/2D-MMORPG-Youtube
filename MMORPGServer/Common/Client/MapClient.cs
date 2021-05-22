@@ -1,4 +1,5 @@
-﻿using Common.Client.Workflow;
+﻿using Common.Client.Interfaces;
+using Common.Client.Workflow;
 using Common.Protocol.Character;
 using Common.Protocol.Chat;
 using Common.Protocol.Map;
@@ -10,7 +11,7 @@ using System.Collections.Generic;
 namespace Common.Client
 {
 
-	public class MapClient : BaseClient<MapWorkflow>
+	public class MapClient : BaseClient<MapWorkflow>, IMapClient
 	{
 		public override bool IsConnected
 		{
@@ -22,7 +23,7 @@ namespace Common.Client
 
 		public MapWorkflow Workflow { get; set; }
 
-		public Action<PlayerStateMessage> OnNewPlayerStateMessage{ get; set; }
+		public Action<PlayerStateMessage> OnNewPlayerStateMessage { get; set; }
 
 		public override void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
 		{
