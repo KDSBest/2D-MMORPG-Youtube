@@ -62,10 +62,10 @@ namespace Assets.Scripts
 
             yield return new WaitForEndOfFrame();
 
-            UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToLogin);
+            UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToCharacter);
 
             var charClient = DI.Instance.Resolve<ICharacterClientWrapper>();
-            Task<bool> connectTask = charClient.ConnectAsync("localhost", 30001, token);
+            Task<bool> connectTask = charClient.ConnectAsync("localhost", 20001, token);
 
             while (!connectTask.Wait(waitMS))
             {

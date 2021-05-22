@@ -633,7 +633,7 @@ GameObject:
   - component: {fileID: 266546301}
   - component: {fileID: 266546302}
   m_Layer: 5
-  m_Name: StartCanvas
+  m_Name: UICanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3582,8 +3582,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -475.5}
-  m_SizeDelta: {x: 800, y: 470}
+  m_AnchoredPosition: {x: 13.3302, y: -475.5}
+  m_SizeDelta: {x: 826.6604, y: 470}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1290484039
 MonoBehaviour:
@@ -4977,7 +4977,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -10}
+  m_AnchoredPosition: {x: 0, y: -10.000122}
   m_SizeDelta: {x: -20, y: -160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1598218312
@@ -6913,6 +6913,22 @@ PrefabInstance:
     - target: {fileID: 2455385777282593066, guid: 508a112c70424ef47a95e08204153275, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8047972640335201320, guid: 508a112c70424ef47a95e08204153275, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8047972640335201320, guid: 508a112c70424ef47a95e08204153275, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 8047972640335201320, guid: 508a112c70424ef47a95e08204153275, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
+      objectReference: {fileID: 0}
+    - target: {fileID: 8142522516998617417, guid: 508a112c70424ef47a95e08204153275, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 435.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 508a112c70424ef47a95e08204153275, type: 3}
