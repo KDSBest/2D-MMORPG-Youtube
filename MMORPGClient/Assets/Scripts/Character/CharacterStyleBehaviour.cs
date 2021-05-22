@@ -13,12 +13,12 @@ public class CharacterStyleBehaviour : MonoBehaviour
 
     public void SetStyle(CharacterInformation charStyle)
 	{
-		if (charStyle.Color >= Colors.Count)
+		if (charStyle.Color >= Colors.Count || charStyle.Color < 0)
 		{
 			charStyle.Color = 0;
 		}
 
-		if(charStyle.Eyes >= Eyes.Count)
+		if(charStyle.Eyes >= Eyes.Count || charStyle.Eyes < 0)
 		{
 			charStyle.Eyes = 0;
 		}
