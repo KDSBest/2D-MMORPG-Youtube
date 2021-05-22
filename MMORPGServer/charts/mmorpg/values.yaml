@@ -1,0 +1,7 @@
+imagePullSecrets: []
+
+characterPort: 30001
+worldChatPort: 30002
+mapTownPort: 31000
+mapFieldPort: 31001
+loginPort: 30000

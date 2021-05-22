@@ -4,6 +4,7 @@ metadata:
   name: redis
   labels:
     app: redis
+    {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
   replicas: 1
   revisionHistoryLimit: 2
@@ -15,6 +16,10 @@ spec:
       labels:
         app: redis
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
       containers:
       - name: master
         image: redis
@@ -29,10 +34,6 @@ spec:
           value: "yes"
         - name: REDIS_DISABLE_COMMANDS
           value: 
-        resources:
-          requests:
-            cpu: 50m
-            memory: 25Mi
 ---
 apiVersion: v1
 kind: Service
@@ -41,11 +42,9 @@ metadata:
   labels:
     app: redis
 spec:
-  type: NodePort
   selector:
     app: redis
   ports:
   - name: redis
     port: 6379
     targetPort: 6379
-    nodePort: 32767   

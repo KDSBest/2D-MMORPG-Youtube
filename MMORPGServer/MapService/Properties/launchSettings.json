@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MapService": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -15,16 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConsoleClients", "ConsoleCl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatClient", "ConsoleClients\ChatClient\ChatClient.csproj", "{A50CEF26-0DC9-4773-84A2-FF5643B336FA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "charts", "charts", "{A4CE3468-7AC1-4131-988B-521742526064}"
-	ProjectSection(SolutionItems) = preProject
-		charts\character.yaml = charts\character.yaml
-		charts\external-redis.yaml = charts\external-redis.yaml
-		charts\login.yaml = charts\login.yaml
-		mapField.yaml = mapField.yaml
-		mapTown.yaml = mapTown.yaml
-		charts\worldchat.yaml = charts\worldchat.yaml
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{DEB55D2E-C53A-4AEE-BD66-4856EB9E8F20}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{4C94DF36-3E7A-4062-9B05-B67B5A75C2CD}"
@@ -35,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReliableUdp", "UnityAzureNe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharacterService", "CharacterService\CharacterService.csproj", "{702EBDBE-6EEF-4E88-AA51-890CB8331ADB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapService", "MapService\MapService.csproj", "{045A4424-7989-4F8D-9D25-BC35FF7F6C80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapService", "MapService\MapService.csproj", "{045A4424-7989-4F8D-9D25-BC35FF7F6C80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

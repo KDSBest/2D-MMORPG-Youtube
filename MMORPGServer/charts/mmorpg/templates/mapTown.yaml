@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maptown
+  labels:
+    app: maptown
+    {{ include "mmorpg.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: maptown
+  template:
+    metadata:
+      labels:
+        app: maptown
+        {{ include "mmorpg.labels" . | nindent 8 }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: mapservice
+        imagePullPolicy: IfNotPresent
+        image: mapservice:latest
+        ports:
+        - name: maptown
+          containerPort: 3333
+        env:
+        - name: MAPNAME
+          value: Town

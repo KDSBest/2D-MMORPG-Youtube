@@ -66,7 +66,7 @@ namespace Assets.Scripts
 
             UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToLogin);
 
-            Task<bool> connectTask = charClient.ConnectAsync("localhost", 3335, token);
+            Task<bool> connectTask = charClient.ConnectAsync("localhost", 30001, token);
 
             while (!connectTask.Wait(waitMS))
             {
@@ -100,7 +100,7 @@ namespace Assets.Scripts
 
 			UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToLogin);
 
-            Task<bool> connectTask = login.ConnectAsync("localhost", 3334);
+            Task<bool> connectTask = login.ConnectAsync("localhost", 30000);
 
             while(!connectTask.Wait(waitMS))
 			{

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: maptown-svc
+  labels:
+    app: maptown
+    {{ include "mmorpg.labels" . | nindent 4 }}
+spec:
+  type: NodePort
+  selector:
+    app: maptown
+    {{ include "mmorpg.selectorLabels" . | nindent 4 }}
+# issue with docker for windows https://github.com/docker/for-win/issues/9028
+# in azure we need this
+#  sessionAffinity: ClientIP
+  ports:
+  - name: maptown
+    protocol: UDP
+    port: {{ .Values.mapTownPort }}
+    targetPort: 3333
+    nodePort: {{ .Values.mapTownPort }}
