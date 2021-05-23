@@ -28,3 +28,14 @@ spec:
         ports:
         - name: character
           containerPort: 3335
+        env:
+        - name: CosmosUrl
+          valueFrom:
+            secretKeyRef:
+              name: CosmosSecret
+              key: CosmosUrl
+        - name: CosmosKey
+          valueFrom:
+            secretKeyRef:
+              name: CosmosSecret
+              key: CosmosKey

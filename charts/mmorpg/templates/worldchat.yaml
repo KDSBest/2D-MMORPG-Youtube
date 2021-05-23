@@ -28,3 +28,14 @@ spec:
         ports:
         - name: worldchat
           containerPort: 3333
+        env:
+        - name: CosmosUrl
+          valueFrom:
+            secretKeyRef:
+              name: CosmosSecret
+              key: CosmosUrl
+        - name: CosmosKey
+          valueFrom:
+            secretKeyRef:
+              name: CosmosSecret
+              key: CosmosKey

@@ -31,3 +31,14 @@ spec:
         env:
         - name: MAPNAME
           value: Field
+        env:
+        - name: CosmosUrl
+          valueFrom:
+            secretKeyRef:
+              name: CosmosSecret
+              key: CosmosUrl
+        - name: CosmosKey
+          valueFrom:
+            secretKeyRef:
+              name: CosmosSecret
+              key: CosmosKey
