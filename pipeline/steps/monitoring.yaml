@@ -16,12 +16,13 @@ parameters:
   default: redis://redis-svc.mmorpg.svc.cluster.local:6379
 
 steps:
-- task: AzurePowerShell@5
+- task: AzureCLI@2
   displayName: Install Grafana + Redis Exporter
   inputs:
     azureSubscription: ${{ parameters.Subscription }}
-    ScriptType: 'InlineScript'
-    Inline: |
+    scriptType: 'pscore'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
       Write-Host "Get KubeConfig"
       az aks get-credentials --name ${{ parameters.ClusterName }} --resource-group ${{ parameters.RGName }}
 
@@ -36,4 +37,3 @@ steps:
 
       Write-Host "Install Prometheus Target"
       kubectl apply -f $(System.DefaultWorkingDirectory)/Monitoring/RedisExporter.yaml --namespace prometheus
-    azurePowerShellVersion: 'LatestVersion'
