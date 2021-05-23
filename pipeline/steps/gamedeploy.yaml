@@ -85,5 +85,5 @@ steps:
       $file = (Get-ChildItem -File -Filter *.tgz)[0].FullName
       
       Write-Host "Try deploy $file"
-      helm install mmorpg $file --namespace ${{ parameters.Namespace }}
+      helm upgrade -i mmorpg $file --namespace ${{ parameters.Namespace }}
 
