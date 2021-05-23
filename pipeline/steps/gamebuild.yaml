@@ -19,6 +19,7 @@ steps:
   inputs:
     command: buildAndPush
     dockerfile: $(System.DefaultWorkingDirectory)/MMORPGServer/LoginService/Dockerfile
+    buildContext: $(System.DefaultWorkingDirectory)/MMORPGServer/LoginService/
     containerRegistry: ${{ parameters.ACR }}
     tags: |
       latest
