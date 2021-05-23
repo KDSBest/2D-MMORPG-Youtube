@@ -57,6 +57,7 @@ steps:
     azureSubscription: ${{ parameters.Subscription }}
     scriptType: 'pscore'
     scriptLocation: 'inlineScript'
+    powerShellIgnoreLASTEXITCODE: true
     inlineScript: |
       Write-Host "Get KubeConfig"
       az aks get-credentials --name ${{ parameters.ClusterName }} --resource-group ${{ parameters.RGName }}
