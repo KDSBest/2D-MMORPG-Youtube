@@ -1,0 +1,19 @@
+parameters:
+- name: ACR
+  type: string
+  default: KDSMMORPGACR
+
+- name: repository
+  type: string
+  default: $(GameName)
+
+steps:
+- task: Docker@2
+  displayName: LoginService Docker
+  inputs:
+    command: buildAndPush
+    repository: ${{ parameters.repository }}
+    dockerfile: $(System.DefaultWorkingDirectory)/MMORPGServer/LoginService/
+    containerRegistry: ${{ parameters.ACR }}
+    tags: |
+      LoginService:latest
