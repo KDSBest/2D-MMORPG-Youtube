@@ -17,7 +17,7 @@ steps:
     dockerfile: $(System.DefaultWorkingDirectory)/MMORPGServer/LoginService/Dockerfile
     buildContext: $(System.DefaultWorkingDirectory)/MMORPGServer/
     containerRegistry: ${{ parameters.ACR }}
-    repository: LoginService
+    repository: loginservice
     tags: |
       latest
       $(Build.BuildNumber)
@@ -29,7 +29,7 @@ steps:
     dockerfile: $(System.DefaultWorkingDirectory)/MMORPGServer/CharacterService/Dockerfile
     buildContext: $(System.DefaultWorkingDirectory)/MMORPGServer/
     containerRegistry: ${{ parameters.ACR }}
-    repository: CharacterService
+    repository: characterservice
     tags: |
       latest
       $(Build.BuildNumber)
@@ -41,7 +41,7 @@ steps:
     dockerfile: $(System.DefaultWorkingDirectory)/MMORPGServer/WorldChatService/Dockerfile
     buildContext: $(System.DefaultWorkingDirectory)/MMORPGServer/
     containerRegistry: ${{ parameters.ACR }}
-    repository: WorldChatService
+    repository: worldchatservice
     tags: |
       latest
       $(Build.BuildNumber)
@@ -53,7 +53,7 @@ steps:
     dockerfile: $(System.DefaultWorkingDirectory)/MMORPGServer/MapService/Dockerfile
     buildContext: $(System.DefaultWorkingDirectory)/MMORPGServer/
     containerRegistry: ${{ parameters.ACR }}
-    repository: MapService
+    repository: mapservice
     tags: |
       latest
       $(Build.BuildNumber)
