@@ -37,6 +37,7 @@ parameters:
 
 steps:
 - task: replacetokens@3
+  displayName: Replace Tokens in Helm Yaml
   inputs:
     rootDirectory: ${{ parameters.WorkingDir }}
     targetFiles: '**/*.yaml'
@@ -57,7 +58,14 @@ steps:
     scriptType: 'pscore'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      kubectl create secret docker-registry acr-secret --namespace ${{ parameters.Namespace }} --docker-server=${{ parameters.GameName }}acr.azurecr.io --docker-username=${{ parameters.ServicePrincipalId }} --docker-password=${{ parameters.ServicePrincipalPassword }}
+      Write-Host "Get KubeConfig"
+      az aks get-credentials --name ${{ parameters.ClusterName }} --resource-group ${{ parameters.RGName }}
+
+      Write-Host "Create Pull Secret"
+      try {
+        kubectl create secret docker-registry acr-secret --namespace ${{ parameters.Namespace }} --docker-server=${{ parameters.GameName }}acr.azurecr.io --docker-username=${{ parameters.ServicePrincipalId }} --docker-password=${{ parameters.ServicePrincipalPassword }}
+      } catch {
+      }
 
 - task: AzureCLI@2
   displayName: Deploy Game Helm
