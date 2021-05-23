@@ -72,3 +72,11 @@ resource "azurerm_cosmosdb_account" "db" {
     failover_priority = 0
   }
 }
+
+resource "azurerm_container_registry" "acr" {
+  name                     = "${var.cluster_name}acr"
+  resource_group_name      = azurerm_resource_group.k8s.name
+  location                 = azurerm_resource_group.k8s.location
+  sku                      = "Standard"
+  admin_enabled            = false
+}
