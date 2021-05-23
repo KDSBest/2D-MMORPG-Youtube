@@ -18,7 +18,7 @@ steps:
   displayName: LoginService Docker
   inputs:
     command: buildAndPush
-    dockerfile: $(System.DefaultWorkingDirectory)/MMORPGServer/LoginService/
+    dockerfile: $(System.DefaultWorkingDirectory)/MMORPGServer/LoginService/Dockerfile
     containerRegistry: ${{ parameters.ACR }}
     tags: |
       latest
