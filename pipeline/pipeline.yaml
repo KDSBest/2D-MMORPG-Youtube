@@ -24,24 +24,81 @@ stages:
       parameters:
         ExecuteTerraform: ${{ parameters.ExecuteTerraform }}
 
-- stage: GameBuild
-  displayName: GameBuild
+- stage: LoginService
+  displayName: LoginService
   dependsOn:
   - Infrastructure
   jobs:
-  - job: GameBuild
-    displayName: GameBuild
+  - job: LoginService
+    displayName: LoginService
     pool: 
       vmImage: ubuntu-latest
     workspace:
         clean: all
     steps:
-    - template: steps/gamebuild.yaml
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: LoginService
+        RepositoryName: loginservice
+        
+- stage: WorldChatService
+  displayName: WorldChatService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: WorldChatService
+    displayName: WorldChatService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: WorldChatService
+        RepositoryName: worldchatservice
+        
+- stage: CharacterService
+  displayName: CharacterService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: CharacterService
+    displayName: CharacterService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: CharacterService
+        RepositoryName: characterservice
+
+- stage: MapService
+  displayName: MapService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: MapService
+    displayName: MapService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: MapService
+        RepositoryName: mapservice
 
 - stage: GameDeploy
   displayName: GameDeploy
   dependsOn:
-  - GameBuild
+  - LoginService
+  - CharacterService
+  - WorldChatService
+  - MapService
   jobs:
   - job: GameDeploy
     displayName: GameDeploy

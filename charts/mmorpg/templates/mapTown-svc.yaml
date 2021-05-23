@@ -2,11 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: maptown-svc
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: {{ .Values.mapTownDNS }}
   labels:
     app: maptown
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
-  type: NodePort
+  type: {{ .Values.serviceType }}
   selector:
     app: maptown
     {{ include "mmorpg.selectorLabels" . | nindent 4 }}
@@ -16,4 +18,6 @@ spec:
     protocol: UDP
     port: {{ .Values.mapTownPort }}
     targetPort: 3333
+    {{- if eq .Values.serviceType "NodePort" }}
     nodePort: {{ .Values.mapTownPort }}
+    {{- end }}

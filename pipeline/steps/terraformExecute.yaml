@@ -43,6 +43,14 @@ parameters:
   type: string
   default: $(SSHPubKey)
 
+- name: GameName
+  type: string
+  default: $(GameName)
+
+- name: ServicePrincipalACRId
+  type: string
+  default: $(ServicePrincipalACRId)
+
 steps:
 - task: replacetokens@3
   displayName: Replace Tokens in Terrform Files

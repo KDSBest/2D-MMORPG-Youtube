@@ -23,10 +23,6 @@ parameters:
   type: string
   default: mmorpg
 
-- name: GameName
-  type: string
-  default: $(GameName)
-
 - name: ServicePrincipalId
   type: string
   default: $(ServicePrincipalACRId)
@@ -35,7 +31,25 @@ parameters:
   type: string
   default: $(ServicePrincipalACRSecret)
 
+- name: Location
+  type: string
+  default: westeurope
+
 steps:
+- task: AzureCLI@2
+  displayName: Get Cosmos Values
+  inputs:
+    azureSubscription: ${{ parameters.Subscription }}
+    scriptType: 'pscore'
+    scriptLocation: 'inlineScript'
+    powerShellIgnoreLASTEXITCODE: true
+    inlineScript: |
+      $keys = az cosmosdb keys list --resource-group ${{ parameters.ClusterName }}-rg --name ${{ parameters.ClusterName }}cosmos | ConvertFrom-Json
+      $cosmosKey = $keys.primaryMasterKey
+      $cosmosUrl = "https://${{ parameters.ClusterName }}cosmos.documents.azure.com:443/"
+      Write-Host "##vso[task.setvariable variable=CosmosKey;]$cosmosKey"
+      Write-Host "##vso[task.setvariable variable=CosmosUrl;]$cosmosUrl"
+
 - task: replacetokens@3
   displayName: Replace Tokens in Helm Yaml
   inputs:
@@ -70,7 +84,7 @@ steps:
 
       Write-Host "Create Pull Secret"
       try {
-        kubectl create secret docker-registry acr-secret --namespace ${{ parameters.Namespace }} --docker-server=${{ parameters.GameName }}acr.azurecr.io --docker-username=${{ parameters.ServicePrincipalId }} --docker-password=${{ parameters.ServicePrincipalPassword }}
+        kubectl create secret docker-registry acr-secret --namespace ${{ parameters.Namespace }} --docker-server=${{ parameters.ClusterName }}acr.azurecr.io --docker-username=${{ parameters.ServicePrincipalId }} --docker-password=${{ parameters.ServicePrincipalPassword }}
       } catch {
       }
 

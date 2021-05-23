@@ -65,7 +65,7 @@ namespace Assets.Scripts
             UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToCharacter);
 
             var charClient = DI.Instance.Resolve<ICharacterClientWrapper>();
-            Task<bool> connectTask = charClient.ConnectAsync("localhost", 20001, token);
+            Task<bool> connectTask = charClient.ConnectAsync("localhost", 30001, token);
 
             while (!connectTask.Wait(waitMS))
             {

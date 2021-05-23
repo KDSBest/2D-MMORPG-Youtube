@@ -14,3 +14,10 @@ loginServiceImage: "@@{GameName}@@acr.azurecr.io/loginservice:latest"
 characterServiceImage: "@@{GameName}@@acr.azurecr.io/characterservice:latest"
 worldChatServiceImage: "@@{GameName}@@acr.azurecr.io/worldchatservice:latest"
 mapServiceImage: "@@{GameName}@@acr.azurecr.io/mapservice:latest"
+
+serviceType: LoadBalancer
+characterDNS: "@@{GameName}@@char"
+loginDNS: "@@{GameName}@@login"
+mapFieldDNS: "@@{GameName}@@mapfield"
+mapTownDNS: "@@{GameName}@@maptown"
+worldChatDNS: "@@{GameName}@@worldchat"
