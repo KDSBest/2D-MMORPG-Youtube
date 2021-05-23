@@ -65,7 +65,7 @@ namespace Assets.Scripts
             UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToCharacter);
 
             var charClient = DI.Instance.Resolve<ICharacterClientWrapper>();
-            Task<bool> connectTask = charClient.ConnectAsync("localhost", 30001, token);
+            Task<bool> connectTask = charClient.ConnectAsync("kdsmmorpgchar.westeurope.cloudapp.azure.com", 30001, token);
 
             while (!connectTask.Wait(waitMS))
             {
@@ -100,7 +100,7 @@ namespace Assets.Scripts
 
 			UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToLogin);
 
-            Task<bool> connectTask = loginClient.ConnectAsync("localhost", 30000);
+            Task<bool> connectTask = loginClient.ConnectAsync("kdsmmorpgaccount.westeurope.cloudapp.azure.com", 30000);
 
             while(!connectTask.Wait(waitMS))
 			{
