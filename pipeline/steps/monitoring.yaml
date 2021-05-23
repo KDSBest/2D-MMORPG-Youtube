@@ -30,10 +30,10 @@ steps:
       helm repo add stable https://charts.helm.sh/stable
 
       Write-Host "Install Prometheus"
-      helm install prometheus stable/prometheus-operator --namespace prometheus --create-namespace
+      helm upgrade -i prometheus stable/prometheus-operator --namespace prometheus --create-namespace
 
       Write-Host "Install Redis Exporter"
-      helm install redis-exporeter --namespace prometheus --set "redisAddress=${{ parameters.RedisUrl }}" stable/prometheus-redis-exporter
+      helm upgrade -i redis-exporeter --namespace prometheus --set "redisAddress=${{ parameters.RedisUrl }}" stable/prometheus-redis-exporter
 
       Write-Host "Install Prometheus Target"
       kubectl apply -f $(System.DefaultWorkingDirectory)/Monitoring/RedisExporter.yaml --namespace prometheus
