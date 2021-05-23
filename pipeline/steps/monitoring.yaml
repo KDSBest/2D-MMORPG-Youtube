@@ -1,0 +1,39 @@
+parameters:
+- name: Subscription
+  type: string
+  default: $(Subscription)
+
+- name: ClusterName
+  type: string
+  default: $(GameName)
+
+- name: RGName
+  type: string
+  default: $(GameName)-rg
+
+- name: RedisUrl
+  type: string
+  default: redis://redis-svc.mmorpg.svc.cluster.local:6379
+
+steps:
+- task: AzurePowerShell@5
+  displayName: Install Grafana + Redis Exporter
+  inputs:
+    azureSubscription: ${{ parameters.Subscription }}
+    ScriptType: 'InlineScript'
+    Inline: |
+      Write-Host "Get KubeConfig"
+      az aks get-credentials --name ${{ parameters.ClusterName }} --resource-group ${{ parameters.RGName }}
+
+      Write-Host "Add Helm Repo"
+      helm repo add stable https://charts.helm.sh/stable
+
+      Write-Host "Install Prometheus"
+      helm install prometheus stable/prometheus-operator --namespace prometheus --create-namespace
+
+      Write-Host "Install Redis Exporter"
+      helm install redis-exporeter --namespace prometheus --set "redisAddress=${{ parameters.RedisUrl }}" stable/prometheus-redis-exporter
+
+      Write-Host "Install Prometheus Target"
+      kubectl apply -f $(System.DefaultWorkingDirectory)/Monitoring/RedisExporter.yaml --namespace prometheus
+    azurePowerShellVersion: 'LatestVersion'

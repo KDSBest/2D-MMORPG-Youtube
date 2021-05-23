@@ -23,3 +23,17 @@ stages:
     - template: steps/terraformExecute.yaml
       parameters:
         ExecuteTerraform: ${{ parameters.ExecuteTerraform }}
+
+- stage: Monitoring
+  displayName: Monitoring
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: Monitoring
+    displayName: Monitoring
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/monitoring.yaml
