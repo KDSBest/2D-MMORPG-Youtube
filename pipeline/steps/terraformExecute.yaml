@@ -45,6 +45,7 @@ parameters:
 
 steps:
 - task: replacetokens@3
+  displayName: Replace Tokens in Terrform Files
   inputs:
     rootDirectory: ${{ parameters.WorkingDir }}
     targetFiles: '**/*.tf'

@@ -23,8 +23,8 @@ spec:
       {{- end }}
       containers:
       - name: worldchatservice
-        imagePullPolicy: IfNotPresent
-        image: worldchatservice:latest
+        imagePullPolicy: Always
+        image: {{ .Values.worldChatServiceImage }}
         ports:
         - name: worldchat
           containerPort: 3333

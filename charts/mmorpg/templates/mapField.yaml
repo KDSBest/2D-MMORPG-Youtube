@@ -23,15 +23,14 @@ spec:
       {{- end }}
       containers:
       - name: mapservice
-        imagePullPolicy: IfNotPresent
-        image: mapservice:latest
+        imagePullPolicy: Always
+        image: {{ .Values.mapServiceImage }}
         ports:
         - name: mapfield
           containerPort: 3333
         env:
         - name: MAPNAME
           value: Field
-        env:
         - name: CosmosUrl
           valueFrom:
             secretKeyRef:

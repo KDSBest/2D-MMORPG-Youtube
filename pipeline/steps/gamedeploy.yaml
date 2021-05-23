@@ -1,0 +1,81 @@
+parameters:
+- name: Subscription
+  type: string
+  default: $(Subscription)
+
+- name: ClusterName
+  type: string
+  default: $(GameName)
+
+- name: RGName
+  type: string
+  default: $(GameName)-rg
+
+- name: RedisUrl
+  type: string
+  default: redis://redis-svc.mmorpg.svc.cluster.local:6379
+
+- name: WorkingDir
+  type: string
+  default: $(System.DefaultWorkingDirectory)/charts/mmorpg
+
+- name: Namespace
+  type: string
+  default: mmorpg
+
+- name: GameName
+  type: string
+  default: $(GameName)
+
+- name: ServicePrincipalId
+  type: string
+  default: $(ServicePrincipalACRId)
+
+- name: ServicePrincipalPassword
+  type: string
+  default: $(ServicePrincipalACRSecret)
+
+steps:
+- task: replacetokens@3
+  inputs:
+    rootDirectory: ${{ parameters.WorkingDir }}
+    targetFiles: '**/*.yaml'
+    encoding: 'auto'
+    writeBOM: true
+    actionOnMissing: 'warn'
+    keepToken: false
+    tokenPrefix: '@@{'
+    tokenSuffix: '}@@'
+    useLegacyPattern: false
+    enableTransforms: false
+    enableTelemetry: true
+
+- task: AzureCLI@2
+  displayName: Create ACR Pull Secret
+  inputs:
+    azureSubscription: ${{ parameters.Subscription }}
+    scriptType: 'pscore'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      kubectl create secret docker-registry acr-secret --namespace ${{ parameters.Namespace }} --docker-server=${{ parameters.GameName }}acr.azurecr.io --docker-username=${{ parameters.ServicePrincipalId }} --docker-password=${{ parameters.ServicePrincipalPassword }}
+
+- task: AzureCLI@2
+  displayName: Deploy Game Helm
+  inputs:
+    azureSubscription: ${{ parameters.Subscription }}
+    scriptType: 'pscore'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      Write-Host "Get KubeConfig"
+      az aks get-credentials --name ${{ parameters.ClusterName }} --resource-group ${{ parameters.RGName }}
+
+      Write-Host "Add Helm Repo"
+      cd ${{ parameters.WorkingDir }}
+
+      Write-Host "Helm Package"
+      helm package ./
+      $file = (Get-ChildItem -File -Filter *.tgz)[0].FullName
+      
+      Write-Host "Try deploy $file"
+      helm install mmorpg $file --namespace ${{ parameters.Namespace }}
+

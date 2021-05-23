@@ -23,8 +23,8 @@ spec:
       {{- end }}
       containers:
       - name: characterservice
-        imagePullPolicy: IfNotPresent
-        image: characterservice:latest
+        imagePullPolicy: Always
+        image: {{ .Values.characterServiceImage }}
         ports:
         - name: character
           containerPort: 3335

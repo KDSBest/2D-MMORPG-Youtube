@@ -38,6 +38,20 @@ stages:
     steps:
     - template: steps/gamebuild.yaml
 
+- stage: GameDeploy
+  displayName: GameDeploy
+  dependsOn:
+  - GameBuild
+  jobs:
+  - job: GameDeploy
+    displayName: GameDeploy
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/gamedeploy.yaml
+
 - stage: Monitoring
   displayName: Monitoring
   dependsOn:

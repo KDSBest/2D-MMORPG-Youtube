@@ -23,8 +23,8 @@ spec:
       {{- end }}
       containers:
       - name: loginservice
-        imagePullPolicy: IfNotPresent
-        image: loginservice:latest
+        imagePullPolicy: Always
+        image: {{ .Values.loginServiceImage }}
         ports:
         - name: login
           containerPort: 3333

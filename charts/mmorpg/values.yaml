@@ -1,4 +1,5 @@
-imagePullSecrets: []
+imagePullSecrets:
+  - name: acr-secret
 
 characterPort: 30001
 worldChatPort: 30002
@@ -8,3 +9,8 @@ loginPort: 30000
 
 cosmosUrl: "@@{CosmosUrl}@@"
 cosmosKey: "@@{CosmosKey}@@"
+
+loginServiceImage: "@@{GameName}@@acr.azurecr.io/LoginService:latest"
+characterServiceImage: "@@{GameName}@@acr.azurecr.io/CharacterService:latest"
+worldChatServiceImage: "@@{GameName}@@acr.azurecr.io/WorldChatService:latest"
+mapServiceImage: "@@{GameName}@@acr.azurecr.io/MapService:latest"
