@@ -17,7 +17,7 @@ mapServiceImage: "@@{GameName}@@acr.azurecr.io/mapservice:latest"
 
 serviceType: LoadBalancer
 characterDNS: "@@{GameName}@@char"
-loginDNS: "@@{GameName}@@login"
+loginDNS: "@@{GameName}@@account"
 mapFieldDNS: "@@{GameName}@@mapfield"
 mapTownDNS: "@@{GameName}@@maptown"
 worldChatDNS: "@@{GameName}@@worldchat"
