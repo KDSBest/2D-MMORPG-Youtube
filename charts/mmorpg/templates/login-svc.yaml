@@ -9,9 +9,7 @@ spec:
   selector:
     app: login
     {{ include "mmorpg.selectorLabels" . | nindent 4}}
-# issue with docker for windows https://github.com/docker/for-win/issues/9028
-# in azure we need this
-#  sessionAffinity: ClientIP
+  sessionAffinity: ClientIP
   ports:
   - name: login
     protocol: UDP
