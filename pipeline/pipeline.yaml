@@ -24,19 +24,19 @@ stages:
       parameters:
         ExecuteTerraform: ${{ parameters.ExecuteTerraform }}
 
-- stage: GameBuild
-  displayName: GameBuild
-  dependsOn:
-  - Infrastructure
-  jobs:
-  - job: GameBuild
-    displayName: GameBuild
-    pool: 
-      vmImage: ubuntu-latest
-    workspace:
-        clean: all
-    steps:
-    - template: steps/gamebuild.yaml
+# - stage: GameBuild
+#   displayName: GameBuild
+#   dependsOn:
+#   - Infrastructure
+#   jobs:
+#   - job: GameBuild
+#     displayName: GameBuild
+#     pool: 
+#       vmImage: ubuntu-latest
+#     workspace:
+#         clean: all
+#     steps:
+#     - template: steps/gamebuild.yaml
 
 - stage: Monitoring
   displayName: Monitoring
