@@ -1,0 +1,25 @@
+parameters:
+- name: ExecuteTerraform
+  type: boolean
+  default: true
+
+trigger: none
+
+variables:
+- group: kdsmmorpg
+
+stages:
+- stage: Infrastructure
+  displayName: Infrastructure
+  dependsOn: []
+  jobs:
+  - job: Infrastructure
+    displayName: Infrastructure
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/terraformExecute.yaml
+      parameters:
+        ExecuteTerraform: ${{ parameters.ExecuteTerraform }}

@@ -1,3 +1,6 @@
+# Build Status
+[![Build Status](https://dev.azure.com/ksetiono/MMORPG/_apis/build/status/KDSMMORPG?branchName=main)](https://dev.azure.com/ksetiono/MMORPG/_build/latest?definitionId=1&branchName=main)
+
 # Introduction
 
 A small 2D MMORPG, which is developed as a learning course on my Youtube Channel:

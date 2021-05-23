@@ -1,0 +1,99 @@
+parameters:
+- name: WorkingDir
+  type: string
+  default: $(System.DefaultWorkingDirectory)/terraform
+
+- name: Subscription
+  type: string
+  default: $(Subscription)
+
+- name: TerraformRG
+  type: string
+  default: $(TerraformRG)
+
+- name: TerraformStorageAccountName
+  type: string
+  default: $(TerraformStorageAccountName)
+
+- name: TerraformContainerName
+  type: string
+  default: $(TerraformContainerName)
+
+- name: TerraformStateFile
+  type: string
+  default: $(TerraformStateFile)
+
+- name: ServicePrincipalId
+  type: string
+  default: $(ServicePrincipalId)
+
+- name: ServicePrincipalSecret
+  type: string
+  default: $(ServicePrincipalSecret)
+
+- name: ResourceGroupLocation
+  type: string
+  default: West Europe
+
+- name: ExecuteTerraform
+  type: boolean
+  default: false
+
+- name: SSHPubKey
+  type: string
+  default: $(SSHPubKey)
+
+steps:
+- task: replacetokens@3
+  inputs:
+    rootDirectory: ${{ parameters.WorkingDir }}
+    targetFiles: '**/*.tf'
+    encoding: 'auto'
+    writeBOM: true
+    actionOnMissing: 'warn'
+    keepToken: false
+    tokenPrefix: '@@{'
+    tokenSuffix: '}@@'
+    useLegacyPattern: false
+    enableTransforms: false
+    enableTelemetry: true
+
+- task: TerraformInstaller@0
+  displayName: Install Terraform
+  inputs:
+      terraformVersion: latest
+
+- task: TerraformCLI@0
+  displayName: Terraform Init
+  inputs:
+    command: init
+    workingDirectory: ${{ parameters.WorkingDir }}
+    backendType: azurerm
+    ensureBackend: true
+    backendServiceArm: ${{ parameters.Subscription }}
+    backendAzureRmResourceGroupName: ${{ parameters.TerraformRG }}
+    backendAzureRmStorageAccountName: ${{ parameters.TerraformStorageAccountName }}
+    backendAzureRmContainerName: ${{ parameters.TerraformContainerName }}
+    backendAzureRmKey: ${{ parameters.TerraformStateFile }}
+    backendAzureRmResourceGroupLocation: ${{ parameters.ResourceGroupLocation }}
+    allowTelemetryCollection: false
+
+- ${{ if eq(parameters.ExecuteTerraform, false) }}:
+  - task: TerraformCLI@0
+    displayName: Terraform Plan
+    inputs:
+      command: 'plan'
+      workingDirectory: ${{ parameters.WorkingDir }}
+      environmentServiceName: ${{ parameters.Subscription }}
+      commandOptions: '-var="ssh_public_key=${{ parameters.SSHPubKey }}" -var="client_id=${{ parameters.ServicePrincipalId }}" -var="client_secret=${{ parameters.ServicePrincipalSecret }}"'
+      allowTelemetryCollection: false
+
+- ${{ if eq(parameters.ExecuteTerraform, true) }}:
+  - task: TerraformCLI@0
+    displayName: Terraform apply
+    inputs:
+      command: 'apply'
+      workingDirectory: ${{ parameters.WorkingDir }}
+      environmentServiceName: ${{ parameters.Subscription }}
+      commandOptions: '-var="ssh_public_key=${{ parameters.SSHPubKey }}" -var="client_id=${{ parameters.ServicePrincipalId }}" -var="client_secret=${{ parameters.ServicePrincipalSecret }}"'
+      allowTelemetryCollection: false
