@@ -72,6 +72,7 @@ namespace Assets.Scripts.UI
 		public void OnDisable()
 		{
 			pubsub.Unsubscribe<ControlChatScreen>(this.name);
+			pubsub.Unsubscribe<ChatMessage>(this.name);
 		}
 
 		public void OnControlScreen(ControlChatScreen data)
