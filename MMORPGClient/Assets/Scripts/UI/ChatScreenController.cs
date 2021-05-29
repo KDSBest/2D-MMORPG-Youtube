@@ -39,8 +39,8 @@ namespace Assets.Scripts.UI
 			newMessageGo.GetComponent<TMP_Text>().text = $"{chatMessage.Sender}: {chatMessage.Message}";
 			newMessageGo.transform.SetParent(ChatMessageParent);
 
-			bool doAutoScroll = ScrollRect.normalizedPosition.y < 0.0001f;
-			if (doAutoScroll)
+			bool isScrolledToBottom = ScrollRect.normalizedPosition.y < 0.0001f;
+			if (isScrolledToBottom)
 			{
 				// First Unity Layout has to recalculate the new size then we can scroll
 				StartCoroutine(AutoScrollChat());
