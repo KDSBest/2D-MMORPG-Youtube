@@ -51,7 +51,6 @@ namespace Assets.Scripts.UI
         private void OnCharacterMessage(CharacterMessage charMessage)
         {
             Debug.Log($"Got Char Message with Name: {charMessage.Character.Name} and Token: {charMessage.Token}");
-            Context.Token = charMessage.Token;
             Eyes.value = charMessage.Character.Eyes;
             Colors.value = charMessage.Character.Color;
             Name.text = charMessage.Character.Name;

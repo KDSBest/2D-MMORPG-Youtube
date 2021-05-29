@@ -18,12 +18,18 @@ namespace Assets.Scripts
 				return;
 
 			Debug.Log("Init DI");
+
 			DI.Instance.Register<ILanguage>(() => new LanguageEn(), RegistrationType.Singleton);
 			DI.Instance.Register<IPubSub>(() => new UnityPubSub(), RegistrationType.Singleton);
+
 			DI.Instance.Register<ILoginClient>(() => new LoginClient(), RegistrationType.Singleton);
-			DI.Instance.Register<ICharacterClient>(() => new CharacterClient(), RegistrationType.Singleton);
 			DI.Instance.Register<ILoginClientWrapper>(() => new LoginClientWrapper(), RegistrationType.Singleton);
+
+			DI.Instance.Register<ICharacterClient>(() => new CharacterClient(), RegistrationType.Singleton);
 			DI.Instance.Register<ICharacterClientWrapper>(() => new CharacterClientWrapper(), RegistrationType.Singleton);
+
+			DI.Instance.Register<IChatClient>(() => new ChatClient(), RegistrationType.Singleton);
+			DI.Instance.Register<IChatClientWrapper>(() => new ChatClientWrapper(), RegistrationType.Singleton);
 
 			isInitialized = true;
 		}

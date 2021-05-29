@@ -14,6 +14,8 @@ namespace Assets.Scripts.Language
 		public string ConnectToCharacter { get; } = "Connect to Character Server.";
 		public string ConnectToChat { get; } = "Connect to Chat Server.";
 
+		public string ConnectToGame { get; } = "Connect to Game.";
+
 		public string ConnectionFailed { get; } = "Connection failed!";
 		public string EncryptionHandshake { get; } = "Make Connection to Backend Secure.";
 	}
