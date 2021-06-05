@@ -68,8 +68,7 @@ namespace Assets.Scripts
             UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToGame);
 
             var client = DI.Instance.Resolve<IMapClientWrapper>();
-            Task<bool> connectTask = client.ConnectAsync("localhost", 3336);
-            //            Task<bool> connectTask = client.ConnectAsync("kdsmmorpgmaptown.westeurope.cloudapp.azure.com", 31000, token);
+            Task<bool> connectTask = client.ConnectAsync("kdsmmorpgmaptown.westeurope.cloudapp.azure.com", 31000);
 
             while (!connectTask.Wait(waitMS))
             {
