@@ -23,7 +23,7 @@ namespace Common.Client
 		{
 			get
 			{
-				return Peer.ConnectionState == ConnectionState.Connected && !disconnect;
+				return Peer != null && Peer.ConnectionState == ConnectionState.Connected && !disconnect;
 			}
 		}
 
