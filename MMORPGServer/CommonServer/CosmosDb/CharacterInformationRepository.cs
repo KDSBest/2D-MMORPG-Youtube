@@ -1,14 +1,12 @@
 ﻿using Common.Protocol.Character;
-using CommonServer.CosmosDb.Model;
 using Microsoft.Azure.Cosmos;
-using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace CommonServer.CosmosDb
 {
-    public class CharacterInformationRepository : CosmosDbRepository<CharacterInformation>
+	public class CharacterInformationRepository : CosmosDbRepository<CharacterInformation>
     {
         public CharacterInformationRepository() : base(CosmosClientSinglton.Instance.CharacterContainer)
         {

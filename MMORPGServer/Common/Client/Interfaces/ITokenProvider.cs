@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Common.Client.Interfaces
+﻿namespace Common.Client.Interfaces
 {
 	public interface ITokenProvider
 	{

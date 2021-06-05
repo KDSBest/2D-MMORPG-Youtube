@@ -13,7 +13,6 @@ using CommonServer.Redis;
 using MapService.WorldManagement;
 using Common.IoC;
 using Common.PublishSubscribe;
-using System.Collections.Generic;
 
 namespace MapService
 {

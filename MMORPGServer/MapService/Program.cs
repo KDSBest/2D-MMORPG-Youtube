@@ -2,10 +2,6 @@
 using CommonServer.Udp;
 using System;
 using System.Threading.Tasks;
-using Common.Extensions;
-using Common.Protocol.Chat;
-using CommonServer.Redis;
-using StackExchange.Redis;
 using CommonServer.Configuration;
 using MapService.WorldManagement;
 using Common.IoC;
@@ -13,7 +9,7 @@ using Common.PublishSubscribe;
 
 namespace MapService
 {
-	public class Program
+    public class Program
     {
 		public static async Task Main(string[] args)
         {

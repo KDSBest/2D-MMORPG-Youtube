@@ -1,10 +1,5 @@
-﻿using Common.Extensions;
-using Common.Protocol.Chat;
-using Common.Udp;
-using CommonServer.Redis;
+﻿using Common.Udp;
 using CommonServer.Workflow;
-using ReliableUdp.Enums;
-using CommonServer.Configuration;
 
 namespace CharacterService
 {
