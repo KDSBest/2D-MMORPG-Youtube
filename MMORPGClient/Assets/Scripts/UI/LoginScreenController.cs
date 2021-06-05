@@ -1,19 +1,15 @@
-using Assets.Scripts;
 using Assets.Scripts.PubSubEvents.LoginClient;
 using Assets.Scripts.PubSubEvents.StartUI;
 using Common.IoC;
 using Common.Protocol.Login;
 using Common.PublishSubscribe;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.UI
 {
 
-    public class LoginScreenController : MonoBehaviour
+	public class LoginScreenController : MonoBehaviour
     {
         private IPubSub pubsub;
         public GameObject LoginScreen;

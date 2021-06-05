@@ -3,12 +3,9 @@ using Common.IoC;
 using Common.Protocol.Character;
 using Common.Protocol.Map;
 using Common.PublishSubscribe;
-using ReliableUdp.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Character
@@ -18,6 +15,7 @@ namespace Assets.Scripts.Character
 		public GameObject RemotePlayerPrefab;
 		private IPubSub pubsub;
 		private Dictionary<string, RemotePlayer> remotePlayers;
+		private ICurrentContext context;
 
 		public void OnEnable()
 		{
@@ -25,6 +23,7 @@ namespace Assets.Scripts.Character
 
 			remotePlayers = new Dictionary<string, RemotePlayer>();
 		
+			context = DI.Instance.Resolve<ICurrentContext>();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 
 			pubsub.Subscribe<PlayerStateMessage>(OnPlayerState, this.name);
@@ -37,7 +36,13 @@ namespace Assets.Scripts.Character
 			if (!remotePlayers.ContainsKey(data.Character.Name))
 				return;
 
-			remotePlayers[data.Character.Name].ShowCharacter(data.Character);
+			var player = remotePlayers[data.Character.Name];
+			player.SetStyle(data.Character);
+
+			if(data.Character.Name != context.Name)
+			{
+				player.ShowCharacter();
+			}
 		}
 
 		private void OnPlayerState(PlayerStateMessage data)
@@ -46,12 +51,15 @@ namespace Assets.Scripts.Character
 			{
 				GameObject newPlayer = GameObject.Instantiate(RemotePlayerPrefab);
 				newPlayer.transform.SetParent(this.transform);
-				newPlayer.SetActive(false);
-				remotePlayers.Add(data.Name, new RemotePlayer()
+
+				var player = new RemotePlayer()
 				{
 					GameObject = newPlayer,
 					States = new SortedList<long, PlayerStateMessage>()
-				});
+				};
+				player.HideCharacter();
+
+				remotePlayers.Add(data.Name, player);
 
 				pubsub.Publish(new ReqCharacterStyle(data.Name));
 			}
@@ -59,6 +67,7 @@ namespace Assets.Scripts.Character
 			// TODO: Interpolation and Jitter Protection
 			if (!remotePlayers[data.Name].States.ContainsKey(data.ServerTime))
 				remotePlayers[data.Name].States.Add(data.ServerTime, data);
+
 			var lastState = remotePlayers[data.Name].States.Last().Value;
 			var rPlayerGo = remotePlayers[data.Name].GameObject;
 			rPlayerGo.transform.position = new Vector3(lastState.Position.X, lastState.Position.Y, 1);

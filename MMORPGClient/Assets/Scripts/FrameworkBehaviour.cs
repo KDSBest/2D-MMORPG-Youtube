@@ -7,7 +7,6 @@ using Common.IoC;
 using Common.Protocol.Character;
 using Common.Protocol.Login;
 using Common.PublishSubscribe;
-using System;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -49,7 +48,10 @@ namespace Assets.Scripts
         {
             if(!string.IsNullOrEmpty(data.Token))
 			{
-                DI.Instance.Resolve<ITokenProvider>().Token = data.Token;
+                var context = DI.Instance.Resolve<ICurrentContext>();
+                context.Token = data.Token;
+                context.Name = data.Character.Name;
+
                 pubsub.Publish(new ControlCharacterScreen()
                 {
                     Visible = false

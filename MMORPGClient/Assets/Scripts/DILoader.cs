@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.ClientWrappers;
+﻿using Assets.Scripts.Character;
+using Assets.Scripts.ClientWrappers;
 using Assets.Scripts.Language;
 using Common.Client;
 using Common.Client.Interfaces;
@@ -20,7 +21,8 @@ namespace Assets.Scripts
 			Debug.Log("Init DI");
 
 			DI.Instance.Register<ILanguage>(() => new LanguageEn(), RegistrationType.Singleton);
-			DI.Instance.Register<ITokenProvider>(() => new TokenProvider(), RegistrationType.Singleton);
+			DI.Instance.Register<ICurrentContext>(() => new CurrentContext(), RegistrationType.Singleton);
+			DI.Instance.Register<ITokenProvider>(() => DI.Instance.Resolve<ICurrentContext>(), RegistrationType.Singleton);
 			DI.Instance.Register<IPubSub>(() => new UnityPubSub(), RegistrationType.Singleton);
 
 			DI.Instance.Register<ILoginClient>(() => new LoginClient(), RegistrationType.Singleton);

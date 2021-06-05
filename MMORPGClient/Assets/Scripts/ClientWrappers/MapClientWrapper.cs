@@ -3,7 +3,6 @@ using Common.Client.Interfaces;
 using Common.IoC;
 using Common.PublishSubscribe;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace Assets.Scripts.ClientWrappers
 {

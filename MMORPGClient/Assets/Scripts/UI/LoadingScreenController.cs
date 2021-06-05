@@ -1,17 +1,13 @@
-using Assets.Scripts;
 using Assets.Scripts.PubSubEvents.StartUI;
 using Common.IoC;
 using Common.PublishSubscribe;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.UI
 {
-    public class LoadingScreenController : MonoBehaviour
+	public class LoadingScreenController : MonoBehaviour
     {
         private IPubSub pubsub;
         public GameObject LoadingScreen;

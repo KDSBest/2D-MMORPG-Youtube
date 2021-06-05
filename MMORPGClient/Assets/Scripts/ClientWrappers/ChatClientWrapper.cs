@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts.PubSubEvents.ChatClient;
-using Assets.Scripts.PubSubEvents.LoginClient;
 using Common.Client.Interfaces;
 using Common.IoC;
 using Common.PublishSubscribe;

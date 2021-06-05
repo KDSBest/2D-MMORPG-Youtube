@@ -1,16 +1,11 @@
-using Assets.Scripts;
 using Assets.Scripts.PubSubEvents.ChatClient;
 using Assets.Scripts.PubSubEvents.StartUI;
 using Common.IoC;
-using Common.Protocol.Character;
 using Common.Protocol.Chat;
 using Common.PublishSubscribe;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.UI
