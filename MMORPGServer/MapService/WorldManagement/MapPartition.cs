@@ -20,9 +20,9 @@ namespace MapService.WorldManagement
 
         public MapPartition(float x, float y)
         {
-            x = (int)(x / MapConfiguration.MapAreaSize) * (int)MapConfiguration.MapAreaSize;
-            y = (int)(y / MapConfiguration.MapAreaSize) * (int)MapConfiguration.MapAreaSize;
-
+            int xInt = (int)(x / MapConfiguration.MapAreaSize) * (int)MapConfiguration.MapAreaSize;
+            int yInt = (int)(y / MapConfiguration.MapAreaSize) * (int)MapConfiguration.MapAreaSize;
+            Vector = new Vector2Int(xInt, yInt);
         }
 
         public MapPartition(PlayerStateMessage msg) : this(msg.Position)

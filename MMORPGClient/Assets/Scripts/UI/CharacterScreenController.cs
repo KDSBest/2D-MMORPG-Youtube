@@ -20,7 +20,8 @@ namespace Assets.Scripts.UI
         public TMP_InputField Name;
         public Slider Eyes;
         public Slider Colors;
-        public CharacterStyleBehaviour Character;
+        public CharacterStyleBehaviour PlayerStylePicker;
+        public CharacterStyleBehaviour Player;
         public GameObject Background;
 
         public void OnEnable()
@@ -40,16 +41,19 @@ namespace Assets.Scripts.UI
 
         public void OnControlScreen(ControlCharacterScreen data)
         {
-            Eyes.maxValue = Character.Eyes.Count - 1;
-            Colors.maxValue = Character.Colors.Count - 1;
+            Eyes.maxValue = PlayerStylePicker.Eyes.Count - 1;
+            Colors.maxValue = PlayerStylePicker.Colors.Count - 1;
 
             Background.SetActive(!data.Visible);
-            Character.gameObject.SetActive(data.Visible);
+            PlayerStylePicker.gameObject.SetActive(data.Visible);
             CharacterScreen.SetActive(data.Visible);
         }
 
         private void OnCharacterMessage(CharacterMessage charMessage)
         {
+            if (!CharacterScreen.activeSelf)
+                return;
+
             Debug.Log($"Got Char Message with Name: {charMessage.Character.Name} and Token: {charMessage.Token}");
             Eyes.value = charMessage.Character.Eyes;
             Colors.value = charMessage.Character.Color;
@@ -59,7 +63,13 @@ namespace Assets.Scripts.UI
 
         public void UpdateCharacter()
 		{
-            Character.SetStyle(new CharacterInformation()
+            Player.SetStyle(new CharacterInformation()
+            {
+                Eyes = (byte)Eyes.value,
+                Color = (byte)Colors.value,
+                Name = Name.text
+            });
+            PlayerStylePicker.SetStyle(new CharacterInformation()
             {
                 Eyes = (byte)Eyes.value,
                 Color = (byte)Colors.value,

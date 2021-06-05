@@ -32,9 +32,9 @@ namespace Assets.Scripts.ClientWrappers
 			});
 		}
 
-		public async Task<bool> ConnectAsync(string host, int port, string token)
+		public async Task<bool> ConnectAsync(string host, int port)
 		{
-			return await client.ConnectAsync(host, port, token);
+			return await client.ConnectAsync(host, port);
 		}
 	}
 }

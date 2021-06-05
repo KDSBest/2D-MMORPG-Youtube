@@ -12,7 +12,7 @@ namespace MapService.WorldManagement
 		private List<MapPartition> registeredPartitions = new List<MapPartition>(18);
 		private MapPartition lastPartition = null;
 
-		public void UpdatePartitions(PlayerStateMessage playerStateMessage)
+		public void UpdatePlayerPartitionRegistrations(PlayerStateMessage playerStateMessage)
 		{
 			var newPartition = new MapPartition(playerStateMessage.Position);
 

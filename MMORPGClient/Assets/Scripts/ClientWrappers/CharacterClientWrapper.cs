@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.PubSubEvents.LoginClient;
+﻿using Assets.Scripts.PubSubEvents.CharacterClient;
+using Assets.Scripts.PubSubEvents.LoginClient;
 using Common.Client.Interfaces;
 using Common.IoC;
 using Common.Protocol.Character;
@@ -23,7 +24,16 @@ namespace Assets.Scripts.ClientWrappers
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			pubsub.Subscribe<CharacterInformation>(OnNewCharacterInformation, PUBSUBNAME);
+			pubsub.Subscribe<ReqCharacterStyle>(OnNewReqCharacterStyle, PUBSUBNAME);
 			client = DI.Instance.Resolve<ICharacterClient>();
+		}
+
+		private void OnNewReqCharacterStyle(ReqCharacterStyle data)
+		{
+			if (data.Names.Count == 0)
+				return;
+
+			client.Workflow.SendCharacterRequest(data.Names);
 		}
 
 		private void OnNewCharacterInformation(CharacterInformation charInfo)
@@ -31,9 +41,9 @@ namespace Assets.Scripts.ClientWrappers
 			client.Workflow.SendCharacterCreation(charInfo);
 		}
 
-		public async Task<bool> ConnectAsync(string host, int port, string token)
+		public async Task<bool> ConnectAsync(string host, int port)
 		{
-			return await client.ConnectAsync(host, port, token);
+			return await client.ConnectAsync(host, port);
 		}
 	}
 }

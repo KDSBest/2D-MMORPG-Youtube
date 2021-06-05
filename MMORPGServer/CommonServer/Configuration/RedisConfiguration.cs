@@ -3,7 +3,7 @@
     public static class RedisConfiguration
     {
 #if DEBUG
-        public static readonly string ConnectionString = "host.docker.internal:32767";
+        public static readonly string ConnectionString = "localhost:64886";
 #else
         public static readonly string ConnectionString = "redis-svc";
 #endif

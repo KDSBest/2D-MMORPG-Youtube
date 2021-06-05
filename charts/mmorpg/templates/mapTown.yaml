@@ -27,7 +27,7 @@ spec:
         image: {{ .Values.mapServiceImage }}
         ports:
         - name: maptown
-          containerPort: 3333
+          containerPort: 3336
         env:
         - name: MAPNAME
           value: Town

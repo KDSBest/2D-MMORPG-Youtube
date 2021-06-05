@@ -29,6 +29,7 @@ public class CharacterStyleBehaviour : MonoBehaviour
 			Eyes[i].SetActive(i == charStyle.Eyes);
 		}
 
-		Text.text = charStyle.Name;
+		if(Text != null)
+			Text.text = charStyle.Name;
 	}
 }

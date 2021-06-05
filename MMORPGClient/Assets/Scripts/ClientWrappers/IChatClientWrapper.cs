@@ -6,6 +6,6 @@ namespace Assets.Scripts.ClientWrappers
 	{
 		bool IsInitialized { get; }
 
-		Task<bool> ConnectAsync(string host, int port, string token);
+		Task<bool> ConnectAsync(string host, int port);
 	}
 }

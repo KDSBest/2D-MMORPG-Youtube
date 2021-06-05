@@ -25,6 +25,9 @@ namespace Common.Udp
 
         public async Task OnNetworkReceiveAsync(UdpPeer peer, UdpDataReader reader, ChannelType channel)
         {
+            if (reader.AvailableBytes == 0)
+                return;
+
             await Workflows[peer.ConnectId].OnReceiveAsync(reader, channel);
         }
 

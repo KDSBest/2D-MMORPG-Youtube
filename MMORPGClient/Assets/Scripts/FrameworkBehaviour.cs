@@ -1,6 +1,8 @@
+using Assets.Scripts.Character;
 using Assets.Scripts.ClientWrappers;
 using Assets.Scripts.Language;
 using Assets.Scripts.PubSubEvents.StartUI;
+using Common.Client.Interfaces;
 using Common.IoC;
 using Common.Protocol.Character;
 using Common.Protocol.Login;
@@ -47,17 +49,17 @@ namespace Assets.Scripts
         {
             if(!string.IsNullOrEmpty(data.Token))
 			{
-                Context.Token = data.Token;
+                DI.Instance.Resolve<ITokenProvider>().Token = data.Token;
                 pubsub.Publish(new ControlCharacterScreen()
                 {
                     Visible = false
                 });
 
-                this.StartCoroutine(InitChatClient(Context.Token));
+                this.StartCoroutine(InitMapClient());
             }
         }
 
-        public IEnumerator InitChatClient(string token)
+        public IEnumerator InitMapClient()
         {
             UpdateProgress(0, string.Empty);
 
@@ -65,8 +67,9 @@ namespace Assets.Scripts
 
             UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToGame);
 
-            var client = DI.Instance.Resolve<IChatClientWrapper>();
-            Task<bool> connectTask = client.ConnectAsync("kdsmmorpgworldchat.westeurope.cloudapp.azure.com", 30002, token);
+            var client = DI.Instance.Resolve<IMapClientWrapper>();
+            Task<bool> connectTask = client.ConnectAsync("localhost", 3336);
+            //            Task<bool> connectTask = client.ConnectAsync("kdsmmorpgmaptown.westeurope.cloudapp.azure.com", 31000, token);
 
             while (!connectTask.Wait(waitMS))
             {
@@ -89,21 +92,57 @@ namespace Assets.Scripts
 
             UpdateProgress(1, string.Empty, false);
 
+            pubsub.Publish(new PlayerControlEnable());
+            this.StartCoroutine(InitChatClient());
+        }
+
+        public IEnumerator InitChatClient()
+        {
+            UpdateProgress(0, string.Empty);
+
+            yield return new WaitForEndOfFrame();
+
+            UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToChat);
+
+            var client = DI.Instance.Resolve<IChatClientWrapper>();
+            Task<bool> connectTask = client.ConnectAsync("kdsmmorpgworldchat.westeurope.cloudapp.azure.com", 30002);
+
+            while (!connectTask.Wait(waitMS))
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            if (!connectTask.Result)
+            {
+                UpdateProgress(1, DI.Instance.Resolve<ILanguage>().ConnectionFailed);
+                yield break;
+            }
+
+            yield return new WaitForEndOfFrame();
+
+            UpdateProgress(0.6f, DI.Instance.Resolve<ILanguage>().ConnectToChat);
+            while (!client.IsInitialized)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            UpdateProgress(1, string.Empty, false);
+
             pubsub.Publish<ControlChatScreen>(new ControlChatScreen());
         }
 
         public void OnNewLoginToken(LoginRegisterResponseMessage data)
         {
             Debug.Log($"Token: {data.Token}");
-            Context.Token = data.Token;
+            DI.Instance.Resolve<ITokenProvider>().Token = data.Token;
 
             if (data.Response == LoginRegisterResponse.Successful)
             {
-                this.StartCoroutine(InitCharacterClient(Context.Token));
+                this.StartCoroutine(InitCharacterClient());
             }
         }
 
-        public IEnumerator InitCharacterClient(string token)
+        public IEnumerator InitCharacterClient()
         {
             pubsub.Publish<ControlLoginScreen>(new ControlLoginScreen()
             {
@@ -117,7 +156,7 @@ namespace Assets.Scripts
             UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToCharacter);
 
             var charClient = DI.Instance.Resolve<ICharacterClientWrapper>();
-            Task<bool> connectTask = charClient.ConnectAsync("kdsmmorpgchar.westeurope.cloudapp.azure.com", 30001, token);
+            Task<bool> connectTask = charClient.ConnectAsync("kdsmmorpgchar.westeurope.cloudapp.azure.com", 30001);
 
             while (!connectTask.Wait(waitMS))
             {

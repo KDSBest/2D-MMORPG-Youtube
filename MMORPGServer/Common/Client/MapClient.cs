@@ -23,8 +23,6 @@ namespace Common.Client
 
 		public MapWorkflow Workflow { get; set; }
 
-		public Action<PlayerStateMessage> OnNewPlayerStateMessage { get; set; }
-
 		public override void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
 		{
 			Workflow = newWorkflow as MapWorkflow;

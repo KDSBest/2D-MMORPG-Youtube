@@ -8,7 +8,6 @@ namespace Common.Client.Interfaces
 {
 	public interface IMapClient : IBaseClient
 	{
-		Action<PlayerStateMessage> OnNewPlayerStateMessage { get; set; }
 		MapWorkflow Workflow { get; set; }
 
 		void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow);

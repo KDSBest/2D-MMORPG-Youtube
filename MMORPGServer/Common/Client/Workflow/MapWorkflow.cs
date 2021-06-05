@@ -1,5 +1,6 @@
 ﻿using Common.Crypto;
 using Common.Extensions;
+using Common.IoC;
 using Common.Protocol.Map;
 using Common.PublishSubscribe;
 using Common.Workflow;
@@ -12,22 +13,23 @@ using System.Threading.Tasks;
 
 namespace Common.Client.Workflow
 {
-	public class MapWorkflow : ICryptoWorkflow
+	public class MapWorkflow : BaseJwtWorkflow, IWorkflow
 	{
-		public CryptoProvider Crypto { get; set; }
-		public UdpManager UdpManager { get; set; }
-		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
-
 		private long UtcDiff = 0;
 		private const int ResendTimeSyncMs = 1000;
 		private const int TimeSyncRuns = 3;
 
-		public IPubSub PubSub { get; set; }
-
-		public async Task OnStartAsync(UdpPeer peer)
+		public override async Task OnStartAsync(UdpPeer peer)
 		{
+			await base.OnStartAsync(peer);
+
 			_ = Task.Run(async () =>
 			  {
+				  while(!HasServerTokenAccepted)
+				  {
+					  await Task.Delay(ResendTimeSyncMs);
+				  }
+
 				  for (int run = 0; run < TimeSyncRuns; run++)
 				  {
 					  var timeSyncMsg = new TimeSyncMessage()
@@ -41,29 +43,44 @@ namespace Common.Client.Workflow
 			  });
 		}
 
-		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
+		public override async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
 		}
 
-		public async Task OnLatencyUpdateAsync(int latency)
+		public override async Task OnLatencyUpdateAsync(int latency)
 		{
 		}
 
-		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
+		public override async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
-			var playerMsg = new PlayerStateMessage();
-			if (playerMsg.Read(reader))
+			int lastPosition = -1;
+			while (!reader.EndOfData && reader.AvailableBytes > 0 && reader.Position != lastPosition)
 			{
-				PubSub.Publish(playerMsg);
-				return;
-			}
+				var playerMsg = new PlayerStateMessage();
+				if (playerMsg.Read(reader))
+				{
+					PubSub.Publish(playerMsg);
+					continue;
+				}
 
-			var timeSyncMsg = new TimeSyncMessage();
-			if (timeSyncMsg.Read(reader))
-			{
-				HandleTimeSyncMessage(timeSyncMsg);
-				PubSub.Publish(timeSyncMsg);
-				return;
+				var removeState = new RemoveStateMessage();
+				if (removeState.Read(reader))
+				{
+					PubSub.Publish(removeState);
+					continue;
+				}
+
+				var timeSyncMsg = new TimeSyncMessage();
+				if (timeSyncMsg.Read(reader))
+				{
+					HandleTimeSyncMessage(timeSyncMsg);
+					PubSub.Publish(timeSyncMsg);
+					continue;
+				}
+
+				await base.OnReceiveAsync(reader, channel);
+
+				lastPosition = reader.Position;
 			}
 		}
 
@@ -91,6 +108,9 @@ namespace Common.Client.Workflow
 
 		public async Task SendStateAsync(Vector2 position, int animation, bool isLookingRight)
 		{
+			if (!HasServerTokenAccepted)
+				return;
+
 			var state = new PlayerStateMessage();
 			state.Position = position;
 			state.Animation = animation;

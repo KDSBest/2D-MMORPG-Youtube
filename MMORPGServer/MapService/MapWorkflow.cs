@@ -29,9 +29,13 @@ namespace MapService
 		private UdpPeer peer;
 		private MapPartitionManagement mapPartitionManagement = new MapPartitionManagement();
 
-		public async Task OnStartAsync(UdpPeer peer)
+		public MapWorkflow()
 		{
 			pubsub = DI.Instance.Resolve<IPubSub>();
+		}
+
+		public async Task OnStartAsync(UdpPeer peer)
+		{
 			this.peer = peer;
 		}
 
@@ -62,12 +66,15 @@ namespace MapService
 
 				playerStateMessage.Name = this.name;
 
-				mapPartitionManagement.UpdatePartitions(playerStateMessage);
+				mapPartitionManagement.UpdatePlayerPartitionRegistrations(playerStateMessage);
 
 				RedisPubSub.Publish<PlayerStateMessage>(MapConfiguration.MapName, playerStateMessage);
 
 				var worldPackage = worldState.GetPackage(maxPackageSize);
-				peer.Send(worldPackage, ChannelType.Unreliable);
+				if(worldPackage.Length > 0)
+				{
+					peer.Send(worldPackage, ChannelType.Unreliable);
+				}
 
 				return;
 			}

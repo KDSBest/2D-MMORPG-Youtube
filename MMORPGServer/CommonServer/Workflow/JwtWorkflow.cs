@@ -1,4 +1,5 @@
-﻿using Common.Protocol.Crypto;
+﻿using Common.Extensions;
+using Common.Protocol.Crypto;
 using Common.Workflow;
 using ReliableUdp;
 using ReliableUdp.Enums;
@@ -39,7 +40,16 @@ namespace CommonServer.Workflow
 					this.OnToken(tokenMessage.Token);
 					wf.OnToken(tokenMessage.Token);
 					await SwitchWorkflowAsync(this.peer, wf);
+					this.UdpManager.SendMsg(peer.ConnectId, tokenMessage, ChannelType.Reliable);
 				}
+				else
+				{
+					this.UdpManager.SendMsg(peer.ConnectId, new ReqJwtMessage(), ChannelType.Reliable);
+				}
+			}
+			else
+			{
+				this.UdpManager.SendMsg(peer.ConnectId, new ReqJwtMessage(), ChannelType.Reliable);
 			}
 		}
 

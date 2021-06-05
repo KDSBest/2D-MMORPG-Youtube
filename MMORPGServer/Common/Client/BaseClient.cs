@@ -29,7 +29,7 @@ namespace Common.Client
 			}
 		}
 
-		public async Task<bool> ConnectAsync(string host = "localhost", int port = 3334, string token = "")
+		public async Task<bool> ConnectAsync(string host = "localhost", int port = 3334)
 		{
 			return await Task.Run<bool>(async () =>
 			{
@@ -48,16 +48,6 @@ namespace Common.Client
 				if (this.Peer.ConnectionState == ConnectionState.Connected)
 				{
 					Console.WriteLine("Connected!");
-
-					if (!string.IsNullOrEmpty(token))
-					{
-						var jwtMsg = new JwtMessage
-						{
-							Token = token
-						};
-						this.UdpManager.SendMsg(jwtMsg, ChannelType.Reliable);
-						Console.WriteLine("Jwt Token send.");
-					}
 				}
 				else
 				{
@@ -84,17 +74,6 @@ namespace Common.Client
 		{
 			disconnect = true;
 			updateThread.Wait(maxWaitMs);
-		}
-
-		protected void WaitForResponse(Func<bool> condition)
-		{
-			var cts = new CancellationTokenSource();
-			var token = cts.Token;
-			Task waitingForResponse = WaitForAsync(condition, token);
-			if (!waitingForResponse.Wait(maxWaitMs))
-			{
-				cts.Cancel();
-			}
 		}
 
 		protected async Task WaitForAsync(Func<bool> condition, CancellationToken token)

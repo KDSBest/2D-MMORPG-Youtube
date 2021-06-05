@@ -17,7 +17,7 @@ spec:
   - name: maptown
     protocol: UDP
     port: {{ .Values.mapTownPort }}
-    targetPort: 3333
+    targetPort: 3336
     {{- if eq .Values.serviceType "NodePort" }}
     nodePort: {{ .Values.mapTownPort }}
     {{- end }}

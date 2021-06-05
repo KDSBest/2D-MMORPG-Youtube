@@ -12,26 +12,18 @@ using System.Threading.Tasks;
 
 namespace Common.Client.Workflow
 {
-	public class CharacterWorkflow : IWorkflow
+	public class CharacterWorkflow : BaseJwtWorkflow, IWorkflow
 	{
-		public UdpManager UdpManager { get; set; }
-		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
-		public IPubSub PubSub { get; set; }
 
-		public async Task OnStartAsync(UdpPeer peer)
-		{
-			PubSub = DI.Instance.Resolve<IPubSub>();
-		}
-
-		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
+		public override async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
 		}
 
-		public async Task OnLatencyUpdateAsync(int latency)
+		public override async Task OnLatencyUpdateAsync(int latency)
 		{
 		}
 
-		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
+		public override async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
 			var charMsg = new CharacterMessage();
 			if(charMsg.Read(reader))

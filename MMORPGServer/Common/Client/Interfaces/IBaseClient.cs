@@ -8,7 +8,7 @@ namespace Common.Client.Interfaces
 		bool IsConnected { get; }
 		UdpPeer Peer { get; set; }
 
-		Task<bool> ConnectAsync(string host = "localhost", int port = 3334, string token = "");
+		Task<bool> ConnectAsync(string host = "localhost", int port = 3334);
 		Task DisconnectAsync();
 		Task PollEventsAsync();
 	}

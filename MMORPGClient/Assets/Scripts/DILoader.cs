@@ -20,6 +20,7 @@ namespace Assets.Scripts
 			Debug.Log("Init DI");
 
 			DI.Instance.Register<ILanguage>(() => new LanguageEn(), RegistrationType.Singleton);
+			DI.Instance.Register<ITokenProvider>(() => new TokenProvider(), RegistrationType.Singleton);
 			DI.Instance.Register<IPubSub>(() => new UnityPubSub(), RegistrationType.Singleton);
 
 			DI.Instance.Register<ILoginClient>(() => new LoginClient(), RegistrationType.Singleton);
@@ -30,6 +31,9 @@ namespace Assets.Scripts
 
 			DI.Instance.Register<IChatClient>(() => new ChatClient(), RegistrationType.Singleton);
 			DI.Instance.Register<IChatClientWrapper>(() => new ChatClientWrapper(), RegistrationType.Singleton);
+
+			DI.Instance.Register<IMapClient>(() => new MapClient(), RegistrationType.Singleton);
+			DI.Instance.Register<IMapClientWrapper>(() => new MapClientWrapper(), RegistrationType.Singleton);
 
 			isInitialized = true;
 		}

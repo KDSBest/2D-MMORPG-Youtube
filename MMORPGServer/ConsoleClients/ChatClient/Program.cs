@@ -1,4 +1,5 @@
 ﻿using Common.Client;
+using Common.Client.Interfaces;
 using Common.IoC;
 using Common.Protocol.Character;
 using Common.Protocol.Chat;
@@ -19,7 +20,9 @@ namespace ChatClient
 		public static async Task Main(string[] args)
 		{
 			var pubsub = new PubSub();
+			var tokenProv = new TokenProvider();
 			DI.Instance.Register<IPubSub>(() => pubsub, RegistrationType.Singleton);
+			DI.Instance.Register<ITokenProvider>(() => tokenProv, RegistrationType.Singleton);
 
 			Console.WriteLine("Enter Email:");
 			email = Console.ReadLine();
@@ -84,8 +87,8 @@ namespace ChatClient
 			}, "Main");
 
 			var charClient = new Common.Client.CharacterClient();
-
-			bool connected = await charClient.ConnectAsync("localhost", 30001, result.Token);
+			DI.Instance.Resolve<ITokenProvider>().Token = result.Token;
+			bool connected = await charClient.ConnectAsync("localhost", 30001);
 			if (connected)
 			{
 				Console.WriteLine("Connected to Char Server.");
@@ -116,7 +119,8 @@ namespace ChatClient
 				Console.WriteLine($"{msg.Sender}: {msg.Message}");
 			}, "Main");
 			var chatClient = new Common.Client.ChatClient();
-			connected = await chatClient.ConnectAsync("localhost", 30002, charToken);
+			DI.Instance.Resolve<ITokenProvider>().Token = charToken;
+			connected = await chatClient.ConnectAsync("localhost", 30002);
 			if (connected)
 			{
 				Console.WriteLine("Connected to Chat Server.");

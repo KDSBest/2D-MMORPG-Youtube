@@ -23,6 +23,7 @@ namespace Assets.Scripts.UI
 		public Transform ChatMessageParent;
 		public TMP_InputField ChatMessageInput;
 		public ScrollRect ScrollRect;
+		public GameObject Background;
 
 		public void OnEnable()
 		{
@@ -78,6 +79,7 @@ namespace Assets.Scripts.UI
 		public void OnControlScreen(ControlChatScreen data)
 		{
 			ChatScreen.SetActive(data.Visible);
+			Background.SetActive(!data.Visible);
 		}
 	}
 }
