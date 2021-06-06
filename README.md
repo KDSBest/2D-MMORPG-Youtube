@@ -24,3 +24,6 @@ https://discord.gg/dWcTvzswf8
 
 Learn all about the theory behind it and how I develop the game.
 https://www.youtube.com/playlist?list=PL7NJAOUPKXUtjgY_039m9OgPnWL5nCG8S
+
+In the channel we discuss also the concepts like:
+![Map Networking](https://github.com/KDSBest/2D-MMORPG-Youtube/raw/main/Concepts/Map%20Networking.png)
