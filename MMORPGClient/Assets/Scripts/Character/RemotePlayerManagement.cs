@@ -10,19 +10,21 @@ using UnityEngine;
 
 namespace Assets.Scripts.Character
 {
+
 	public class RemotePlayerManagement : MonoBehaviour
 	{
 		public GameObject RemotePlayerPrefab;
 		private IPubSub pubsub;
 		private Dictionary<string, RemotePlayer> remotePlayers;
 		private ICurrentContext context;
+		private RemotePlayerRemovedTracking removedTracking = new RemotePlayerRemovedTracking();
 
 		public void OnEnable()
 		{
 			DILoader.Initialize();
 
 			remotePlayers = new Dictionary<string, RemotePlayer>();
-		
+
 			context = DI.Instance.Resolve<ICurrentContext>();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 
@@ -39,7 +41,7 @@ namespace Assets.Scripts.Character
 			var player = remotePlayers[data.Character.Name];
 			player.SetStyle(data.Character);
 
-			if(data.Character.Name != context.Name)
+			if (data.Character.Name != context.Name)
 			{
 				player.ShowCharacter();
 			}
@@ -47,7 +49,11 @@ namespace Assets.Scripts.Character
 
 		private void OnPlayerState(PlayerStateMessage data)
 		{
-			if(!remotePlayers.ContainsKey(data.Name))
+			// ignore new player state if remove state is newer
+			if (removedTracking.GetPlayerRemovedServerTime(data.Name) >= data.ServerTime)
+				return;
+
+			if (!remotePlayers.ContainsKey(data.Name))
 			{
 				GameObject newPlayer = GameObject.Instantiate(RemotePlayerPrefab);
 				newPlayer.transform.SetParent(this.transform);
@@ -81,6 +87,8 @@ namespace Assets.Scripts.Character
 
 		private void OnRemovePlayerState(RemoveStateMessage data)
 		{
+			removedTracking.UpdateRemovedPlayerStateTime(data);
+
 			if (!remotePlayers.ContainsKey(data.Name))
 				return;
 
