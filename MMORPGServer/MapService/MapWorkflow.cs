@@ -40,8 +40,13 @@ namespace MapService
 
 		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
+			pubsub.Unsubscribe<RemoveStateMessage>(name);
 			pubsub.Unsubscribe<PlayerWorldEvent<PlayerStateMessage>>(name);
-			DI.Instance.Resolve<IPlayerWorldManagement>().OnDisconnectedPlayer(name);
+			RedisPubSub.Publish<RemoveStateMessage>(MapConfiguration.MapName, new RemoveStateMessage()
+			{
+				Name = name,
+				ServerTime = DateTime.UtcNow.Ticks
+			});
 		}
 
 		public async Task OnLatencyUpdateAsync(int latency)
@@ -91,6 +96,12 @@ namespace MapService
 		{
 			name = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
 			pubsub.Subscribe<PlayerWorldEvent<PlayerStateMessage>>(OnNewPlayerState, name);
+			pubsub.Subscribe<RemoveStateMessage>(OnPlayerDisconnected, name);
+		}
+
+		private void OnPlayerDisconnected(RemoveStateMessage msg)
+		{
+			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Reliable);
 		}
 
 		private void OnNewPlayerState(PlayerWorldEvent<PlayerStateMessage> pwe)

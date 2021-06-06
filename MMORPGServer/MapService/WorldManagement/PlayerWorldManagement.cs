@@ -20,12 +20,14 @@ namespace MapService.WorldManagement
 		{
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			RedisPubSub.Subscribe<PlayerStateMessage>(MapConfiguration.MapName, OnNewPlayerState);
+			RedisPubSub.Subscribe<RemoveStateMessage>(MapConfiguration.MapName, OnDisconnectedPlayer);
 		}
 
-		public void OnDisconnectedPlayer(string name)
+		private void OnDisconnectedPlayer(RedisChannel channel, RemoveStateMessage msg)
 		{
-			LastPlayerPosition.TryRemove(name, out var x);
-			LastPlayerPartition.TryRemove(name, out var y);
+			pubsub.Publish(msg);
+			LastPlayerPosition.TryRemove(msg.Name, out var x);
+			LastPlayerPartition.TryRemove(msg.Name, out var y);
 		}
 
 		private void OnNewPlayerState(RedisChannel channel, PlayerStateMessage msg)
