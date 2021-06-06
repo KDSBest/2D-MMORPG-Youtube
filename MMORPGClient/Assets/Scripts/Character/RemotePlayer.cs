@@ -15,11 +15,13 @@ namespace Assets.Scripts.Character
 		public float LerpSpeed = 0.1f;
 		private CharacterStyleBehaviour characterStyle;
 		private RemotePlayerRenderer playerRenderer;
+		private Animator animator;
 
 		public void Initialize()
 		{
 			characterStyle = GameObject.GetComponent<CharacterStyleBehaviour>();
 			playerRenderer = GameObject.GetComponent<RemotePlayerRenderer>();
+			animator = GameObject.GetComponent<Animator>();
 		}
 
 		public void Update()
@@ -27,7 +29,7 @@ namespace Assets.Scripts.Character
 			var lastState = States.Last().Value;
 
 			GameObject.transform.position = Vector3.Lerp(GameObject.transform.position, new Vector3(lastState.Position.X, lastState.Position.Y, 0), LerpSpeed);
-
+			animator.SetInteger(Constants.AnimationStateName, lastState.Animation);
 			playerRenderer.SetLooking(lastState.IsLookingRight);
 		}
 

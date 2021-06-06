@@ -20,6 +20,7 @@ namespace Assets.Scripts.Character
 		public LayerMask FloorLayer;
 		private ContactFilter2D floorFilter;
 		public float JumpVelocity = 10;
+		public Animator Animator;
 
 		public void Awake()
 		{
@@ -46,38 +47,73 @@ namespace Assets.Scripts.Character
 
 		private void FixedUpdate()
 		{
+			bool isGrounded = false;
+			List<Collider2D> collisionResults = new List<Collider2D>();
+			if (FloorCollider.OverlapCollider(floorFilter, collisionResults) > 0)
+			{
+				isGrounded = true;
+			}
+
+			bool isMovingRightLeft = HandleMoving();
+
+			HandleJump(isGrounded);
+
+			HandleAnimation(isGrounded, isMovingRightLeft);
+
+			PlayerState state = new PlayerState()
+			{
+				Animation = Animator.GetInteger(Constants.AnimationStateName),
+				IsLookingRight = BodyRenderer.localScale.x > 0,
+				Position = new System.Numerics.Vector2(this.transform.position.x, this.transform.position.y)
+			};
+			pubsub.Publish(state);
+		}
+
+		private bool HandleMoving()
+		{
 			float xScaleAbs = Math.Abs(BodyRenderer.localScale.x);
 			if (movementVector.x < 0)
 			{
 				BodyRenderer.localScale = new Vector3(-xScaleAbs, BodyRenderer.localScale.y, BodyRenderer.localScale.z);
 				Rigidbody2D.velocity = new Vector2(-Speed, Rigidbody2D.velocity.y);
+				return true;
 			}
 			else if (movementVector.x > 0)
 			{
 				BodyRenderer.localScale = new Vector3(xScaleAbs, BodyRenderer.localScale.y, BodyRenderer.localScale.z);
 				Rigidbody2D.velocity = new Vector2(Speed, Rigidbody2D.velocity.y);
-			}
-			else
-			{
-				Rigidbody2D.velocity = new Vector2(0, Rigidbody2D.velocity.y);
+				return true;
 			}
 
-			if(movementVector.y > 0.5f)
+			Rigidbody2D.velocity = new Vector2(0, Rigidbody2D.velocity.y);
+			return false;
+		}
+
+		private void HandleJump(bool isGrounded)
+		{
+			if (isGrounded && movementVector.y > 0.5f)
 			{
-				List<Collider2D> results = new List<Collider2D>();
-				if(FloorCollider.OverlapCollider(floorFilter, results) > 0)
+				Rigidbody2D.velocity = new Vector2(Rigidbody2D.velocity.x, JumpVelocity);
+			}
+		}
+
+		private void HandleAnimation(bool isGrounded, bool isMovingRightLeft)
+		{
+			if (!isGrounded)
+			{
+				Animator.SetInteger(Constants.AnimationStateName, 2);
+			}
+			else if (isGrounded)
+			{
+				if (isMovingRightLeft)
 				{
-					Rigidbody2D.velocity = new Vector2(Rigidbody2D.velocity.x, JumpVelocity);
+					Animator.SetInteger(Constants.AnimationStateName, 1);
+				}
+				else
+				{
+					Animator.SetInteger(Constants.AnimationStateName, 0);
 				}
 			}
-
-			PlayerState state = new PlayerState()
-			{
-				Animation = 0,
-				IsLookingRight = BodyRenderer.localScale.x > 0,
-				Position = new System.Numerics.Vector2(this.transform.position.x, this.transform.position.y)
-			};
-			pubsub.Publish(state);
 		}
 	}
 }
