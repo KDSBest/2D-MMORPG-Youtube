@@ -19,6 +19,14 @@ namespace Assets.Scripts.Character
 		private ICurrentContext context;
 		private RemotePlayerRemovedTracking removedTracking = new RemotePlayerRemovedTracking();
 
+		public int PlayerCount
+		{
+			get
+			{
+				return remotePlayers.Count;
+			}
+		}
+
 		public void OnEnable()
 		{
 			DILoader.Initialize();
@@ -63,6 +71,8 @@ namespace Assets.Scripts.Character
 					GameObject = newPlayer,
 					States = new SortedList<long, PlayerStateMessage>()
 				};
+
+				player.Initialize();
 				player.HideCharacter();
 
 				remotePlayers.Add(data.Name, player);
@@ -74,15 +84,7 @@ namespace Assets.Scripts.Character
 			if (!remotePlayers[data.Name].States.ContainsKey(data.ServerTime))
 				remotePlayers[data.Name].States.Add(data.ServerTime, data);
 
-			var lastState = remotePlayers[data.Name].States.Last().Value;
-			var rPlayerGo = remotePlayers[data.Name].GameObject;
-			rPlayerGo.transform.position = new Vector3(lastState.Position.X, lastState.Position.Y, 1);
-
-			float xScaleAbs = Math.Abs(rPlayerGo.transform.localScale.x);
-			if (lastState.IsLookingRight)
-				rPlayerGo.transform.localScale = new Vector3(xScaleAbs, this.transform.localScale.y, this.transform.localScale.z);
-			else
-				rPlayerGo.transform.localScale = new Vector3(-xScaleAbs, this.transform.localScale.y, this.transform.localScale.z);
+			remotePlayers[data.Name].Update();
 		}
 
 		private void OnRemovePlayerState(RemoveStateMessage data)

@@ -14,6 +14,7 @@ namespace Assets.Scripts.Character
 		private IPubSub pubsub;
 		public Rigidbody2D Rigidbody2D;
 		public float Speed = 20;
+		public Transform BodyRenderer;
 
 		public void Awake()
 		{
@@ -36,15 +37,15 @@ namespace Assets.Scripts.Character
 
 		private void FixedUpdate()
 		{
-			float xScaleAbs = Math.Abs(this.transform.localScale.x);
+			float xScaleAbs = Math.Abs(BodyRenderer.localScale.x);
 			if (movementVector.x < 0)
 			{
-				this.transform.localScale = new Vector3(-xScaleAbs, this.transform.localScale.y, this.transform.localScale.z);
+				BodyRenderer.localScale = new Vector3(-xScaleAbs, this.transform.localScale.y, this.transform.localScale.z);
 				Rigidbody2D.velocity = new Vector2(-Speed, Rigidbody2D.velocity.y);
 			}
 			else if (movementVector.x > 0)
 			{
-				this.transform.localScale = new Vector3(xScaleAbs, this.transform.localScale.y, this.transform.localScale.z);
+				BodyRenderer.localScale = new Vector3(xScaleAbs, this.transform.localScale.y, this.transform.localScale.z);
 				Rigidbody2D.velocity = new Vector2(Speed, Rigidbody2D.velocity.y);
 			}
 			else
@@ -55,7 +56,7 @@ namespace Assets.Scripts.Character
 			PlayerState state = new PlayerState()
 			{
 				Animation = 0,
-				IsLookingRight = this.transform.localScale.x > 0,
+				IsLookingRight = BodyRenderer.localScale.x > 0,
 				Position = new System.Numerics.Vector2(this.transform.position.x, this.transform.position.y)
 			};
 			pubsub.Publish(state);
