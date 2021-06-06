@@ -97,7 +97,7 @@ MonoBehaviour:
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 1
-  m_fontSizeMax: 72
+  m_fontSizeMax: 4
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -390,6 +390,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Rigidbody2D: {fileID: 1349308286}
   Speed: 20
+  BodyRenderer: {fileID: 0}
 --- !u!50 &1349308286
 Rigidbody2D:
   serializedVersion: 4

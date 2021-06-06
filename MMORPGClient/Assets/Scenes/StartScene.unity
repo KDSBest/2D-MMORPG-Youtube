@@ -2180,7 +2180,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 605889772}
-  m_LocalRotation: {x: -0.03575009, y: -0.00000003950454, z: -0.000000010241752, w: 0.9993608}
+  m_LocalRotation: {x: -0.036324963, y: 0.000000049063473, z: 0.00000001275008, w: 0.99934006}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2499,8 +2499,8 @@ MonoBehaviour:
   m_VerticalDamping: 0
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_DeadZoneWidth: 0.35
-  m_DeadZoneHeight: 0.35
+  m_DeadZoneWidth: 0.2
+  m_DeadZoneHeight: 0
   m_SoftZoneWidth: 0.8
   m_SoftZoneHeight: 0.8
   m_BiasX: 0
@@ -5755,6 +5755,10 @@ PrefabInstance:
       propertyPath: BodyRenderer
       value: 
       objectReference: {fileID: 1119140034}
+    - target: {fileID: 1349308286, guid: bb088927b533b594f9116fae9f398912, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1614646508, guid: bb088927b533b594f9116fae9f398912, type: 3}
       propertyPath: m_Camera
       value: 
@@ -6054,7 +6058,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1480082801}
-  m_LocalRotation: {x: 0.0000000074505797, y: -0.000000047579583, z: -0.0000000105354765, w: 1}
+  m_LocalRotation: {x: -0.0000000074505797, y: 0.000000045831314, z: 0.000000010148362, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6523,7 +6527,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1547102995}
-  m_LocalRotation: {x: -0, y: -0.000000038890857, z: -0.000000008611545, w: 1}
+  m_LocalRotation: {x: -0.0000000074505797, y: 0.00000003852175, z: 0.000000008529815, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6988,7 +6992,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
-  m_LocalRotation: {x: -0.10874079, y: -0.000000033846558, z: -0.0000000037024561, w: 0.9940702}
+  m_LocalRotation: {x: -0.10874084, y: 0.00000003342804, z: 0.0000000036566767, w: 0.9940702}
   m_LocalPosition: {x: 0, y: -19.67, z: -70}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -7503,8 +7507,8 @@ MonoBehaviour:
   m_VerticalDamping: 0
   m_ScreenX: 0.5
   m_ScreenY: 0.6
-  m_DeadZoneWidth: 0.35
-  m_DeadZoneHeight: 0.35
+  m_DeadZoneWidth: 0.2
+  m_DeadZoneHeight: 0
   m_SoftZoneWidth: 0.8
   m_SoftZoneHeight: 0.8
   m_BiasX: 0
@@ -8377,8 +8381,8 @@ MonoBehaviour:
   m_VerticalDamping: 0
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_DeadZoneWidth: 0.35
-  m_DeadZoneHeight: 0.35
+  m_DeadZoneWidth: 0.2
+  m_DeadZoneHeight: 0
   m_SoftZoneWidth: 0.8
   m_SoftZoneHeight: 0.8
   m_BiasX: 0
