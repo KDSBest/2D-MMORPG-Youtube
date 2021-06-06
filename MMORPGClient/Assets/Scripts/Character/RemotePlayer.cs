@@ -12,7 +12,7 @@ namespace Assets.Scripts.Character
 		public GameObject GameObject;
 		public SortedList<long, PlayerStateMessage> States;
 		public CharacterInformation CharacterInformation = new CharacterInformation();
-		public float LerpSpeed = 0.1f;
+		public float LerpSpeed = 0.5f;
 		private CharacterStyleBehaviour characterStyle;
 		private RemotePlayerRenderer playerRenderer;
 		private Animator animator;
