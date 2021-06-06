@@ -21,6 +21,8 @@ namespace Assets.Scripts.Character
 		private ContactFilter2D floorFilter;
 		public float JumpVelocity = 10;
 		public Animator Animator;
+		public float GravityDefault = 5;
+		public float GravityFall = 10;
 
 		public void Awake()
 		{
@@ -95,6 +97,16 @@ namespace Assets.Scripts.Character
 			{
 				Rigidbody2D.velocity = new Vector2(Rigidbody2D.velocity.x, JumpVelocity);
 			}
+
+			if(isGrounded || Rigidbody2D.velocity.y >= 0)
+			{
+				Rigidbody2D.gravityScale = GravityDefault;
+			}
+			else
+			{
+				Rigidbody2D.gravityScale = GravityFall;
+			}
+
 		}
 
 		private void HandleAnimation(bool isGrounded, bool isMovingRightLeft)

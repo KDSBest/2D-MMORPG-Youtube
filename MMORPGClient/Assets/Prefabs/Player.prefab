@@ -397,8 +397,10 @@ MonoBehaviour:
   FloorLayer:
     serializedVersion: 2
     m_Bits: 64
-  JumpVelocity: 10
-  Animator: {fileID: 0}
+  JumpVelocity: 35
+  Animator: {fileID: 2459262239160766342}
+  GravityDefault: 10
+  GravityFall: 15
 --- !u!50 &1349308286
 Rigidbody2D:
   serializedVersion: 4
