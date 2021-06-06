@@ -10,10 +10,10 @@ loginPort: 30000
 cosmosUrl: "@@{CosmosUrl}@@"
 cosmosKey: "@@{CosmosKey}@@"
 
-loginServiceImage: "@@{GameName}@@acr.azurecr.io/loginservice:latest"
-characterServiceImage: "@@{GameName}@@acr.azurecr.io/characterservice:latest"
-worldChatServiceImage: "@@{GameName}@@acr.azurecr.io/worldchatservice:latest"
-mapServiceImage: "@@{GameName}@@acr.azurecr.io/mapservice:latest"
+loginServiceImage: "@@{GameName}@@acr.azurecr.io/loginservice:@@{Build.BuildNumber}@@"
+characterServiceImage: "@@{GameName}@@acr.azurecr.io/characterservice:@@{Build.BuildNumber}@@"
+worldChatServiceImage: "@@{GameName}@@acr.azurecr.io/worldchatservice:@@{Build.BuildNumber}@@"
+mapServiceImage: "@@{GameName}@@acr.azurecr.io/mapservice:@@{Build.BuildNumber}@@"
 
 serviceType: LoadBalancer
 characterDNS: "@@{GameName}@@char"
