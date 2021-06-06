@@ -2,6 +2,7 @@
 using Common.IoC;
 using Common.PublishSubscribe;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Character
@@ -15,10 +16,18 @@ namespace Assets.Scripts.Character
 		public Rigidbody2D Rigidbody2D;
 		public float Speed = 20;
 		public Transform BodyRenderer;
+		public CircleCollider2D FloorCollider;
+		public LayerMask FloorLayer;
+		private ContactFilter2D floorFilter;
+		public float JumpVelocity = 10;
 
 		public void Awake()
 		{
 			DILoader.Initialize();
+
+			floorFilter = new ContactFilter2D();
+			floorFilter.useLayerMask = true;
+			floorFilter.layerMask = FloorLayer;
 
 			controls = new PlayerControls();
 			movementActions = controls.Movement;
@@ -40,17 +49,26 @@ namespace Assets.Scripts.Character
 			float xScaleAbs = Math.Abs(BodyRenderer.localScale.x);
 			if (movementVector.x < 0)
 			{
-				BodyRenderer.localScale = new Vector3(-xScaleAbs, this.transform.localScale.y, this.transform.localScale.z);
+				BodyRenderer.localScale = new Vector3(-xScaleAbs, BodyRenderer.localScale.y, BodyRenderer.localScale.z);
 				Rigidbody2D.velocity = new Vector2(-Speed, Rigidbody2D.velocity.y);
 			}
 			else if (movementVector.x > 0)
 			{
-				BodyRenderer.localScale = new Vector3(xScaleAbs, this.transform.localScale.y, this.transform.localScale.z);
+				BodyRenderer.localScale = new Vector3(xScaleAbs, BodyRenderer.localScale.y, BodyRenderer.localScale.z);
 				Rigidbody2D.velocity = new Vector2(Speed, Rigidbody2D.velocity.y);
 			}
 			else
 			{
 				Rigidbody2D.velocity = new Vector2(0, Rigidbody2D.velocity.y);
+			}
+
+			if(movementVector.y > 0.5f)
+			{
+				List<Collider2D> results = new List<Collider2D>();
+				if(FloorCollider.OverlapCollider(floorFilter, results) > 0)
+				{
+					Rigidbody2D.velocity = new Vector2(Rigidbody2D.velocity.x, JumpVelocity);
+				}
 			}
 
 			PlayerState state = new PlayerState()
