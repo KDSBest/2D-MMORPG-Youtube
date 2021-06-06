@@ -72,3 +72,4 @@ crashlytics-build.properties
 
 !/Packages/*
 !/UserSettings/*
+!/Assets/Scripts/*
