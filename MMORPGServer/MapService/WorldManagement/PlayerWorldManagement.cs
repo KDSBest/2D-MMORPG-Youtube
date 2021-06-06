@@ -1,6 +1,7 @@
 ﻿using Common.IoC;
 using Common.Protocol.Map;
 using Common.PublishSubscribe;
+using CommonServer.Configuration;
 using CommonServer.Redis;
 using StackExchange.Redis;
 using System;
@@ -40,7 +41,14 @@ namespace MapService.WorldManagement
 			if(oldPartition == newPartition)
 			{
 				var lastMsg = LastPlayerPosition[msg.Name];
-				if (Math.Abs(lastMsg.Position.X - msg.Position.X) < MapConfiguration.SmallDistance
+
+				// state is skipped if:
+				// - Position is only changed by small amount
+				// - Is Looking Right is unchanged
+				// - Animation is unchanged
+				// - Last Message isn't older than GameConfiguration.AcceptUnchangedPlayerStateAfterSeconds seconds
+				if (lastMsg.ServerTime >= DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(GameConfiguration.AcceptUnchangedPlayerStateAfterSeconds)).Ticks
+					&& Math.Abs(lastMsg.Position.X - msg.Position.X) < MapConfiguration.SmallDistance
 					&& Math.Abs(lastMsg.Position.Y - msg.Position.Y) < MapConfiguration.SmallDistance
 					&& lastMsg.IsLookingRight == msg.IsLookingRight
 					&& lastMsg.Animation == msg.Animation)
