@@ -15,6 +15,10 @@ https://www.youtube.com/playlist?list=PL7NJAOUPKXUtjgY_039m9OgPnWL5nCG8S
 - Cosmos DB
 - Custom UDP Library
 
+# Support
+If you want to support this Project:
+https://www.patreon.com/kdsmmorpg?fan_landing=true
+
 # Discord
 
 Join our Community!
