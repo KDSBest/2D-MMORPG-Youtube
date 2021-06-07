@@ -70,7 +70,7 @@ namespace Assets.Scripts
             UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToGame);
 
             var client = DI.Instance.Resolve<IMapClientWrapper>();
-            Task<bool> connectTask = client.ConnectAsync("kdsmmorpgmaptown.westeurope.cloudapp.azure.com", 31000);
+            Task<bool> connectTask = client.ConnectAsync("kdsmmorpg.westeurope.cloudapp.azure.com", 3336);
 
             while (!connectTask.Wait(waitMS))
             {
@@ -106,7 +106,7 @@ namespace Assets.Scripts
             UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToChat);
 
             var client = DI.Instance.Resolve<IChatClientWrapper>();
-            Task<bool> connectTask = client.ConnectAsync("kdsmmorpgworldchat.westeurope.cloudapp.azure.com", 30002);
+            Task<bool> connectTask = client.ConnectAsync("kdsmmorpg.westeurope.cloudapp.azure.com", 3333);
 
             while (!connectTask.Wait(waitMS))
             {
@@ -157,7 +157,7 @@ namespace Assets.Scripts
             UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToCharacter);
 
             var charClient = DI.Instance.Resolve<ICharacterClientWrapper>();
-            Task<bool> connectTask = charClient.ConnectAsync("kdsmmorpgchar.westeurope.cloudapp.azure.com", 30001);
+            Task<bool> connectTask = charClient.ConnectAsync("kdsmmorpg.westeurope.cloudapp.azure.com", 3335);
 
             while (!connectTask.Wait(waitMS))
             {
@@ -192,7 +192,7 @@ namespace Assets.Scripts
 
 			UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToLogin);
 
-            Task<bool> connectTask = loginClient.ConnectAsync("kdsmmorpgaccount.westeurope.cloudapp.azure.com", 30000);
+            Task<bool> connectTask = loginClient.ConnectAsync("kdsmmorpg.westeurope.cloudapp.azure.com", 3334);
 
             while(!connectTask.Wait(waitMS))
 			{
