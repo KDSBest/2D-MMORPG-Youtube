@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5162792062236283171}
   - component: {fileID: 3555907060757892896}
+  - component: {fileID: 6813916259981492801}
   m_Layer: 0
   m_Name: PlayerBody
   m_TagString: Untagged
@@ -83,6 +84,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &6813916259981492801
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569576256910152248}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: cbcdb6fb63f095d48af31dff207e2caf, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2454199059487766705
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,7 +248,6 @@ GameObject:
   - component: {fileID: 1147332045662428460}
   - component: {fileID: 3025568328816809467}
   - component: {fileID: 8088531909360086519}
-  - component: {fileID: 808505179445664449}
   m_Layer: 0
   m_Name: RemotePlayer
   m_TagString: Untagged
@@ -306,25 +325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Renderer: {fileID: 5162792062236283171}
---- !u!95 &808505179445664449
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2455385777282593066}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: cbcdb6fb63f095d48af31dff207e2caf, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  Animator: {fileID: 6813916259981492801}
 --- !u!1 &3144621105417444850
 GameObject:
   m_ObjectHideFlags: 0

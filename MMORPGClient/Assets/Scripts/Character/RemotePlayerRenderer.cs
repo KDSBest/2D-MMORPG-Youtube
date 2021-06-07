@@ -1,9 +1,16 @@
+using Assets.Scripts;
 using System;
 using UnityEngine;
 
 public class RemotePlayerRenderer : MonoBehaviour
 {
 	public Transform Renderer;
+	public Animator Animator;
+
+	public void SetAnimation(int animation)
+	{
+		Animator.SetInteger(Constants.AnimationStateName, animation);
+	}
 
 	public void SetLooking(bool isRight)
 	{
