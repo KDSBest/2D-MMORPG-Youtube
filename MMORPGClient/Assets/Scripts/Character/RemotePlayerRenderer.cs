@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RemotePlayerRenderer : MonoBehaviour
 {
-	public Transform Renderer;
+	public Transform MirrorTransform;
 	public Animator Animator;
 
 	public void SetAnimation(int animation)
@@ -14,10 +14,10 @@ public class RemotePlayerRenderer : MonoBehaviour
 
 	public void SetLooking(bool isRight)
 	{
-		float xScaleAbs = Math.Abs(Renderer.localScale.x);
+		float xScaleAbs = Math.Abs(MirrorTransform.localScale.x);
 		if (isRight)
-			Renderer.localScale = new Vector3(xScaleAbs, Renderer.localScale.y, Renderer.localScale.z);
+			MirrorTransform.localScale = new Vector3(xScaleAbs, MirrorTransform.localScale.y, MirrorTransform.localScale.z);
 		else
-			Renderer.localScale = new Vector3(-xScaleAbs, Renderer.localScale.y, Renderer.localScale.z);
+			MirrorTransform.localScale = new Vector3(-xScaleAbs, MirrorTransform.localScale.y, MirrorTransform.localScale.z);
 	}
 }

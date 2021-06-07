@@ -15,7 +15,7 @@ namespace Assets.Scripts.Character
 		private IPubSub pubsub;
 		public Rigidbody2D Rigidbody2D;
 		public float Speed = 20;
-		public Transform BodyRenderer;
+		public Transform MirrorTransform;
 		public CircleCollider2D FloorCollider;
 		public LayerMask FloorLayer;
 		private ContactFilter2D floorFilter;
@@ -65,7 +65,7 @@ namespace Assets.Scripts.Character
 			PlayerState state = new PlayerState()
 			{
 				Animation = Animator.GetInteger(Constants.AnimationStateName),
-				IsLookingRight = BodyRenderer.localScale.x > 0,
+				IsLookingRight = MirrorTransform.localScale.x > 0,
 				Position = new System.Numerics.Vector2(this.transform.position.x, this.transform.position.y)
 			};
 			pubsub.Publish(state);
@@ -73,16 +73,16 @@ namespace Assets.Scripts.Character
 
 		private bool HandleMoving()
 		{
-			float xScaleAbs = Math.Abs(BodyRenderer.localScale.x);
+			float xScaleAbs = Math.Abs(MirrorTransform.localScale.x);
 			if (movementVector.x < 0)
 			{
-				BodyRenderer.localScale = new Vector3(-xScaleAbs, BodyRenderer.localScale.y, BodyRenderer.localScale.z);
+				MirrorTransform.localScale = new Vector3(-xScaleAbs, MirrorTransform.localScale.y, MirrorTransform.localScale.z);
 				Rigidbody2D.velocity = new Vector2(-Speed, Rigidbody2D.velocity.y);
 				return true;
 			}
 			else if (movementVector.x > 0)
 			{
-				BodyRenderer.localScale = new Vector3(xScaleAbs, BodyRenderer.localScale.y, BodyRenderer.localScale.z);
+				MirrorTransform.localScale = new Vector3(xScaleAbs, MirrorTransform.localScale.y, MirrorTransform.localScale.z);
 				Rigidbody2D.velocity = new Vector2(Speed, Rigidbody2D.velocity.y);
 				return true;
 			}
