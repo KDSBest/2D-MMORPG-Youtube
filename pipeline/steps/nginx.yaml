@@ -1,0 +1,33 @@
+parameters:
+- name: Subscription
+  type: string
+  default: $(Subscription)
+
+- name: ClusterName
+  type: string
+  default: $(GameName)
+
+- name: RGName
+  type: string
+  default: $(GameName)-rg
+
+- name: WorkingDir
+  type: string
+  default: $(System.DefaultWorkingDirectory)/charts
+
+steps:
+- task: AzureCLI@2
+  displayName: Install Nginx
+  inputs:
+    azureSubscription: ${{ parameters.Subscription }}
+    scriptType: 'pscore'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      Write-Host "Get KubeConfig"
+      az aks get-credentials --name ${{ parameters.ClusterName }} --resource-group ${{ parameters.RGName }}
+
+      Write-Host "Go to WorkingDir"
+      cd ${{ parameters.WorkingDir }}
+
+      Write-Host "Install Nginx"
+      helm upgrade nginx-ingress ./ingress-nginx/charts/ingress-nginx/ -f ./ingress-nginx-values.yaml --namespace nginx-ingress --create-namespace -i

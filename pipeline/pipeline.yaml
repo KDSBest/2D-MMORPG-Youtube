@@ -1,7 +1,7 @@
 parameters:
 - name: ExecuteTerraform
   type: boolean
-  default: true
+  default: false
 
 trigger: none
 
@@ -122,3 +122,17 @@ stages:
         clean: all
     steps:
     - template: steps/monitoring.yaml
+
+- stage: Nginx
+  displayName: Nginx
+  dependsOn:
+  - Monitoring
+  jobs:
+  - job: Nginx
+    displayName: Nginx
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/nginx.yaml

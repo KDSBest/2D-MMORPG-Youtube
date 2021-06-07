@@ -1,11 +1,11 @@
 imagePullSecrets:
   - name: acr-secret
 
-characterPort: 30001
-worldChatPort: 30002
-mapTownPort: 31000
-mapFieldPort: 31001
-loginPort: 30000
+characterPort: 3335
+worldChatPort: 3333
+mapTownPort: 3336
+mapFieldPort: 3337
+loginPort: 3334
 
 cosmosUrl: "@@{CosmosUrl}@@"
 cosmosKey: "@@{CosmosKey}@@"
@@ -15,7 +15,7 @@ characterServiceImage: "@@{GameName}@@acr.azurecr.io/characterservice:@@{Build.B
 worldChatServiceImage: "@@{GameName}@@acr.azurecr.io/worldchatservice:@@{Build.BuildNumber}@@"
 mapServiceImage: "@@{GameName}@@acr.azurecr.io/mapservice:@@{Build.BuildNumber}@@"
 
-serviceType: LoadBalancer
+serviceType: ClusterIP
 characterDNS: "@@{GameName}@@char"
 loginDNS: "@@{GameName}@@account"
 mapFieldDNS: "@@{GameName}@@mapfield"

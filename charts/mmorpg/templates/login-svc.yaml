@@ -2,8 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: login-svc
+  {{- if eq .Values.serviceType "LoadBalancer" }}
   annotations:
     service.beta.kubernetes.io/azure-dns-label-name: {{ .Values.loginDNS }}
+  {{- end }}
   labels:
     app: login
 spec:

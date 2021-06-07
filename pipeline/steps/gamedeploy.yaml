@@ -98,7 +98,7 @@ steps:
       Write-Host "Get KubeConfig"
       az aks get-credentials --name ${{ parameters.ClusterName }} --resource-group ${{ parameters.RGName }}
 
-      Write-Host "Add Helm Repo"
+      Write-Host "Go to WorkingDir"
       cd ${{ parameters.WorkingDir }}
 
       Write-Host "Helm Package"

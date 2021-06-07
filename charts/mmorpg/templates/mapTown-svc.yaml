@@ -2,8 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: maptown-svc
+  {{- if eq .Values.serviceType "LoadBalancer" }}
   annotations:
     service.beta.kubernetes.io/azure-dns-label-name: {{ .Values.mapTownDNS }}
+  {{- end }}
   labels:
     app: maptown
     {{ include "mmorpg.labels" . | nindent 4 }}
