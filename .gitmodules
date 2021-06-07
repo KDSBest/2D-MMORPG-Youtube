@@ -4,3 +4,6 @@
 [submodule "charts/ingress-nginx"]
 	path = charts/ingress-nginx
 	url = https://github.com/kubernetes/ingress-nginx.git
+[submodule "charts/prometheus"]
+	path = charts/prometheus
+	url = https://github.com/prometheus-community/helm-charts.git
