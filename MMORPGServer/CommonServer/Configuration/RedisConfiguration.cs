@@ -9,6 +9,7 @@
 #endif
 
         public static readonly string WorldChatChannelPrefix = "WorldChat";
-        public static readonly string MapChannelPrefix = "Map-";
+        public static readonly string MapChannelNewStatePrefix = "MapState-";
+        public static readonly string MapChannelRemoveStatePrefix = "MapRemove-";
     }
 }

@@ -19,8 +19,8 @@ namespace MapService.WorldManagement
 		public void Initialize()
 		{
 			pubsub = DI.Instance.Resolve<IPubSub>();
-			RedisPubSub.Subscribe<PlayerStateMessage>(MapConfiguration.MapName, OnNewPlayerState);
-			RedisPubSub.Subscribe<RemoveStateMessage>(MapConfiguration.MapName, OnDisconnectedPlayer);
+			RedisPubSub.Subscribe<PlayerStateMessage>(RedisConfiguration.MapChannelNewStatePrefix + MapConfiguration.MapName, OnNewPlayerState);
+			RedisPubSub.Subscribe<RemoveStateMessage>(RedisConfiguration.MapChannelRemoveStatePrefix + MapConfiguration.MapName, OnDisconnectedPlayer);
 		}
 
 		private void OnDisconnectedPlayer(RedisChannel channel, RemoveStateMessage msg)

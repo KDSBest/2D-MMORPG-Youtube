@@ -42,7 +42,7 @@ namespace MapService
 		{
 			pubsub.Unsubscribe<RemoveStateMessage>(name);
 			pubsub.Unsubscribe<PlayerWorldEvent<PlayerStateMessage>>(name);
-			RedisPubSub.Publish<RemoveStateMessage>(MapConfiguration.MapName, new RemoveStateMessage()
+			RedisPubSub.Publish<RemoveStateMessage>(RedisConfiguration.MapChannelRemoveStatePrefix + MapConfiguration.MapName, new RemoveStateMessage()
 			{
 				Name = name,
 				ServerTime = DateTime.UtcNow.Ticks
@@ -72,7 +72,7 @@ namespace MapService
 
 				mapPartitionManagement.UpdatePlayerPartitionRegistrations(playerStateMessage);
 
-				RedisPubSub.Publish<PlayerStateMessage>(MapConfiguration.MapName, playerStateMessage);
+				RedisPubSub.Publish<PlayerStateMessage>(RedisConfiguration.MapChannelNewStatePrefix + MapConfiguration.MapName, playerStateMessage);
 
 				var worldPackage = worldState.GetPackage(maxPackageSize);
 				if(worldPackage.Length > 0)
