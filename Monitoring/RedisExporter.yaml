@@ -10,8 +10,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-        app.kubernetes.io/managed-by: Helm
-        chart: prometheus-redis-exporter-3.5.1
+      app: prometheus-redis-exporter
   endpoints:
   - interval: 15s
     path: /metrics
