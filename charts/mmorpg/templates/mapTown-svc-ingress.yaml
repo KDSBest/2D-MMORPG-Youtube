@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: maptown-svc
+
+spec:
+  entryPoints:
+    - maptown
+  routes:
+  - services:
+    - name: maptown-svc
+      port: 3336

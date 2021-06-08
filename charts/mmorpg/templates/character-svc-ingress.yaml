@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: character-svc
+
+spec:
+  entryPoints:
+    - character
+  routes:
+  - services:
+    - name: character-svc
+      port: 3335

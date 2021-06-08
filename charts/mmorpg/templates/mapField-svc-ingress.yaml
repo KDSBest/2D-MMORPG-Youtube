@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: mapfield-svc
+
+spec:
+  entryPoints:
+    - mapfield
+  routes:
+  - services:
+    - name: mapfield-svc
+      port: 3336

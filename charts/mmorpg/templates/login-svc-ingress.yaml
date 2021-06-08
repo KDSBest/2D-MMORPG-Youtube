@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: login-svc
+
+spec:
+  entryPoints:
+    - login
+  routes:
+  - services:
+    - name: login-svc
+      port: 3334

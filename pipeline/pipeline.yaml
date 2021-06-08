@@ -92,23 +92,6 @@ stages:
         ServicePath: MapService
         RepositoryName: mapservice
 
-- stage: GameDeploy
-  displayName: GameDeploy
-  dependsOn:
-  - LoginService
-  - CharacterService
-  - WorldChatService
-  - MapService
-  jobs:
-  - job: GameDeploy
-    displayName: GameDeploy
-    pool: 
-      vmImage: ubuntu-latest
-    workspace:
-        clean: all
-    steps:
-    - template: steps/gamedeploy.yaml
-
 - stage: Monitoring
   displayName: Monitoring
   dependsOn:
@@ -123,16 +106,34 @@ stages:
     steps:
     - template: steps/monitoring.yaml
 
-- stage: Nginx
-  displayName: Nginx
+- stage: Traefik
+  displayName: Traefik
   dependsOn:
-  - Monitoring
+  - Infrastructure
   jobs:
-  - job: Nginx
-    displayName: Nginx
+  - job: Traefik
+    displayName: Traefik
     pool: 
       vmImage: ubuntu-latest
     workspace:
         clean: all
     steps:
-    - template: steps/nginx.yaml
+    - template: steps/traefik.yaml
+
+- stage: GameDeploy
+  displayName: GameDeploy
+  dependsOn:
+  - LoginService
+  - CharacterService
+  - WorldChatService
+  - MapService
+  - Traefik
+  jobs:
+  - job: GameDeploy
+    displayName: GameDeploy
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/gamedeploy.yaml

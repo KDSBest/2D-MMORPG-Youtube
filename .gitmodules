@@ -1,9 +1,9 @@
 [submodule "MMORPGServer/UnityAzureNetworkEngine"]
 	path = MMORPGServer/UnityAzureNetworkEngine
 	url = https://github.com/KDSBest/Unity-Azure-Network-Engine.git
-[submodule "charts/ingress-nginx"]
-	path = charts/ingress-nginx
-	url = https://github.com/kubernetes/ingress-nginx.git
 [submodule "charts/prometheus"]
 	path = charts/prometheus
 	url = https://github.com/prometheus-community/helm-charts.git
+[submodule "charts/traefik"]
+	path = charts/traefik
+	url = https://github.com/KDSBest/traefik-helm-chart.git

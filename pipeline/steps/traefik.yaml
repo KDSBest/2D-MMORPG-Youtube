@@ -29,5 +29,5 @@ steps:
       Write-Host "Go to WorkingDir"
       cd ${{ parameters.WorkingDir }}
 
-      Write-Host "Install Nginx"
-      helm upgrade nginx-ingress ./ingress-nginx/charts/ingress-nginx/ -f ./ingress-nginx-values.yaml --namespace nginx-ingress --create-namespace -i
+      Write-Host "Install Traefik"
+      helm upgrade traefik ./traefik/traefik/ -f ./traefik-values.yaml --namespace traefik --create-namespace -i

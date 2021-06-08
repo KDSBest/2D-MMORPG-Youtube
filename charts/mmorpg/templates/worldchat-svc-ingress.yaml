@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: worldchat-svc
+
+spec:
+  entryPoints:
+    - worldchat
+  routes:
+  - services:
+    - name: worldchat-svc
+      port: 3333
