@@ -77,6 +77,6 @@ resource "azurerm_container_registry" "acr" {
   name                     = "${var.cluster_name}acr"
   resource_group_name      = azurerm_resource_group.k8s.name
   location                 = azurerm_resource_group.k8s.location
-  sku                      = "Standard"
+  sku                      = "Basic"
   admin_enabled            = true
 }

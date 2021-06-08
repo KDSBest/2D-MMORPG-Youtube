@@ -1,7 +1,7 @@
 parameters:
 - name: ExecuteTerraform
   type: boolean
-  default: false
+  default: true
 
 trigger: none
 
