@@ -192,7 +192,7 @@ namespace Assets.Scripts
 
 			UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToLogin);
 
-            Task<bool> connectTask = loginClient.ConnectAsync("kdsmmorpg.westeurope.cloudapp.azure.com", 3334);
+            Task<bool> connectTask = loginClient.ConnectAsync("localhost", 3334);
 
             while(!connectTask.Wait(waitMS))
 			{
