@@ -28,10 +28,12 @@ namespace LoginService
 		public async Task OnStartAsync(UdpPeer peer)
 		{
 			this.peer = peer;
+			Console.WriteLine($"Peer Connected: {peer.ConnectId} - {peer.EndPoint.Host}:{peer.EndPoint.Port}");
 		}
 
 		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
+			Console.WriteLine($"Peer Disconnected: {peer.ConnectId} - {peer.EndPoint.Host}:{peer.EndPoint.Port}");
 		}
 
 		public async Task OnLatencyUpdateAsync(int latency)
