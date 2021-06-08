@@ -40,4 +40,4 @@ steps:
       helm upgrade -i redis-exporeter ./prometheus/charts/prometheus-redis-exporter --namespace prometheus --set "redisAddress=${{ parameters.RedisUrl }}"
 
       Write-Host "Install Prometheus Target"
-      kubectl apply -f $(System.DefaultWorkingDirectory)/Monitoring/RedisExporter.yaml --namespace prometheus
+      kubectl apply -f ./RedisExporter.yaml --namespace prometheus
