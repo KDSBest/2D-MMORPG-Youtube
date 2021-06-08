@@ -17,7 +17,7 @@ parameters:
 
 steps:
 - task: AzureCLI@2
-  displayName: Install Nginx
+  displayName: Install Traefik
   inputs:
     azureSubscription: ${{ parameters.Subscription }}
     scriptType: 'pscore'
