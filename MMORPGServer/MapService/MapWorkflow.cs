@@ -71,7 +71,11 @@ namespace MapService
 
 				playerStateMessage.Name = this.name;
 
-				mapPartitionManagement.UpdatePlayerPartitionRegistrations(playerStateMessage);
+				var removedPartitions = mapPartitionManagement.UpdatePlayerPartitionRegistrations(playerStateMessage);
+				foreach(var removedPartition in removedPartitions)
+				{
+					RemovePartition(removedPartition);
+				}
 
 				RedisPubSub.Publish<PlayerStateMessage>(RedisConfiguration.MapChannelNewStatePrefix + MapConfiguration.MapName, playerStateMessage);
 
@@ -98,12 +102,6 @@ namespace MapService
 			name = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
 			pubsub.Subscribe<PlayerWorldEvent<PlayerStateMessage>>(OnNewPlayerState, name);
 			pubsub.Subscribe<RemoveStateMessage>(OnPlayerDisconnected, name);
-			pubsub.Subscribe<RemovePartitionMessage>(OnRemovePartition, name);
-		}
-
-		private void OnRemovePartition(RemovePartitionMessage msg)
-		{
-			RemovePartition(msg.Partition);
 		}
 
 		private void OnPlayerDisconnected(RemoveStateMessage msg)

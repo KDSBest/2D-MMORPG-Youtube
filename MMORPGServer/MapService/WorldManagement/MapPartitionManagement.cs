@@ -19,20 +19,22 @@ namespace MapService.WorldManagement
 			pubsub = DI.Instance.Resolve<IPubSub>();
 		}
 
-		public void UpdatePlayerPartitionRegistrations(PlayerStateMessage playerStateMessage)
+		public List<Vector2Int> UpdatePlayerPartitionRegistrations(PlayerStateMessage playerStateMessage)
 		{
 			var newPartition = new Vector2Int(playerStateMessage.Position);
 
 			if (newPartition == lastPartition)
-				return;
+				return new List<Vector2Int>();
 
 			RegisterPartitionsAround(newPartition);
-			UnregisterTooFarPartitions(newPartition, playerStateMessage.ServerTime);
 			lastPartition = newPartition;
+			return UnregisterTooFarPartitions(newPartition, playerStateMessage.ServerTime);
 		}
 
-		private void UnregisterTooFarPartitions(Vector2Int newPartition, long serverTime)
+		private List<Vector2Int> UnregisterTooFarPartitions(Vector2Int newPartition, long serverTime)
 		{
+			List<Vector2Int> removedPartitions = new List<Vector2Int>();
+
 			var cloned = registeredPartitions.ToList();
 			foreach(var partition in cloned)
 			{
@@ -42,13 +44,11 @@ namespace MapService.WorldManagement
 				if (dist > MapConfiguration.UnregistrationBorder)
 				{
 					registeredPartitions.Remove(partition);
-					pubsub.Publish(new RemovePartitionMessage()
-					{
-						ServerTime = serverTime,
-						Partition = partition
-					});
+					removedPartitions.Add(partition);
 				}
 			}
+
+			return removedPartitions;
 		}
 
 		private void RegisterPartitionsAround(Vector2Int lastPartition)
