@@ -46,7 +46,8 @@ namespace MapService
 			RedisPubSub.Publish<RemoveStateMessage>(RedisConfiguration.MapChannelRemoveStatePrefix + MapConfiguration.MapName, new RemoveStateMessage()
 			{
 				Name = name,
-				ServerTime = DateTime.UtcNow.Ticks
+				ServerTime = DateTime.UtcNow.Ticks,
+				Partition = new Vector2Int(0, 0)
 			});
 		}
 
@@ -106,7 +107,10 @@ namespace MapService
 
 		private void OnPlayerDisconnected(RemoveStateMessage msg)
 		{
-			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Reliable);
+			if(mapPartitionManagement.IsRegistered(msg.Partition))
+			{
+				UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Reliable);
+			}
 		}
 
 		private void OnNewPlayerState(PlayerWorldEvent<PlayerStateMessage> pwe)
@@ -144,7 +148,8 @@ namespace MapService
 			UdpManager.SendMsg(this.peer.ConnectId, new RemoveStateMessage()
 			{
 				Name = name,
-				ServerTime = DateTime.UtcNow.Ticks
+				ServerTime = DateTime.UtcNow.Ticks,
+				Partition = new Vector2Int(0, 0)
 			}, ChannelType.Reliable);
 		}
 	}

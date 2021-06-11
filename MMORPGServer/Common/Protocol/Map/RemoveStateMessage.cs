@@ -6,6 +6,7 @@ namespace Common.Protocol.Map
     {
         public string Name { get; set; } = string.Empty;
         public long ServerTime { get; set; }
+        public Vector2Int Partition { get; set; }
 
         public RemoveStateMessage() : base(MessageType.RemoveState)
         {
@@ -15,13 +16,15 @@ namespace Common.Protocol.Map
         {
             writer.Put(Name);
             writer.Put(ServerTime);
+            writer.Put(Partition.X);
+            writer.Put(Partition.Y);
         }
 
         protected override bool ReadData(UdpDataReader reader)
         {
             Name = reader.GetString();
             ServerTime = reader.GetLong();
-
+            Partition = new Vector2Int(reader.GetInt(), reader.GetInt());
             return true;
         }
     }

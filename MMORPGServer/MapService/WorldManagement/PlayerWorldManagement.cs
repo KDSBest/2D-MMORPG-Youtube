@@ -26,9 +26,12 @@ namespace MapService.WorldManagement
 
 		private void OnDisconnectedPlayer(RedisChannel channel, RemoveStateMessage msg)
 		{
-			pubsub.Publish(msg);
 			LastPlayerPosition.TryRemove(msg.Name, out var x);
-			LastPlayerPartition.TryRemove(msg.Name, out var y);
+			if(LastPlayerPartition.TryRemove(msg.Name, out var lastPlayerPartition))
+			{
+				msg.Partition = lastPlayerPartition;
+				pubsub.Publish(msg);
+			}
 		}
 
 		private void OnNewPlayerState(RedisChannel channel, PlayerStateMessage msg)
