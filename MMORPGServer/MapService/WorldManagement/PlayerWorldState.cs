@@ -1,4 +1,6 @@
-﻿using ReliableUdp.Utility;
+﻿using Common;
+using ReliableUdp.Utility;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,5 +56,12 @@ namespace MapService.WorldManagement
 
             return writer;
         }
-    }
+
+		public List<State> GetState(Vector2Int partition)
+		{
+            // ToList needed because we want a cloned list
+            // TODO: Optimize in own Dictionary so we don't have to traverse a dictionary (that is actually quite slow)
+            return statesManagement.Values.Where(x => x.Partition == partition).ToList();
+		}
+	}
 }

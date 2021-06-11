@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MapService
+namespace Common
 {
 	public static class MapConfiguration
 	{

@@ -15,6 +15,7 @@
         CharacterRequest = 61,
         PlayerState = 80,
         TimeSync = 81,
-        RemoveState = 82
+        RemoveState = 82,
+        RemovePartition = 83
     }
 }

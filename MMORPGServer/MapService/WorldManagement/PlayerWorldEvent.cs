@@ -1,12 +1,14 @@
-﻿namespace MapService.WorldManagement
+﻿using Common;
+
+namespace MapService.WorldManagement
 {
 	public class PlayerWorldEvent<T>
 	{
 		public T State;
-		public MapPartition OldPartition;
-		public MapPartition NewPartition;
+		public Vector2Int OldPartition;
+		public Vector2Int NewPartition;
 
-		public PlayerWorldEvent(T state, MapPartition newPartition, MapPartition oldPartition)
+		public PlayerWorldEvent(T state, Vector2Int newPartition, Vector2Int oldPartition)
 		{
 			State = state;
 			OldPartition = oldPartition;

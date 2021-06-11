@@ -1,4 +1,5 @@
-﻿using Common.IoC;
+﻿using Common;
+using Common.IoC;
 using Common.Protocol.Map;
 using Common.PublishSubscribe;
 using CommonServer.Configuration;
@@ -13,7 +14,7 @@ namespace MapService.WorldManagement
 	public class PlayerWorldManagement : IPlayerWorldManagement
 	{
 		private ConcurrentDictionary<string, PlayerStateMessage> LastPlayerPosition = new ConcurrentDictionary<string, PlayerStateMessage>();
-		private ConcurrentDictionary<string, MapPartition> LastPlayerPartition = new ConcurrentDictionary<string, MapPartition>();
+		private ConcurrentDictionary<string, Vector2Int> LastPlayerPartition = new ConcurrentDictionary<string, Vector2Int>();
 		private IPubSub pubsub;
 
 		public void Initialize()
@@ -32,8 +33,8 @@ namespace MapService.WorldManagement
 
 		private void OnNewPlayerState(RedisChannel channel, PlayerStateMessage msg)
 		{
-			MapPartition oldPartition = null;
-			MapPartition newPartition = new MapPartition(msg);
+			Vector2Int oldPartition = null;
+			Vector2Int newPartition = new Vector2Int(msg);
 			if(LastPlayerPartition.ContainsKey(msg.Name))
 			{
 				oldPartition = LastPlayerPartition[msg.Name];

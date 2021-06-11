@@ -13,6 +13,7 @@ using CommonServer.Redis;
 using MapService.WorldManagement;
 using Common.IoC;
 using Common.PublishSubscribe;
+using Common;
 
 namespace MapService
 {
@@ -97,6 +98,12 @@ namespace MapService
 			name = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
 			pubsub.Subscribe<PlayerWorldEvent<PlayerStateMessage>>(OnNewPlayerState, name);
 			pubsub.Subscribe<RemoveStateMessage>(OnPlayerDisconnected, name);
+			pubsub.Subscribe<RemovePartitionMessage>(OnRemovePartition, name);
+		}
+
+		private void OnRemovePartition(RemovePartitionMessage msg)
+		{
+			RemovePartition(msg.Partition);
 		}
 
 		private void OnPlayerDisconnected(RemoveStateMessage msg)
@@ -110,18 +117,37 @@ namespace MapService
 			{
 				if(pwe.OldPartition != null && mapPartitionManagement.IsRegistered(pwe.OldPartition))
 				{
-					worldState.RemoveState(pwe.State.Name);
-
-					UdpManager.SendMsg(this.peer.ConnectId, new RemoveStateMessage()
-					{
-						Name = pwe.State.Name,
-						ServerTime = DateTime.UtcNow.Ticks
-					}, ChannelType.Reliable);
+					RemoveState(pwe.State.Name);
 				}
 				return;
 			}
 
-			worldState.AddState(pwe.State.Name, new State(pwe.State, MapConfiguration.PlayerPriority));
+			worldState.AddState(pwe.State.Name, new State(pwe.State.Name, pwe.State, MapConfiguration.PlayerPriority, pwe.NewPartition));
+		}
+
+		private void RemovePartition(Vector2Int partition)
+		{
+			var partitionState = worldState.GetState(partition);
+			foreach(var state in partitionState)
+			{
+				RemoveState(state.Id);
+			}
+		}
+
+		private void RemoveState(string name)
+		{
+			worldState.RemoveState(name);
+
+			SendRemoveState(name);
+		}
+
+		private void SendRemoveState(string name)
+		{
+			UdpManager.SendMsg(this.peer.ConnectId, new RemoveStateMessage()
+			{
+				Name = name,
+				ServerTime = DateTime.UtcNow.Ticks
+			}, ChannelType.Reliable);
 		}
 	}
 
