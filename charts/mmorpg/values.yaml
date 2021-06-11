@@ -21,3 +21,5 @@ loginDNS: "@@{GameName}@@account"
 mapFieldDNS: "@@{GameName}@@mapfield"
 mapTownDNS: "@@{GameName}@@maptown"
 worldChatDNS: "@@{GameName}@@worldchat"
+
+jwtSecret: "@@{JwtSecret}@@"

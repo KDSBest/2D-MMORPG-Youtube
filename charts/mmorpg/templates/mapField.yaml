@@ -41,3 +41,5 @@ spec:
             secretKeyRef:
               name: cosmossecret
               key: CosmosKey
+        - name: JwtSecret
+          value: {{ .Values.jwtSecret }}
