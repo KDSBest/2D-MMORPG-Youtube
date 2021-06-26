@@ -1,3 +1,4 @@
+using Assets.Scripts.Character;
 using Assets.Scripts.PubSubEvents.StartUI;
 using Common.IoC;
 using Common.Protocol.Character;
@@ -49,7 +50,7 @@ namespace Assets.Scripts.UI
             if (!CharacterScreen.activeSelf)
                 return;
 
-            Debug.Log($"Got Char Message with Name: {charMessage.Character.Name} and Token: {charMessage.Token}");
+            UnityEngine.Debug.Log($"Got Char Message with Name: {charMessage.Character.Name} and Token: {charMessage.Token}");
             Eyes.value = charMessage.Character.Eyes;
             Colors.value = charMessage.Character.Color;
             Name.text = charMessage.Character.Name;

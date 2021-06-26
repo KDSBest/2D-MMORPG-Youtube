@@ -4,13 +4,17 @@ using UnityEngine;
 using TMPro;
 using Assets.Scripts.Character;
 
-public class PlayerCountTracker : MonoBehaviour
+namespace Assets.Scripts.Debug
 {
-    public TMP_Text DebugText;
-    public RemotePlayerManagement PlayerManagement;
 
-    public void Update()
+    public class PlayerCountTracker : MonoBehaviour
     {
-        DebugText.text = $"{PlayerManagement.PlayerCount}"; 
+        public TMP_Text DebugText;
+        public RemotePlayerManagement PlayerManagement;
+
+        public void Update()
+        {
+            DebugText.text = $"{PlayerManagement.PlayerCount}";
+        }
     }
 }

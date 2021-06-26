@@ -5,7 +5,6 @@ using Common.Client;
 using Common.Client.Interfaces;
 using Common.IoC;
 using Common.PublishSubscribe;
-using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -17,8 +16,6 @@ namespace Assets.Scripts
 		{
 			if (isInitialized)
 				return;
-
-			Debug.Log("Init DI");
 
 			DI.Instance.Register<ILanguage>(() => new LanguageEn(), RegistrationType.Singleton);
 			DI.Instance.Register<ICurrentContext>(() => new CurrentContext(), RegistrationType.Singleton);

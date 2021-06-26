@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class LocationDebugInfo : MonoBehaviour
+namespace Assets.Scripts.Debug
 {
-    public TMP_Text DebugText;
-    public Transform TrackTransform;
-
-    public void Update()
+    public class LocationDebugInfo : MonoBehaviour
     {
-        DebugText.text = $"({TrackTransform.position.x.ToString("0.00")}, {TrackTransform.position.y.ToString("0.00")}, {TrackTransform.position.z.ToString("0.00")})"; 
+        public TMP_Text DebugText;
+        public Transform TrackTransform;
+
+        public void Update()
+        {
+            DebugText.text = $"({TrackTransform.position.x.ToString("0.00")}, {TrackTransform.position.y.ToString("0.00")}, {TrackTransform.position.z.ToString("0.00")})";
+        }
     }
 }
