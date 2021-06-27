@@ -45,7 +45,8 @@ namespace Assets.Scripts.Behaviour.Editor
             {
                 File.WriteAllText(path, JsonConvert.SerializeObject(graph, new JsonSerializerSettings()
                 {
-                    TypeNameHandling = TypeNameHandling.Auto
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    Formatting = Formatting.Indented
                 }));
             }
         }

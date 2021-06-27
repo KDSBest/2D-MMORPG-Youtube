@@ -1,1 +1,132 @@
-{"Properties":[{"$type":"Assets.Scripts.Behaviour.Data.TextBehaviourGraphProperty, Assembly-CSharp","Guid":"6d8bf18c-072b-452d-920e-c87abb23d6ee","Type":"System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089","Name":"A","DefaultValue":"B"},{"$type":"Assets.Scripts.Behaviour.Data.TextBehaviourGraphProperty, Assembly-CSharp","Guid":"e99ad43b-d392-401c-947e-bc50900123fe","Type":"System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089","Name":"CC","DefaultValue":"DD"}],"Comments":[{"ChildNodes":["5741e4d6-37d4-4584-9164-5f1c603c3d43","6e3a6b7d-e6c1-49bc-aa53-fd3b88f5a1ac"],"Position":{"X":387.0,"Y":300.0},"Title":"Comment"}],"Nodes":{"00000000-0000-0000-0000-000000000000":{"Position":{"X":85.0,"Y":443.0},"Guid":"00000000-0000-0000-0000-000000000000","Text":"ENTRYPOINT","Choices":[{"Text":"Next","GuidNext":"5741e4d6-37d4-4584-9164-5f1c603c3d43"}]},"5741e4d6-37d4-4584-9164-5f1c603c3d43":{"Position":{"X":412.0,"Y":359.0},"Guid":"5741e4d6-37d4-4584-9164-5f1c603c3d43","Text":"Welcome to Box World!","Choices":[{"Text":"More Info","GuidNext":"6e3a6b7d-e6c1-49bc-aa53-fd3b88f5a1ac"},{"Text":"Bye!","GuidNext":"00000000-0000-0000-0000-000000000000"}]},"6e3a6b7d-e6c1-49bc-aa53-fd3b88f5a1ac":{"Position":{"X":806.0,"Y":370.0},"Guid":"6e3a6b7d-e6c1-49bc-aa53-fd3b88f5a1ac","Text":"Nice\nMultiline\nText","Choices":[{"Text":"Great Choice","GuidNext":"147755ff-b60c-426c-8588-fac5a94cd728"}]},"147755ff-b60c-426c-8588-fac5a94cd728":{"Position":{"X":1290.0,"Y":383.0},"Guid":"147755ff-b60c-426c-8588-fac5a94cd728","Text":"Node","Choices":[]}}}
+{
+  "Properties": [
+    {
+      "$type": "Assets.Scripts.Behaviour.Data.TextBehaviourGraphProperty, Assembly-CSharp",
+      "Guid": "b503eae9-8288-42ca-a320-109bcd8665b1",
+      "Type": "System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+      "Name": "NPC Name",
+      "DefaultValue": "Azreal"
+    }
+  ],
+  "Groups": [
+    {
+      "ChildNodes": [
+        "fd53ea15-708f-4003-96d0-1581718c0bc6",
+        "19f22358-6535-4840-899d-b2ae06670121",
+        "2a4127c0-6055-4392-a853-7d1882984830"
+      ],
+      "Position": {
+        "X": 645.0,
+        "Y": 292.0
+      },
+      "Title": "Has Quest Finished"
+    }
+  ],
+  "Nodes": {
+    "00000000-0000-0000-0000-000000000000": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.EntryPointNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 102.0,
+        "Y": 400.0
+      },
+      "Start": "c4fac56d-5ac2-40bf-b160-7499a417505e",
+      "Guid": "00000000-0000-0000-0000-000000000000"
+    },
+    "c4fac56d-5ac2-40bf-b160-7499a417505e": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 317.0,
+        "Y": 379.0
+      },
+      "Text": "Hi!",
+      "Choices": [
+        {
+          "Text": "Hi!",
+          "GuidNext": "fd53ea15-708f-4003-96d0-1581718c0bc6"
+        }
+      ],
+      "Guid": "c4fac56d-5ac2-40bf-b160-7499a417505e"
+    },
+    "2a4127c0-6055-4392-a853-7d1882984830": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 1054.0,
+        "Y": 509.0
+      },
+      "Text": "Can I help you?",
+      "Choices": [
+        {
+          "Text": "Where am I?",
+          "GuidNext": "b0da3095-f687-4837-9f3f-f1179ac01159"
+        },
+        {
+          "Text": "No Thanks!",
+          "GuidNext": "00000000-0000-0000-0000-000000000000"
+        }
+      ],
+      "Guid": "2a4127c0-6055-4392-a853-7d1882984830"
+    },
+    "19f22358-6535-4840-899d-b2ae06670121": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 953.0,
+        "Y": 351.0
+      },
+      "Text": "Can I help you?",
+      "Choices": [
+        {
+          "Text": "No Thanks",
+          "GuidNext": "00000000-0000-0000-0000-000000000000"
+        }
+      ],
+      "Guid": "19f22358-6535-4840-899d-b2ae06670121"
+    },
+    "b0da3095-f687-4837-9f3f-f1179ac01159": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 1672.0,
+        "Y": 460.0
+      },
+      "Text": "You are in Block World!\nIt looks like you are the chosen one!",
+      "Choices": [
+        {
+          "Text": "What are you talking about?",
+          "GuidNext": "664a9576-1cd2-4b06-842c-3b89f4309a2d"
+        }
+      ],
+      "Guid": "b0da3095-f687-4837-9f3f-f1179ac01159"
+    },
+    "6f761121-e75f-495d-ad30-8ef4a413acb4": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 2678.0,
+        "Y": 411.0
+      },
+      "Text": "Take this and leave!",
+      "Choices": [],
+      "Guid": "6f761121-e75f-495d-ad30-8ef4a413acb4"
+    },
+    "fd53ea15-708f-4003-96d0-1581718c0bc6": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.BackendCallNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 670.0,
+        "Y": 355.0
+      },
+      "Call": "Quest.IsFinished(\"Intro\")",
+      "NextTrue": "19f22358-6535-4840-899d-b2ae06670121",
+      "NextFalse": "2a4127c0-6055-4392-a853-7d1882984830",
+      "Guid": "fd53ea15-708f-4003-96d0-1581718c0bc6"
+    },
+    "664a9576-1cd2-4b06-842c-3b89f4309a2d": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.BackendCallNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 2305.0,
+        "Y": 448.0
+      },
+      "Call": "Quest.Finish(\"Intro\")",
+      "NextTrue": "6f761121-e75f-495d-ad30-8ef4a413acb4",
+      "NextFalse": "00000000-0000-0000-0000-000000000000",
+      "Guid": "664a9576-1cd2-4b06-842c-3b89f4309a2d"
+    }
+  }
+}

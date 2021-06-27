@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Assets.Scripts.Behaviour.Data
+namespace Assets.Scripts.Behaviour.Data.Nodes
 {
 	[Serializable]
     public class ChoiceData

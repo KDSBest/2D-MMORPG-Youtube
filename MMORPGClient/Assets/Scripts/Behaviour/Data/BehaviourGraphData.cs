@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Behaviour.Data.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Assets.Scripts.Behaviour.Data
 	public class BehaviourGraphData
 	{
 		public List<IBehaviourGraphProperty> Properties { get; set; } = new List<IBehaviourGraphProperty>();
-		public List<CommentBlockData> Comments { get; set; } = new List<CommentBlockData>();
-		public Dictionary<Guid, DialogNodeData> Nodes { get; set; } = new Dictionary<Guid, DialogNodeData>();
+		public List<GroupData> Groups { get; set; } = new List<GroupData>();
+		public Dictionary<Guid, BaseNodeData> Nodes { get; set; } = new Dictionary<Guid, BaseNodeData>();
 	}
 }
