@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DailyLoginService": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

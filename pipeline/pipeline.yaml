@@ -92,6 +92,40 @@ stages:
         ServicePath: MapService
         RepositoryName: mapservice
 
+- stage: DailyLoginService
+  displayName: DailyLoginService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: DailyLoginService
+    displayName: DailyLoginService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: DailyLoginService
+        RepositoryName: dailyloginservice
+
+- stage: InventoryEventProcessorService
+  displayName: InventoryEventProcessorService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: InventoryEventProcessorService
+    displayName: InventoryEventProcessorService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: InventoryEventProcessorService
+        RepositoryName: inventoryeventprocessorservice
+
 - stage: Monitoring
   displayName: Monitoring
   dependsOn:

@@ -5,6 +5,7 @@ using Common.Protocol.Character;
 using Common.Protocol.Chat;
 using Common.Protocol.Login;
 using Common.PublishSubscribe;
+using CommonServer.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -29,7 +30,7 @@ namespace ChatClient
 			Console.WriteLine("Enter Password:");
 			password = Console.ReadLine();
 			loginClient = new LoginClient();
-			bool connected = await loginClient.ConnectAsync("localhost", 30000);
+			bool connected = await loginClient.ConnectAsync("localhost", PortConfiguration.LoginPort);
 			if (connected)
 			{
 				Console.WriteLine("Connected to Login Server.");

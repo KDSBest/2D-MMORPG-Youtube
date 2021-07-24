@@ -8,7 +8,7 @@ namespace CommonServer.CosmosDb
 {
 	public class CharacterInformationRepository : CosmosDbRepository<CharacterInformation>
     {
-        public CharacterInformationRepository() : base(CosmosClientSinglton.Instance.CharacterContainer)
+        public CharacterInformationRepository() : base(CosmosClientSinglton.Instance.CharacterContainer.Value)
         {
 
         }

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dailylogin
+  labels:
+    app: dailylogin
+    {{ include "mmorpg.labels" . | nindent 4 }}
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: dailylogin
+  template:
+    metadata:
+      labels:
+        app: dailylogin
+        {{ include "mmorpg.labels" . | nindent 8 }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: dailyloginservice
+        imagePullPolicy: Always
+        image: {{ .Values.dailyLoginServiceImage }}
+        env:
+        - name: CosmosUrl
+          valueFrom:
+            secretKeyRef:
+              name: cosmossecret
+              key: CosmosUrl
+        - name: CosmosKey
+          valueFrom:
+            secretKeyRef:
+              name: cosmossecret
+              key: CosmosKey
+

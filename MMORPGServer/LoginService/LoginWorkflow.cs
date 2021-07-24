@@ -14,6 +14,8 @@ using CommonServer.CosmosDb;
 using CommonServer.CosmosDb.Model;
 using System.Threading.Tasks;
 using System.Net.Mail;
+using CommonServer.Redis;
+using CommonServer.Redis.Model;
 
 namespace LoginService
 {
@@ -94,13 +96,24 @@ namespace LoginService
 			};
 			await repo.SaveAsync(user, user.Id);
 
+			OnLoginSuccessful(email, loginRegisterResponseMessage, user);
+
+			UdpManager.SendMsg(peer.ConnectId, loginRegisterResponseMessage, ChannelType.ReliableOrdered);
+		}
+
+		private void OnLoginSuccessful(string email, LoginRegisterResponseMessage loginRegisterResponseMessage, UserInformation user)
+		{
 			loginRegisterResponseMessage.Response = LoginRegisterResponse.Successful;
 			loginRegisterResponseMessage.Token = JwtTokenHelper.GenerateToken(new List<Claim>
 			{
 				new Claim(SecurityConfiguration.EmailClaimType, email)
 			});
 
-			UdpManager.SendMsg(peer.ConnectId, loginRegisterResponseMessage, ChannelType.ReliableOrdered);
+			RedisQueue.Enqueue<LoginQueueItem>(RedisConfiguration.LoginQueue, new LoginQueueItem()
+			{
+				PlayerId = user.Id,
+				LoginTime = DateTime.Now
+			});
 		}
 
 		private bool CheckPasswordStrength(string password)
@@ -152,11 +165,7 @@ namespace LoginService
 				return;
 			}
 
-			loginRegisterResponseMessage.Response = LoginRegisterResponse.Successful;
-			loginRegisterResponseMessage.Token = JwtTokenHelper.GenerateToken(new List<Claim>
-			{
-				new Claim(SecurityConfiguration.EmailClaimType, email)
-			});
+			OnLoginSuccessful(email, loginRegisterResponseMessage, user);
 
 			UdpManager.SendMsg(peer.ConnectId, loginRegisterResponseMessage, ChannelType.ReliableOrdered);
 		}

@@ -14,6 +14,8 @@ loginServiceImage: "@@{GameName}@@acr.azurecr.io/loginservice:@@{Build.BuildNumb
 characterServiceImage: "@@{GameName}@@acr.azurecr.io/characterservice:@@{Build.BuildNumber}@@"
 worldChatServiceImage: "@@{GameName}@@acr.azurecr.io/worldchatservice:@@{Build.BuildNumber}@@"
 mapServiceImage: "@@{GameName}@@acr.azurecr.io/mapservice:@@{Build.BuildNumber}@@"
+dailyLoginServiceImage: "@@{GameName}@@acr.azurecr.io/dailyloginservice:@@{Build.BuildNumber}@@"
+inventoryEventProcessorServiceImage: "@@{GameName}@@acr.azurecr.io/inventoryeventprocessorservice:@@{Build.BuildNumber}@@"
 
 serviceType: ClusterIP
 characterDNS: "@@{GameName}@@char"

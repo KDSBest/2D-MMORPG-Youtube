@@ -12,8 +12,13 @@ namespace CommonServer.CosmosDb
         public static CosmosClientSinglton Instance { get { return instance.Value; } }
 
         public Database Database { get; private set; }
-        public Container UserContainer { get; private set; }
-        public Container CharacterContainer { get; private set; }
+        public Lazy<Container> UserContainer { get; private set; }
+        public Lazy<Container> UserLastLoginContainer { get; private set; }
+        public Lazy<Container> CharacterContainer { get; private set; }
+
+        public Lazy<Container> InventoryContainer { get; private set; }
+        public Lazy<Container> InventoryEventContainer { get; private set; }
+        public Lazy<Container> InventoryEventLeaseContainer { get; private set; }
 
         private CosmosClientSinglton()
         {
@@ -33,8 +38,21 @@ namespace CommonServer.CosmosDb
 
             var cosmosDb = new CosmosClient(CosmosDbConfiguration.CosmosDbEndpointUrl, CosmosDbConfiguration.CosmosDbKey, cosmosClientOptions);
             Database = cosmosDb.CreateDatabaseIfNotExistsAsync(CosmosDbConfiguration.CosmosDb).Result.Database;
-            UserContainer = Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbUserDbCollection, "/id").Result.Container;
-            CharacterContainer = Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbCharacterDbCollection, "/id").Result.Container;
+            UserContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbUserDbCollection, "/id").Result.Container);
+            UserLastLoginContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbUserLastLoginDbCollection, "/id").Result.Container);
+            CharacterContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbCharacterDbCollection, "/id").Result.Container);
+            InventoryContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryDbCollection, "/id").Result.Container);
+            InventoryEventContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventDbCollection, "/playerId").Result.Container);
+            InventoryEventLeaseContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventLeaseDbCollection, "/id").Result.Container);
+        }
+
+        public ChangeFeedProcessor GetInventoryEventChangeFeedProcessor<T>(string instanceName, string processorName, Container.ChangesHandler<T> action)
+		{
+            return InventoryEventContainer.Value.GetChangeFeedProcessorBuilder(processorName, action)
+                .WithInstanceName(instanceName)
+                .WithLeaseContainer(InventoryEventLeaseContainer.Value)
+                .WithStartTime(DateTime.MinValue.ToUniversalTime())
+                .Build();
         }
 
     }

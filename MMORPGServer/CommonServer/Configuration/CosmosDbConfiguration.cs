@@ -13,6 +13,10 @@ namespace CommonServer.Configuration
 
         public static readonly string CosmosDb = "MMORPGDb";
         public static readonly string CosmosDbUserDbCollection = "UserCollection";
+        public static readonly string CosmosDbUserLastLoginDbCollection = "UserLastLoginCollection";
         public static readonly string CosmosDbCharacterDbCollection = "CharacterCollection";
+        public static readonly string CosmosDbInventoryDbCollection = "InventoryCollection";
+        public static readonly string CosmosDbInventoryEventDbCollection = "InventoryEventCollection";
+        public static readonly string CosmosDbInventoryEventLeaseDbCollection = "InventoryEventLeaseCollection";
     }
 }

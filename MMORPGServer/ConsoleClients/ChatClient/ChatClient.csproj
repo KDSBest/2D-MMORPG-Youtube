@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CommonServer\CommonServer.csproj" />
     <ProjectReference Include="..\..\Common\Common.csproj" />
     <ProjectReference Include="..\..\UnityAzureNetworkEngine\Core\ReliableUdp\ReliableUdp.csproj" />
   </ItemGroup>

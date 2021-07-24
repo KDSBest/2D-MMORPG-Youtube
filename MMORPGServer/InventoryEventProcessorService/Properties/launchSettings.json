@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "InventoryEventProcessorService": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
