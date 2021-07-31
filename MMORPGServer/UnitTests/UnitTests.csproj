@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CommonServer\CommonServer.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 

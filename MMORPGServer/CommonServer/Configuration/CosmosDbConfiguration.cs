@@ -18,5 +18,6 @@ namespace CommonServer.Configuration
         public static readonly string CosmosDbInventoryDbCollection = "InventoryCollection";
         public static readonly string CosmosDbInventoryEventDbCollection = "InventoryEventCollection";
         public static readonly string CosmosDbInventoryEventLeaseDbCollection = "InventoryEventLeaseCollection";
+        public static readonly string CosmosDbInventoryEventESLeaseDbCollection = "InventoryEventESLeaseCollection";
     }
 }

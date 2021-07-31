@@ -54,5 +54,14 @@ namespace CommonServer.CosmosDb
         {
             await Container.UpsertItemAsync(obj, new PartitionKey(partitionKey));
         }
+
+        public async Task SaveAsync(T obj, string partitionKey, string etag)
+        {
+            var etagCheck = new ItemRequestOptions()
+            {
+                IfMatchEtag = etag
+            };
+            await Container.UpsertItemAsync(obj, new PartitionKey(partitionKey), etagCheck);
+        }
     }
 }

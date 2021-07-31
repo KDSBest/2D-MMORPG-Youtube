@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace CommonServer.CosmosDb.Model
 {
+
 	public class InventoryEvent
 	{
 		[JsonProperty(PropertyName = "id")]
@@ -14,8 +15,13 @@ namespace CommonServer.CosmosDb.Model
 
 		[JsonProperty(PropertyName = "playerId")]
 		public string PlayerId { get; set; }
+
+		public InventoryEventType Type { get; set; } = InventoryEventType.DailyLogin;
+
 		public Dictionary<string, int> Add { get; set; } = new Dictionary<string, int>();
 		public Dictionary<string, int> Remove { get; set; } = new Dictionary<string, int>();
+
+		public DateTime CreationDate { get; set; } = DateTime.UtcNow;
 
 		public override string ToString()
 		{

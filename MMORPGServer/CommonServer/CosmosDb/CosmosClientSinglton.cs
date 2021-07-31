@@ -7,9 +7,13 @@ namespace CommonServer.CosmosDb
 {
     public class CosmosClientSinglton
     {
-        private static readonly Lazy<CosmosClientSinglton> instance = new Lazy<CosmosClientSinglton>(() => new CosmosClientSinglton());
+        private static Lazy<CosmosClientSinglton> instance = new Lazy<CosmosClientSinglton>(() => new CosmosClientSinglton());
 
         public static CosmosClientSinglton Instance { get { return instance.Value; } }
+        public static void RemoveSingleton()
+		{
+            CosmosClientSinglton.instance = new Lazy<CosmosClientSinglton>(() => new CosmosClientSinglton());
+        }
 
         public Database Database { get; private set; }
         public Lazy<Container> UserContainer { get; private set; }
@@ -19,6 +23,8 @@ namespace CommonServer.CosmosDb
         public Lazy<Container> InventoryContainer { get; private set; }
         public Lazy<Container> InventoryEventContainer { get; private set; }
         public Lazy<Container> InventoryEventLeaseContainer { get; private set; }
+
+        public Lazy<Container> InventoryEventESLeaseContainer { get; private set; }
 
         private CosmosClientSinglton()
         {
@@ -44,6 +50,7 @@ namespace CommonServer.CosmosDb
             InventoryContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryDbCollection, "/id").Result.Container);
             InventoryEventContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventDbCollection, "/playerId").Result.Container);
             InventoryEventLeaseContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventLeaseDbCollection, "/id").Result.Container);
+            InventoryEventESLeaseContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventESLeaseDbCollection, "/id").Result.Container);
         }
 
         public ChangeFeedProcessor GetInventoryEventChangeFeedProcessor<T>(string instanceName, string processorName, Container.ChangesHandler<T> action)
