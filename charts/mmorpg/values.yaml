@@ -1,11 +1,12 @@
 imagePullSecrets:
   - name: acr-secret
 
-characterPort: 3335
 worldChatPort: 3333
+loginPort: 3334
+characterPort: 3335
 mapTownPort: 3336
 mapFieldPort: 3337
-loginPort: 3334
+playerEventPort: 3338
 
 cosmosUrl: "@@{CosmosUrl}@@"
 cosmosKey: "@@{CosmosKey}@@"
@@ -16,12 +17,9 @@ worldChatServiceImage: "@@{GameName}@@acr.azurecr.io/worldchatservice:@@{Build.B
 mapServiceImage: "@@{GameName}@@acr.azurecr.io/mapservice:@@{Build.BuildNumber}@@"
 dailyLoginServiceImage: "@@{GameName}@@acr.azurecr.io/dailyloginservice:@@{Build.BuildNumber}@@"
 inventoryEventProcessorServiceImage: "@@{GameName}@@acr.azurecr.io/inventoryeventprocessorservice:@@{Build.BuildNumber}@@"
+playerEventProcessorServiceImage: "@@{GameName}@@acr.azurecr.io/playereventprocessorservice:@@{Build.BuildNumber}@@"
+playerEventServiceImage: "@@{GameName}@@acr.azurecr.io/playereventservice:@@{Build.BuildNumber}@@"
 
 serviceType: ClusterIP
-characterDNS: "@@{GameName}@@char"
-loginDNS: "@@{GameName}@@account"
-mapFieldDNS: "@@{GameName}@@mapfield"
-mapTownDNS: "@@{GameName}@@maptown"
-worldChatDNS: "@@{GameName}@@worldchat"
 
 jwtSecret: "@@{JwtSecret}@@"

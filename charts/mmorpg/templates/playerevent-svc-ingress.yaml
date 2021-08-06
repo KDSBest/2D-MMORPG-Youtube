@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: playerevent-svc
+
+spec:
+  entryPoints:
+    - playerevent
+  routes:
+  - services:
+    - name: playerevent-svc
+      port: 3337

@@ -38,6 +38,7 @@ namespace DailyLoginService
 					{
 						Id = Guid.NewGuid(),
 						PlayerId = val.PlayerId,
+						Type = InventoryEventType.DailyLogin,
 						Add = new Dictionary<string, int>
 						{
 							{ "Gold", 100 }

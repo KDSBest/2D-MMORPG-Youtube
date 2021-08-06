@@ -25,6 +25,7 @@ namespace CommonServer.CosmosDb
         public Lazy<Container> InventoryEventLeaseContainer { get; private set; }
 
         public Lazy<Container> InventoryEventESLeaseContainer { get; private set; }
+        public Lazy<Container> PlayerEventContainer { get; private set; }
 
         private CosmosClientSinglton()
         {
@@ -51,6 +52,7 @@ namespace CommonServer.CosmosDb
             InventoryEventContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventDbCollection, "/playerId").Result.Container);
             InventoryEventLeaseContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventLeaseDbCollection, "/id").Result.Container);
             InventoryEventESLeaseContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventESLeaseDbCollection, "/id").Result.Container);
+            PlayerEventContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.PlayerEventDbCollection, "/playerId").Result.Container);
         }
 
         public ChangeFeedProcessor GetInventoryEventChangeFeedProcessor<T>(string instanceName, string processorName, Container.ChangesHandler<T> action)

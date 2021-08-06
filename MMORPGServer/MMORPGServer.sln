@@ -27,11 +27,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharacterService", "Charact
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapService", "MapService\MapService.csproj", "{045A4424-7989-4F8D-9D25-BC35FF7F6C80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryService", "InventoryService\InventoryService.csproj", "{1CD0D730-6F69-411C-BCC5-A63163B7F44A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryService", "InventoryService\InventoryService.csproj", "{1CD0D730-6F69-411C-BCC5-A63163B7F44A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryEventProcessorService", "InventoryEventProcessorService\InventoryEventProcessorService.csproj", "{885055D1-62A9-4BC4-BE30-089CAACFC37E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryEventProcessorService", "InventoryEventProcessorService\InventoryEventProcessorService.csproj", "{885055D1-62A9-4BC4-BE30-089CAACFC37E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyLoginService", "DailyLoginService\DailyLoginService.csproj", "{C18F47BB-A98E-4FE7-BBC2-E2E66FDFCDFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DailyLoginService", "DailyLoginService\DailyLoginService.csproj", "{C18F47BB-A98E-4FE7-BBC2-E2E66FDFCDFD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerEventProcessorService", "PlayerEventProcessorService\PlayerEventProcessorService.csproj", "{9D00557D-3D51-4069-B6C3-4DF31044E235}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerEventService", "PlayerEventService\PlayerEventService.csproj", "{ED0E684F-2F6C-4D9D-861B-5E8F202FDA65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +91,14 @@ Global
 		{C18F47BB-A98E-4FE7-BBC2-E2E66FDFCDFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C18F47BB-A98E-4FE7-BBC2-E2E66FDFCDFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C18F47BB-A98E-4FE7-BBC2-E2E66FDFCDFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D00557D-3D51-4069-B6C3-4DF31044E235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D00557D-3D51-4069-B6C3-4DF31044E235}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D00557D-3D51-4069-B6C3-4DF31044E235}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D00557D-3D51-4069-B6C3-4DF31044E235}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED0E684F-2F6C-4D9D-861B-5E8F202FDA65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED0E684F-2F6C-4D9D-861B-5E8F202FDA65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED0E684F-2F6C-4D9D-861B-5E8F202FDA65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED0E684F-2F6C-4D9D-861B-5E8F202FDA65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

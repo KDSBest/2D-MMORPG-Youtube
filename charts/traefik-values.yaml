@@ -244,6 +244,11 @@ ports:
     expose: true
     exposedPort: 3337
     protocol: UDP
+  playerevent:
+    port: 3338
+    expose: true
+    exposedPort: 3338
+    protocol: UDP
 
 # TLS Options are created as TLSOption CRDs
 # https://doc.traefik.io/traefik/https/tls/#tls-options

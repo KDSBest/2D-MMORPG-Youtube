@@ -16,6 +16,7 @@
         PlayerState = 80,
         TimeSync = 81,
         RemoveState = 82,
-        RemovePartition = 83
+        RemovePartition = 83,
+        PlayerEvent = 90
     }
 }

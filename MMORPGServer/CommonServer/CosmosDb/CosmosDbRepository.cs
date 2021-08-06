@@ -63,5 +63,19 @@ namespace CommonServer.CosmosDb
             };
             await Container.UpsertItemAsync(obj, new PartitionKey(partitionKey), etagCheck);
         }
+
+        public async Task DeleteAsync(string id, string partitionKey)
+        {
+            await Container.DeleteItemAsync<T>(id, new PartitionKey(partitionKey));
+        }
+
+        public async Task DeleteAsync(string id, string partitionKey, string etag)
+        {
+            var etagCheck = new ItemRequestOptions()
+            {
+                IfMatchEtag = etag
+            };
+            await Container.DeleteItemAsync<T>(id, new PartitionKey(partitionKey), etagCheck);
+        }
     }
 }

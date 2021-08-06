@@ -126,6 +126,40 @@ stages:
         ServicePath: InventoryEventProcessorService
         RepositoryName: inventoryeventprocessorservice
 
+- stage: PlayerEventService
+  displayName: PlayerEventService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: PlayerEventService
+    displayName: PlayerEventService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: PlayerEventService
+        RepositoryName: playereventservice
+
+- stage: PlayerEventProcessorService
+  displayName: PlayerEventProcessorService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: PlayerEventProcessorService
+    displayName: PlayerEventProcessorService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: PlayerEventProcessorService
+        RepositoryName: playereventprocessorservice
+
 - stage: Monitoring
   displayName: Monitoring
   dependsOn:
