@@ -20,5 +20,7 @@ namespace CommonServer.Configuration
         public static readonly string CosmosDbInventoryEventLeaseDbCollection = "InventoryEventLeaseCollection";
         public static readonly string CosmosDbInventoryEventESLeaseDbCollection = "InventoryEventESLeaseCollection";
         public static readonly string PlayerEventDbCollection = "PlayerEventCollection";
+
+        public static readonly int EventDefaultTimeToLive = 60 * 60;
     }
 }

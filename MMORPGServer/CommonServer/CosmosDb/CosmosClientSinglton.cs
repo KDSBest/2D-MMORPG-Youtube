@@ -52,7 +52,11 @@ namespace CommonServer.CosmosDb
             InventoryEventContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventDbCollection, "/playerId").Result.Container);
             InventoryEventLeaseContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventLeaseDbCollection, "/id").Result.Container);
             InventoryEventESLeaseContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventESLeaseDbCollection, "/id").Result.Container);
-            PlayerEventContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.PlayerEventDbCollection, "/playerId").Result.Container);
+            PlayerEventContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(new ContainerProperties() {
+                Id = CosmosDbConfiguration.PlayerEventDbCollection, 
+                PartitionKeyPath = "/playerId",
+                DefaultTimeToLive = CosmosDbConfiguration.EventDefaultTimeToLive
+            }).Result.Container);
         }
 
         public ChangeFeedProcessor GetInventoryEventChangeFeedProcessor<T>(string instanceName, string processorName, Container.ChangesHandler<T> action)

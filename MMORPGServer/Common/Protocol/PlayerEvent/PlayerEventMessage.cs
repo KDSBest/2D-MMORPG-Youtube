@@ -1,4 +1,5 @@
-﻿using ReliableUdp.Utility;
+﻿using Newtonsoft.Json;
+using ReliableUdp.Utility;
 using System;
 
 namespace Common.Protocol.PlayerEvent

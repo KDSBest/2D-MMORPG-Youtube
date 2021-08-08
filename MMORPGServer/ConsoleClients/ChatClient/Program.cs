@@ -4,6 +4,7 @@ using Common.IoC;
 using Common.Protocol.Character;
 using Common.Protocol.Chat;
 using Common.Protocol.Login;
+using Common.Protocol.PlayerEvent;
 using Common.PublishSubscribe;
 using CommonServer.Configuration;
 using System;
@@ -89,7 +90,7 @@ namespace ChatClient
 
 			var charClient = new Common.Client.CharacterClient();
 			DI.Instance.Resolve<ITokenProvider>().Token = result.Token;
-			bool connected = await charClient.ConnectAsync("localhost", 30001);
+			bool connected = await charClient.ConnectAsync("localhost", 3335);
 			if (connected)
 			{
 				Console.WriteLine("Connected to Char Server.");
@@ -114,6 +115,10 @@ namespace ChatClient
 				await Task.Delay(1000);
 			}
 
+			DI.Instance.Resolve<IPubSub>().Subscribe<PlayerEventMessage>(async (msg) =>
+			{
+				Console.WriteLine($"event: {msg.Type}");
+			}, "Main");
 
 			DI.Instance.Resolve<IPubSub>().Subscribe<ChatMessage>(async (msg) =>
 			{
@@ -121,7 +126,11 @@ namespace ChatClient
 			}, "Main");
 			var chatClient = new Common.Client.ChatClient();
 			DI.Instance.Resolve<ITokenProvider>().Token = charToken;
-			connected = await chatClient.ConnectAsync("localhost", 30002);
+			connected = await chatClient.ConnectAsync("localhost", 3333);
+
+			var playerEventClient = new Common.Client.PlayerEventClient();
+			await playerEventClient.ConnectAsync("localhost", 3337);
+
 			if (connected)
 			{
 				Console.WriteLine("Connected to Chat Server.");

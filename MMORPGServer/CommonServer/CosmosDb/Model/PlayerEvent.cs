@@ -21,6 +21,9 @@ namespace CommonServer.CosmosDb.Model
 
 		public DateTime CreationDate { get; set; } = DateTime.UtcNow;
 
+		[JsonProperty(PropertyName = "ttl", NullValueHandling = NullValueHandling.Ignore)]
+		public int? TimeToLive { get; set; }
+
 		public override string ToString()
 		{
 			return JsonConvert.SerializeObject(this);

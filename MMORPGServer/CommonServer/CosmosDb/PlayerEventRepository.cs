@@ -15,7 +15,7 @@ namespace CommonServer.CosmosDb
 
         public List<PlayerEvent> GetEvents(string playerId)
 		{
-            return this.Container.GetItemLinqQueryable<PlayerEvent>().Where(x => x.PlayerId == playerId).AsEnumerable().ToList();
+            return this.Container.GetItemLinqQueryable<PlayerEvent>(true).Where(x => x.PlayerId == playerId).AsEnumerable().ToList();
         }
 
         public async Task RemoveEventAsync(PlayerEvent ev)
