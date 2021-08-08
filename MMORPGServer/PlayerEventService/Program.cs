@@ -12,7 +12,7 @@ namespace EventService
 		{
             UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new PlayerEventUdpListener());
 
-            Console.WriteLine("Open Chat Service");
+            Console.WriteLine("Open Player Event Service");
             await udpManagerListener.StartAsync(PortConfiguration.EventPort);
 
             await udpManagerListener.UpdateAsync();
