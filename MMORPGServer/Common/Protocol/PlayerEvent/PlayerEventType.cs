@@ -2,6 +2,9 @@
 {
 	public enum PlayerEventType : byte
 	{
-		DailyLogin
+		DailyLogin,
+		Quest,
+		TradeItem,
+		MobKill
 	}
 }

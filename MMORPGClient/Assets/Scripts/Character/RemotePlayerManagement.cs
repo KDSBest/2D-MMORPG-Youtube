@@ -36,9 +36,9 @@ namespace Assets.Scripts.Character
 			context = DI.Instance.Resolve<ICurrentContext>();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 
-			pubsub.Subscribe<PlayerStateMessage>(OnPlayerState, this.name);
-			pubsub.Subscribe<RemoveStateMessage>(OnRemovePlayerState, this.name);
-			pubsub.Subscribe<CharacterMessage>(OnCharacterMessage, this.name);
+			pubsub.Subscribe<PlayerStateMessage>(OnPlayerState, this.GetType().Name);
+			pubsub.Subscribe<RemoveStateMessage>(OnRemovePlayerState, this.GetType().Name);
+			pubsub.Subscribe<CharacterMessage>(OnCharacterMessage, this.GetType().Name);
 		}
 
 		private void OnCharacterMessage(CharacterMessage data)

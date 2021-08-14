@@ -1,14 +1,7 @@
-using Assets.Scripts.Character;
-using Assets.Scripts.PubSubEvents.StartUI;
 using Common.IoC;
-using Common.Protocol.Character;
-using Common.Protocol.Inventory;
 using Common.Protocol.PlayerEvent;
 using Common.PublishSubscribe;
-using System;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.Scripts.UI
 {
@@ -22,7 +15,7 @@ namespace Assets.Scripts.UI
             DILoader.Initialize();
             pubsub = DI.Instance.Resolve<IPubSub>();
 
-            pubsub.Subscribe<PlayerEventMessage>(OnPlayerEvent, this.name);
+            pubsub.Subscribe<PlayerEventMessage>(OnPlayerEvent, this.GetType().Name);
         }
 
 		private void OnPlayerEvent(PlayerEventMessage ev)
@@ -35,7 +28,7 @@ namespace Assets.Scripts.UI
 
 		public void OnDisable()
         {
-            pubsub.Unsubscribe<InventoryMessage>(this.name);
+            pubsub.Unsubscribe<PlayerEventMessage>(this.GetType().Name);
         }
 	}
 }

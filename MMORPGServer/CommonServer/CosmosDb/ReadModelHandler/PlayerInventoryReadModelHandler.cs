@@ -17,17 +17,16 @@ namespace CommonServer.CosmosDb.ReadModelHandler
 		{
 			foreach (var inventoryChange in inventoryChanges)
 			{
-				if(inventoryChange.Type == InventoryEventType.DailyLogin)
+				var ev = new PlayerEvent()
 				{
-					var ev = new PlayerEvent()
-					{
-						CreationDate = inventoryChange.CreationDate,
-						Id = inventoryChange.Id,
-						PlayerId = inventoryChange.PlayerId,
-						Type = PlayerEventType.DailyLogin
-					};
-					await repo.SaveAsync(ev, ev.PlayerId);
-				}
+					CreationDate = inventoryChange.CreationDate,
+					Id = inventoryChange.Id,
+					PlayerId = inventoryChange.PlayerId,
+					Type = inventoryChange.Type,
+					Add = inventoryChange.Add,
+					Remove = inventoryChange.Remove
+				};
+				await repo.SaveAsync(ev, ev.PlayerId);
 			}
 		}
 	}

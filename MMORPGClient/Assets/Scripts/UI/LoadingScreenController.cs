@@ -19,12 +19,12 @@ namespace Assets.Scripts.UI
             DILoader.Initialize();
             pubsub = DI.Instance.Resolve<IPubSub>();
 
-            pubsub.Subscribe<ControlLoadingScreen>(OnControlLoadingScreen, this.name);
+            pubsub.Subscribe<ControlLoadingScreen>(OnControlLoadingScreen, this.GetType().Name);
         }
 
         public void OnDisable()
         {
-            pubsub.Unsubscribe<ControlLoadingScreen>(this.name);
+            pubsub.Unsubscribe<ControlLoadingScreen>(this.GetType().Name);
         }
 
         public void OnControlLoadingScreen(ControlLoadingScreen data)

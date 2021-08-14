@@ -10,7 +10,6 @@ namespace Assets.Scripts.ClientWrappers
 	public class CharacterClientWrapper : ICharacterClientWrapper
 	{
 		public ICharacterClient client;
-		private const string PUBSUBNAME = "CharacterClientWrapper";
 
 		public bool IsInitialized { get { return client.IsConnected; } }
 
@@ -19,8 +18,8 @@ namespace Assets.Scripts.ClientWrappers
 		{
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
-			pubsub.Subscribe<CharacterInformation>(OnNewCharacterInformation, PUBSUBNAME);
-			pubsub.Subscribe<ReqCharacterStyle>(OnNewReqCharacterStyle, PUBSUBNAME);
+			pubsub.Subscribe<CharacterInformation>(OnNewCharacterInformation, this.GetType().Name);
+			pubsub.Subscribe<ReqCharacterStyle>(OnNewReqCharacterStyle, this.GetType().Name);
 			client = DI.Instance.Resolve<ICharacterClient>();
 		}
 

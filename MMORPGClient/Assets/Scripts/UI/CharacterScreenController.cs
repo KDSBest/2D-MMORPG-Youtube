@@ -25,14 +25,14 @@ namespace Assets.Scripts.UI
             DILoader.Initialize();
             pubsub = DI.Instance.Resolve<IPubSub>();
 
-            pubsub.Subscribe<ControlCharacterScreen>(OnControlScreen, this.name);
-            pubsub.Subscribe<CharacterMessage>(OnCharacterMessage, this.name);
+            pubsub.Subscribe<ControlCharacterScreen>(OnControlScreen, this.GetType().Name);
+            pubsub.Subscribe<CharacterMessage>(OnCharacterMessage, this.GetType().Name);
         }
 
 		public void OnDisable()
         {
-            pubsub.Unsubscribe<ControlCharacterScreen>(this.name);
-            pubsub.Unsubscribe<CharacterMessage>(this.name);
+            pubsub.Unsubscribe<ControlCharacterScreen>(this.GetType().Name);
+            pubsub.Unsubscribe<CharacterMessage>(this.GetType().Name);
         }
 
         public void OnControlScreen(ControlCharacterScreen data)

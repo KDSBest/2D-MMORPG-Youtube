@@ -3,6 +3,7 @@ using Common.Client.Interfaces;
 using Common.IoC;
 using Common.Protocol.Inventory;
 using Common.PublishSubscribe;
+using System;
 using System.Threading.Tasks;
 
 namespace Assets.Scripts.ClientWrappers
@@ -10,7 +11,7 @@ namespace Assets.Scripts.ClientWrappers
 	public class InventoryClientWrapper : IInventoryClientWrapper
 	{
 		public IInventoryClient client;
-		private const string PUBSUBNAME = "InventoryClientWrapper";
+		private DateTime LastRequestTime = DateTime.MinValue;
 
 		public bool IsInitialized { get { return client.IsConnected; } }
 
@@ -20,11 +21,17 @@ namespace Assets.Scripts.ClientWrappers
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			client = DI.Instance.Resolve<IInventoryClient>();
-			pubsub.Subscribe<RequestInventoryMessage>(OnRequestInventory, PUBSUBNAME);
+			pubsub.Subscribe<RequestInventoryMessage>(OnRequestInventory, this.GetType().Name);
 		}
 
 		private void OnRequestInventory(RequestInventoryMessage data)
 		{
+			// we don't request Inventory too fast
+			if ((DateTime.UtcNow - LastRequestTime).TotalMilliseconds < 100)
+				return;
+
+			LastRequestTime = DateTime.UtcNow;
+
 			// Async without await in unity still blocks UI, so we have to create our own Task to make this work
 			Task.Run(() =>
 			{

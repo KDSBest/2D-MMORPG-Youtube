@@ -21,6 +21,9 @@ namespace CommonServer.CosmosDb.Model
 
 		public DateTime CreationDate { get; set; } = DateTime.UtcNow;
 
+		public Dictionary<string, int> Add { get; set; } = new Dictionary<string, int>();
+		public Dictionary<string, int> Remove { get; set; } = new Dictionary<string, int>();
+
 		[JsonProperty(PropertyName = "ttl", NullValueHandling = NullValueHandling.Ignore)]
 		public int? TimeToLive { get; set; }
 

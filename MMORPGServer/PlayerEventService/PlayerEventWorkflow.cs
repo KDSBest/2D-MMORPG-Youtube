@@ -59,7 +59,9 @@ namespace EventService
 				UdpManager.SendMsg(new PlayerEventMessage()
 				{
 					Type = ev.Type,
-					CreationDate = ev.CreationDate
+					CreationDate = ev.CreationDate,
+					Add = ev.Add,
+					Remove = ev.Remove
 				}, ChannelType.ReliableOrdered);
 				await repo.RemoveEventAsync(ev);
 			}

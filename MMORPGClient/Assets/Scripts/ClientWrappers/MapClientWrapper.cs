@@ -9,7 +9,6 @@ namespace Assets.Scripts.ClientWrappers
 	public class MapClientWrapper : IMapClientWrapper
 	{
 		public IMapClient client;
-		private const string PUBSUBNAME = "MapClientWrapper";
 
 		public bool IsInitialized { get { return client.IsConnected; } }
 
@@ -20,7 +19,7 @@ namespace Assets.Scripts.ClientWrappers
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			client = DI.Instance.Resolve<IMapClient>();
-			pubsub.Subscribe<PlayerState>(OnPlayerStateSend, PUBSUBNAME);
+			pubsub.Subscribe<PlayerState>(OnPlayerStateSend, this.GetType().Name);
 		}
 
 		private void OnPlayerStateSend(PlayerState data)

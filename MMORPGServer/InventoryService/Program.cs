@@ -16,7 +16,7 @@ namespace InventoryService
             await udpManagerListener.StartAsync(PortConfiguration.InventoryPort);
 
             await udpManagerListener.UpdateAsync();
-            Console.WriteLine("Chat Service is Running...");
+            Console.WriteLine("Inventory Service is Running...");
 
             while (udpManagerListener.IsRunning)
             {

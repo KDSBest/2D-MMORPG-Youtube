@@ -1,4 +1,6 @@
-﻿using CommonServer.Configuration;
+﻿using Common.Protocol.Inventory;
+using Common.Protocol.PlayerEvent;
+using CommonServer.Configuration;
 using CommonServer.CosmosDb;
 using CommonServer.CosmosDb.Model;
 using CommonServer.CosmosDb.ReadModelHandler;
@@ -54,7 +56,7 @@ namespace UnitTests
 			var readModelHandler = new InventoryReadModelHandler();
 
 			string testPlayer = "TestPlayer";
-			string testItem = "Gold";
+			string testItem = InventoryItemIds.Coins;
 			int testAmount = 100;
 
 			var newEvents = new ConcurrentQueue<InventoryEvent>();
@@ -84,7 +86,7 @@ namespace UnitTests
 			List<Task<EventReasons>> tasks = new List<Task<EventReasons>>();
 			for (int i = 0; i < 10; i++)
 			{
-				tasks.Add(RemoveIfInventoryHasEnoughWithLeaseConsistentRead(testPlayer, testItem, newEvents, testAmount, InventoryEventType.Quest));
+				tasks.Add(RemoveIfInventoryHasEnoughWithLeaseConsistentRead(testPlayer, testItem, newEvents, testAmount, PlayerEventType.Quest));
 			}
 
 			await Task.WhenAll(tasks);
@@ -108,7 +110,7 @@ namespace UnitTests
 			var readModelHandler = new InventoryReadModelHandler();
 
 			string testPlayer = "TestPlayer";
-			string testItem = "Gold";
+			string testItem = InventoryItemIds.Coins;
 			int testAmount = 100;
 
 			var newEvents = new ConcurrentQueue<InventoryEvent>();
@@ -135,8 +137,8 @@ namespace UnitTests
 			});
 
 			newEvents = new ConcurrentQueue<InventoryEvent>();
-			var t1 = RemoveIfInventoryHasEnoughWithLeaseConsistentRead(testPlayer, testItem, newEvents, testAmount, InventoryEventType.Quest);
-			var t2 = RemoveIfInventoryHasEnoughWithLeaseConsistentRead(testPlayer, testItem, newEvents, testAmount, InventoryEventType.TradeItem);
+			var t1 = RemoveIfInventoryHasEnoughWithLeaseConsistentRead(testPlayer, testItem, newEvents, testAmount, PlayerEventType.Quest);
+			var t2 = RemoveIfInventoryHasEnoughWithLeaseConsistentRead(testPlayer, testItem, newEvents, testAmount, PlayerEventType.TradeItem);
 
 			await Task.WhenAll(t1, t2);
 
@@ -160,7 +162,7 @@ namespace UnitTests
 			var readModelHandler = new InventoryReadModelHandler();
 
 			string testPlayer = "TestPlayer";
-			string testItem = "Gold";
+			string testItem = InventoryItemIds.Coins;
 			int testAmount = 100;
 
 			var newEvents = new ConcurrentQueue<InventoryEvent>();
@@ -177,8 +179,8 @@ namespace UnitTests
 			await readModelHandler.ChangeHandler(newEvents, cts.Token);
 
 			newEvents = new ConcurrentQueue<InventoryEvent>();
-			var t1 = RemoveIfInventoryHasEnoughWithLease(testPlayer, testItem, newEvents, testAmount, InventoryEventType.Quest);
-			var t2 = RemoveIfInventoryHasEnoughWithLease(testPlayer, testItem, newEvents, testAmount, InventoryEventType.TradeItem);
+			var t1 = RemoveIfInventoryHasEnoughWithLease(testPlayer, testItem, newEvents, testAmount, PlayerEventType.Quest);
+			var t2 = RemoveIfInventoryHasEnoughWithLease(testPlayer, testItem, newEvents, testAmount, PlayerEventType.TradeItem);
 
 			await Task.WhenAll(t1, t2);
 			Assert.AreEqual(1, newEvents.Count);
@@ -203,7 +205,7 @@ namespace UnitTests
 			var readModelHandler = new InventoryReadModelHandler();
 
 			string testPlayer = "TestPlayer";
-			string testItem = "Gold";
+			string testItem = InventoryItemIds.Coins;
 			int testAmount = 100;
 
 			var newEvents = new ConcurrentQueue<InventoryEvent>();
@@ -220,8 +222,8 @@ namespace UnitTests
 			await readModelHandler.ChangeHandler(newEvents, cts.Token);
 
 			newEvents = new ConcurrentQueue<InventoryEvent>();
-			var t1 = RemoveIfInventoryHasEnoughWithLease(testPlayer, testItem, newEvents, testAmount, InventoryEventType.Quest);
-			var t2 = RemoveIfInventoryHasEnoughWithLease(testPlayer, testItem, newEvents, testAmount, InventoryEventType.TradeItem);
+			var t1 = RemoveIfInventoryHasEnoughWithLease(testPlayer, testItem, newEvents, testAmount, PlayerEventType.Quest);
+			var t2 = RemoveIfInventoryHasEnoughWithLease(testPlayer, testItem, newEvents, testAmount, PlayerEventType.TradeItem);
 
 			await Task.WhenAll(t1, t2);
 			Assert.AreEqual(1, newEvents.Count);
@@ -239,7 +241,7 @@ namespace UnitTests
 			var repo = new InventoryRepository();
 			var readModelHandler = new InventoryReadModelHandler();
 			string testPlayer = "TestPlayer";
-			string testItem = "Gold";
+			string testItem = InventoryItemIds.Coins;
 			int testAmount = 100;
 
 			var newEvents = new ConcurrentQueue<InventoryEvent>();
@@ -256,8 +258,8 @@ namespace UnitTests
 			await readModelHandler.ChangeHandler(newEvents, cts.Token);
 
 			newEvents = new ConcurrentQueue<InventoryEvent>();
-			var t1 = RemoveIfInventoryHasEnough(testPlayer, testItem, newEvents, testAmount, InventoryEventType.Quest, DateTime.UtcNow);
-			var t2 = RemoveIfInventoryHasEnough(testPlayer, testItem, newEvents, testAmount, InventoryEventType.TradeItem, DateTime.UtcNow);
+			var t1 = RemoveIfInventoryHasEnough(testPlayer, testItem, newEvents, testAmount, PlayerEventType.Quest, DateTime.UtcNow);
+			var t2 = RemoveIfInventoryHasEnough(testPlayer, testItem, newEvents, testAmount, PlayerEventType.TradeItem, DateTime.UtcNow);
 
 			await Task.WhenAll(t1, t2);
 			Assert.AreEqual(2, newEvents.Count);
@@ -292,7 +294,7 @@ namespace UnitTests
 			MaxRetriesReached
 		}
 
-		private static async Task<EventReasons> RemoveIfInventoryHasEnoughWithLeaseConsistentRead(string testPlayer, string testItem, ConcurrentQueue<InventoryEvent> newEvents, int testAmount, InventoryEventType type, int retry = 0)
+		private static async Task<EventReasons> RemoveIfInventoryHasEnoughWithLeaseConsistentRead(string testPlayer, string testItem, ConcurrentQueue<InventoryEvent> newEvents, int testAmount, PlayerEventType type, int retry = 0)
 		{
 			if (retry > 100)
 				return EventReasons.MaxRetriesReached;
@@ -326,7 +328,7 @@ namespace UnitTests
 			}
 		}
 
-		private static async Task<EventReasons> RemoveIfInventoryHasEnoughWithLease(string testPlayer, string testItem, ConcurrentQueue<InventoryEvent> newEvents, int testAmount, InventoryEventType type)
+		private static async Task<EventReasons> RemoveIfInventoryHasEnoughWithLease(string testPlayer, string testItem, ConcurrentQueue<InventoryEvent> newEvents, int testAmount, PlayerEventType type)
 		{
 			DateTime eventTimestamp = DateTime.UtcNow;
 
@@ -341,7 +343,7 @@ namespace UnitTests
 			return EventReasons.LeaseBlocked;
 		}
 
-		private static async Task<EventReasons> RemoveIfInventoryHasEnough(string testPlayer, string testItem, ConcurrentQueue<InventoryEvent> newEvents, int testAmount, InventoryEventType type, DateTime eventTimestamp)
+		private static async Task<EventReasons> RemoveIfInventoryHasEnough(string testPlayer, string testItem, ConcurrentQueue<InventoryEvent> newEvents, int testAmount, PlayerEventType type, DateTime eventTimestamp)
 		{
 			InventoryRepository repo = new InventoryRepository();
 			var inv = await repo.GetAsync(testPlayer);

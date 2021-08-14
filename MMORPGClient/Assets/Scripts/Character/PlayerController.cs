@@ -36,7 +36,7 @@ namespace Assets.Scripts.Character
 			movementActions = controls.Movement;
 			movementActions.Run.performed += ctx => movementVector = ctx.ReadValue<Vector2>();
 			pubsub = DI.Instance.Resolve<IPubSub>();
-			pubsub.Subscribe<PlayerControlEnable>(OnPlayerControlEnable, this.name);
+			pubsub.Subscribe<PlayerControlEnable>(OnPlayerControlEnable, this.GetType().Name);
 		}
 
 		private void OnPlayerControlEnable(PlayerControlEnable data)

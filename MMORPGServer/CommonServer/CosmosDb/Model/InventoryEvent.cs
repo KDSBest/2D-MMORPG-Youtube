@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Common.Protocol.PlayerEvent;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace CommonServer.CosmosDb.Model
 		[JsonProperty(PropertyName = "playerId")]
 		public string PlayerId { get; set; }
 
-		public InventoryEventType Type { get; set; } = InventoryEventType.DailyLogin;
+		public PlayerEventType Type { get; set; } = PlayerEventType.DailyLogin;
 
 		public Dictionary<string, int> Add { get; set; } = new Dictionary<string, int>();
 		public Dictionary<string, int> Remove { get; set; } = new Dictionary<string, int>();

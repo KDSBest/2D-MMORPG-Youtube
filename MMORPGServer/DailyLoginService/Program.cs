@@ -1,4 +1,6 @@
-﻿using CommonServer.Configuration;
+﻿using Common.Protocol.Inventory;
+using Common.Protocol.PlayerEvent;
+using CommonServer.Configuration;
 using CommonServer.CosmosDb;
 using CommonServer.CosmosDb.Model;
 using CommonServer.Redis;
@@ -38,10 +40,10 @@ namespace DailyLoginService
 					{
 						Id = Guid.NewGuid(),
 						PlayerId = val.PlayerId,
-						Type = InventoryEventType.DailyLogin,
+						Type = PlayerEventType.DailyLogin,
 						Add = new Dictionary<string, int>
 						{
-							{ "Gold", 100 }
+							{ InventoryItemIds.Coins, 100 }
 						}
 					}, val.PlayerId);
 

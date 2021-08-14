@@ -9,7 +9,6 @@ namespace Assets.Scripts.ClientWrappers
 	public class LoginClientWrapper : ILoginClientWrapper
 	{
 		public ILoginClient client;
-		private const string PUBSUBNAME = "LoginClientWrapper";
 
 		public bool IsInitialized { get { return client.IsConnected; } }
 
@@ -19,8 +18,8 @@ namespace Assets.Scripts.ClientWrappers
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			client = DI.Instance.Resolve<ILoginClient>();
-			pubsub.Subscribe<TryLogin>(OnTryLogin, PUBSUBNAME);
-			pubsub.Subscribe<TryRegister>(OnTryRegister, PUBSUBNAME);
+			pubsub.Subscribe<TryLogin>(OnTryLogin, this.GetType().Name);
+			pubsub.Subscribe<TryRegister>(OnTryRegister, this.GetType().Name);
 		}
 
 		private void OnTryRegister(TryRegister data)

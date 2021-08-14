@@ -9,7 +9,6 @@ namespace Assets.Scripts.ClientWrappers
 	public class ChatClientWrapper : IChatClientWrapper
 	{
 		public IChatClient client;
-		private const string PUBSUBNAME = "ChatClientWrapper";
 
 		public bool IsInitialized { get { return client.IsConnected; } }
 
@@ -19,7 +18,7 @@ namespace Assets.Scripts.ClientWrappers
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			client = DI.Instance.Resolve<IChatClient>();
-			pubsub.Subscribe<SendChatMessage>(OnChatMessageSend, PUBSUBNAME);
+			pubsub.Subscribe<SendChatMessage>(OnChatMessageSend, this.GetType().Name);
 		}
 
 		private void OnChatMessageSend(SendChatMessage data)

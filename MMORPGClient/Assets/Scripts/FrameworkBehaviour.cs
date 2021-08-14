@@ -33,14 +33,14 @@ namespace Assets.Scripts
         {
             DILoader.Initialize();
             pubsub = DI.Instance.Resolve<IPubSub>();
-            pubsub.Subscribe<LoginRegisterResponseMessage>(OnNewLoginToken, this.name);
-            pubsub.Subscribe<CharacterMessage>(OnCharacterMessage, this.name);
+            pubsub.Subscribe<LoginRegisterResponseMessage>(OnNewLoginToken, this.GetType().Name);
+            pubsub.Subscribe<CharacterMessage>(OnCharacterMessage, this.GetType().Name);
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
 		public void OnDisable()
         {
-            pubsub.Unsubscribe<LoginRegisterResponseMessage>(this.name);
+            pubsub.Unsubscribe<LoginRegisterResponseMessage>(this.GetType().Name);
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 

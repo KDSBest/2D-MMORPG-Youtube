@@ -22,14 +22,14 @@ namespace Assets.Scripts.UI
             DILoader.Initialize();
             pubsub = DI.Instance.Resolve<IPubSub>();
 
-            pubsub.Subscribe<ControlLoginScreen>(OnControlLoginScreen, this.name);
-            pubsub.Subscribe<LoginRegisterResponseMessage>(OnLoginRegisterResponseMessage, this.name);
+            pubsub.Subscribe<ControlLoginScreen>(OnControlLoginScreen, this.GetType().Name);
+            pubsub.Subscribe<LoginRegisterResponseMessage>(OnLoginRegisterResponseMessage, this.GetType().Name);
         }
 
         public void OnDisable()
         {
-            pubsub.Unsubscribe<ControlLoginScreen>(this.name);
-            pubsub.Unsubscribe<LoginRegisterResponseMessage>(this.name);
+            pubsub.Unsubscribe<ControlLoginScreen>(this.GetType().Name);
+            pubsub.Unsubscribe<LoginRegisterResponseMessage>(this.GetType().Name);
         }
 
         public void OnControlLoginScreen(ControlLoginScreen data)

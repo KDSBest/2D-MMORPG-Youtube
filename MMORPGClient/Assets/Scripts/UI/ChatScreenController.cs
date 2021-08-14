@@ -25,8 +25,8 @@ namespace Assets.Scripts.UI
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 
-			pubsub.Subscribe<ControlChatScreen>(OnControlScreen, this.name);
-			pubsub.Subscribe<ChatMessage>(OnChatMessage, this.name);
+			pubsub.Subscribe<ControlChatScreen>(OnControlScreen, this.GetType().Name);
+			pubsub.Subscribe<ChatMessage>(OnChatMessage, this.GetType().Name);
 		}
 
 		private void OnChatMessage(ChatMessage chatMessage)
@@ -67,8 +67,8 @@ namespace Assets.Scripts.UI
 
 		public void OnDisable()
 		{
-			pubsub.Unsubscribe<ControlChatScreen>(this.name);
-			pubsub.Unsubscribe<ChatMessage>(this.name);
+			pubsub.Unsubscribe<ControlChatScreen>(this.GetType().Name);
+			pubsub.Unsubscribe<ChatMessage>(this.GetType().Name);
 		}
 
 		public void OnControlScreen(ControlChatScreen data)
