@@ -2,6 +2,7 @@
 using Common.Client.Interfaces;
 using Common.IoC;
 using Common.Protocol.Inventory;
+using Common.Protocol.PlayerEvent;
 using Common.PublishSubscribe;
 using System;
 using System.Threading.Tasks;
@@ -22,6 +23,12 @@ namespace Assets.Scripts.ClientWrappers
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			client = DI.Instance.Resolve<IInventoryClient>();
 			pubsub.Subscribe<RequestInventoryMessage>(OnRequestInventory, this.GetType().Name);
+			pubsub.Subscribe<PlayerEventMessage>(OnPlayerEvent, this.GetType().Name);
+		}
+
+		private void OnPlayerEvent(PlayerEventMessage ev)
+		{
+			OnRequestInventory(new RequestInventoryMessage());
 		}
 
 		private void OnRequestInventory(RequestInventoryMessage data)

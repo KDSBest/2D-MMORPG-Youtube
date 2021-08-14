@@ -31,11 +31,6 @@ namespace Assets.Scripts.UI
             {
                 CreateEventEntry($"- {remove.Value}");
             }
-
-            if(ev.Add.Count > 0 || ev.Remove.Count > 0)
-			{
-                pubsub.Publish<RequestInventoryMessage>(new RequestInventoryMessage());
-			}
         }
 
 		private void CreateEventEntry(string displayValue)
