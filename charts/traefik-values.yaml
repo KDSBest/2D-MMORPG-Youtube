@@ -249,6 +249,11 @@ ports:
     expose: true
     exposedPort: 3338
     protocol: UDP
+  inventory:
+    port: 3339
+    expose: true
+    exposedPort: inventory
+    protocol: UDP
 
 # TLS Options are created as TLSOption CRDs
 # https://doc.traefik.io/traefik/https/tls/#tls-options

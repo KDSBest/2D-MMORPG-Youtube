@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: inventory-svc
+
+spec:
+  entryPoints:
+    - inventory
+  routes:
+  - services:
+    - name: inventory-svc
+      port: 3338

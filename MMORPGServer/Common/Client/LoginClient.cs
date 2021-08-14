@@ -6,27 +6,8 @@ using ReliableUdp;
 namespace Common.Client
 {
 
-	public class LoginClient : BaseClient<CryptoWorkflow<LoginWorkflow>>, ILoginClient
+	public class LoginClient : CryptoBaseClient<LoginWorkflow>, ILoginClient
 	{
-
-		public override bool IsConnected
-		{
-			get
-			{
-				return base.IsConnected && Workflow != null;
-			}
-		}
-
-		public LoginClient()
-		{
-		}
-
-		public LoginWorkflow Workflow { get; set; }
-
-		public override void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
-		{
-			Workflow = newWorkflow as LoginWorkflow;
-		}
 
 	}
 }

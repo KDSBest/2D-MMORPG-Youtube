@@ -17,6 +17,8 @@
         TimeSync = 81,
         RemoveState = 82,
         RemovePartition = 83,
-        PlayerEvent = 90
+        PlayerEvent = 90,
+        ReqInventory = 91,
+        Inventory = 92
     }
 }

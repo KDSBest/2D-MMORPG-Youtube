@@ -28,7 +28,7 @@ namespace Assets.Scripts.ClientWrappers
 			// Async without await in unity still blocks UI, so we have to create our own Task to make this work
 			Task.Run(() =>
 			{
-				client.Workflow.RegisterAsync(data.Email, data.Password);
+				client.WorkflowAfterCrypto.RegisterAsync(data.Email, data.Password);
 			});
 		}
 
@@ -37,7 +37,7 @@ namespace Assets.Scripts.ClientWrappers
 			// Async without await in unity still blocks UI, so we have to create our own Task to make this work
 			Task.Run(() =>
 			{
-				client.Workflow.LoginAsync(data.Email, data.Password);
+				client.WorkflowAfterCrypto.LoginAsync(data.Email, data.Password);
 			});
 		}
 

@@ -5,8 +5,10 @@ using Assets.Scripts.PubSubEvents.StartUI;
 using Common.Client.Interfaces;
 using Common.IoC;
 using Common.Protocol.Character;
+using Common.Protocol.Inventory;
 using Common.Protocol.Login;
 using Common.PublishSubscribe;
+using System;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -16,6 +18,14 @@ namespace Assets.Scripts
 {
 	public class FrameworkBehaviour : MonoBehaviour
     {
+        private static readonly string host = "localhost";
+        private static readonly int worldChatPort = 3333;
+        private static readonly int loginPort = 3334;
+        private static readonly int characterPort = 3335;
+        private static readonly int mapPort = 3336;
+        private static readonly int eventPort = 3337;
+        private static readonly int inventoryPort = 3338;
+
         private const int waitMS = 50;
         private IPubSub pubsub;
 
@@ -36,7 +46,7 @@ namespace Assets.Scripts
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-			this.StartCoroutine(InitLoginClient());
+			InitLoginClient();
 		}
 
         public void Update()
@@ -57,79 +67,47 @@ namespace Assets.Scripts
                     Visible = false
                 });
 
-                this.StartCoroutine(InitMapClient());
+                InitMapClient();
             }
         }
 
-        public IEnumerator InitMapClient()
+        public void InitMapClient()
         {
-            UpdateProgress(0, string.Empty);
-
-            yield return new WaitForEndOfFrame();
-
-            UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToGame);
 
             var client = DI.Instance.Resolve<IMapClientWrapper>();
-            Task<bool> connectTask = client.ConnectAsync("kdsmmorpg.westeurope.cloudapp.azure.com", 3336);
-
-            while (!connectTask.Wait(waitMS))
+            this.StartCoroutine(InitializeClientWrapper(client, mapPort, DI.Instance.Resolve<ILanguage>().ConnectToGame, () =>
             {
-                yield return new WaitForEndOfFrame();
-            }
+                InitChatClient();
+            }, 0, 0.25f));
 
-            if (!connectTask.Result)
-            {
-                UpdateProgress(1, DI.Instance.Resolve<ILanguage>().ConnectionFailed);
-                yield break;
-            }
-
-            yield return new WaitForEndOfFrame();
-
-            UpdateProgress(0.6f, DI.Instance.Resolve<ILanguage>().ConnectToGame);
-            while (!client.IsInitialized)
-            {
-                yield return new WaitForEndOfFrame();
-            }
-
-            UpdateProgress(1, string.Empty, false);
-
-            pubsub.Publish(new PlayerControlEnable());
-            this.StartCoroutine(InitChatClient());
         }
 
-        public IEnumerator InitChatClient()
+        public void InitChatClient()
         {
-            UpdateProgress(0, string.Empty);
-
-            yield return new WaitForEndOfFrame();
-
-            UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToChat);
-
             var client = DI.Instance.Resolve<IChatClientWrapper>();
-            Task<bool> connectTask = client.ConnectAsync("kdsmmorpg.westeurope.cloudapp.azure.com", 3333);
-
-            while (!connectTask.Wait(waitMS))
+            this.StartCoroutine(InitializeClientWrapper(client, worldChatPort, DI.Instance.Resolve<ILanguage>().ConnectToChat, () =>
             {
-                yield return new WaitForEndOfFrame();
-            }
+                pubsub.Publish<ControlChatScreen>(new ControlChatScreen());
+                InitInventoryClient();
+            }, 0.25f, 0.5f));
+        }
 
-            if (!connectTask.Result)
+        public void InitInventoryClient()
+        {
+            var client = DI.Instance.Resolve<IInventoryClientWrapper>();
+            this.StartCoroutine(InitializeClientWrapper(client, inventoryPort, DI.Instance.Resolve<ILanguage>().ConnectToInventory, () =>
             {
-                UpdateProgress(1, DI.Instance.Resolve<ILanguage>().ConnectionFailed);
-                yield break;
-            }
+                DI.Instance.Resolve<IPubSub>().Publish<RequestInventoryMessage>(new RequestInventoryMessage());
+                InitPlayerEventClient();
+            }, 0.5f, 0.75f));
+        }
 
-            yield return new WaitForEndOfFrame();
-
-            UpdateProgress(0.6f, DI.Instance.Resolve<ILanguage>().ConnectToChat);
-            while (!client.IsInitialized)
+        public void InitPlayerEventClient()
+        {
+            var client = DI.Instance.Resolve<IPlayerEventClientWrapper>();
+            this.StartCoroutine(InitializeClientWrapper(client, eventPort, DI.Instance.Resolve<ILanguage>().ConnectToPlayerEvent, () =>
             {
-                yield return new WaitForEndOfFrame();
-            }
-
-            UpdateProgress(1, string.Empty, false);
-
-            pubsub.Publish<ControlChatScreen>(new ControlChatScreen());
+            }, 0.75f, 1.0f));
         }
 
         public void OnNewLoginToken(LoginRegisterResponseMessage data)
@@ -139,25 +117,42 @@ namespace Assets.Scripts
 
             if (data.Response == LoginRegisterResponse.Successful)
             {
-                this.StartCoroutine(InitCharacterClient());
+                InitCharacterClient();
             }
         }
 
-        public IEnumerator InitCharacterClient()
+        public void InitCharacterClient()
         {
             pubsub.Publish<ControlLoginScreen>(new ControlLoginScreen()
             {
                 Visible = false
             });
 
-            UpdateProgress(0, string.Empty);
+            var client = DI.Instance.Resolve<ICharacterClientWrapper>();
+            this.StartCoroutine(InitializeClientWrapper(client, characterPort, DI.Instance.Resolve<ILanguage>().ConnectToCharacter, () =>
+            {
+                pubsub.Publish<ControlCharacterScreen>(new ControlCharacterScreen());
+            }));
+        }
+
+        public void InitLoginClient()
+		{
+            var client = DI.Instance.Resolve<ILoginClientWrapper>();
+            this.StartCoroutine(InitializeClientWrapper(client, loginPort, DI.Instance.Resolve<ILanguage>().ConnectToLogin, () =>
+            {
+                DI.Instance.Resolve<IPubSub>().Publish<ControlLoginScreen>(new ControlLoginScreen());
+            }));
+        }
+
+        public IEnumerator InitializeClientWrapper(IClientWrapper client, int port, string statusMessage, Action doneAction, float startProgress = 0, float maxProgress = 1)
+		{
+            UpdateProgress(startProgress, DI.Instance.Resolve<ILanguage>().Starting);
 
             yield return new WaitForEndOfFrame();
 
-            UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToCharacter);
+            UpdateProgress(startProgress + ((maxProgress - startProgress) / 2), statusMessage);
 
-            var charClient = DI.Instance.Resolve<ICharacterClientWrapper>();
-            Task<bool> connectTask = charClient.ConnectAsync("kdsmmorpg.westeurope.cloudapp.azure.com", 3335);
+            Task<bool> connectTask = client.ConnectAsync(host, port);
 
             while (!connectTask.Wait(waitMS))
             {
@@ -172,49 +167,15 @@ namespace Assets.Scripts
 
             yield return new WaitForEndOfFrame();
 
-            UpdateProgress(0.6f, DI.Instance.Resolve<ILanguage>().ConnectToCharacter);
-            while (!charClient.IsInitialized)
+            while (!client.IsInitialized)
             {
                 yield return new WaitForEndOfFrame();
             }
 
-            UpdateProgress(1, string.Empty, false);
+            UpdateProgress(maxProgress, string.Empty, false);
 
-            pubsub.Publish<ControlCharacterScreen>(new ControlCharacterScreen());
-        }
-
-        public IEnumerator InitLoginClient()
-		{
-            var loginClient = DI.Instance.Resolve<ILoginClientWrapper>();
-			UpdateProgress(0, DI.Instance.Resolve<ILanguage>().Starting);
-
-			yield return new WaitForEndOfFrame();
-
-			UpdateProgress(0.4f, DI.Instance.Resolve<ILanguage>().ConnectToLogin);
-
-            Task<bool> connectTask = loginClient.ConnectAsync("kdsmmorpg.westeurope.cloudapp.azure.com", 3334);
-
-            while(!connectTask.Wait(waitMS))
-			{
-                yield return new WaitForEndOfFrame();
-			}
-
-            if (!connectTask.Result)
-            {
-                UpdateProgress(1, DI.Instance.Resolve<ILanguage>().ConnectionFailed);
-                yield break;
-            }
-
-            yield return new WaitForEndOfFrame();
-
-            UpdateProgress(0.6f, DI.Instance.Resolve<ILanguage>().EncryptionHandshake);
-            while (!loginClient.IsInitialized)
-            {
-                yield return new WaitForEndOfFrame();
-            }
-
-            UpdateProgress(1, string.Empty, false);
-            DI.Instance.Resolve<IPubSub>().Publish<ControlLoginScreen>(new ControlLoginScreen());
+            if(doneAction != null)
+                doneAction();
         }
 
         private static void UpdateProgress(float percentage, string action, bool visible = true)

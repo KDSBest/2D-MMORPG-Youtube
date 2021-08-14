@@ -4,10 +4,7 @@ using ReliableUdp;
 
 namespace Common.Client.Interfaces
 {
-	public interface IPlayerEventClient : IBaseClient
+	public interface IPlayerEventClient : IBaseClient<PlayerEventWorkflow>
 	{
-		PlayerEventWorkflow Workflow { get; set; }
-
-		void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow);
 	}
 }

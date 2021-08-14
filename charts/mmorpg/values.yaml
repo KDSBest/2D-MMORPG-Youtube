@@ -7,6 +7,7 @@ characterPort: 3335
 mapTownPort: 3336
 mapFieldPort: 3337
 playerEventPort: 3338
+inventoryPort: 3339
 
 cosmosUrl: "@@{CosmosUrl}@@"
 cosmosKey: "@@{CosmosKey}@@"
@@ -19,6 +20,7 @@ dailyLoginServiceImage: "@@{GameName}@@acr.azurecr.io/dailyloginservice:@@{Build
 inventoryEventProcessorServiceImage: "@@{GameName}@@acr.azurecr.io/inventoryeventprocessorservice:@@{Build.BuildNumber}@@"
 playerEventProcessorServiceImage: "@@{GameName}@@acr.azurecr.io/playereventprocessorservice:@@{Build.BuildNumber}@@"
 playerEventServiceImage: "@@{GameName}@@acr.azurecr.io/playereventservice:@@{Build.BuildNumber}@@"
+inventoryServiceImage: "@@{GameName}@@acr.azurecr.io/inventoryservice:@@{Build.BuildNumber}@@"
 
 serviceType: ClusterIP
 

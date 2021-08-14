@@ -11,6 +11,9 @@
 		public string ConnectToGame { get; } = "Connect to Game.";
 
 		public string ConnectionFailed { get; } = "Connection failed!";
-		public string EncryptionHandshake { get; } = "Make Connection to Backend Secure.";
+
+		public string ConnectToPlayerEvent { get; } = "Connect to Events.";
+
+		public string ConnectToInventory { get; } = "Connect to Inventory.";
 	}
 }

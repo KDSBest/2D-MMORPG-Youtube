@@ -50,7 +50,7 @@ namespace ChatClient
 
 			pubsub.Subscribe<LoginRegisterResponseMessage>(OnRegisteredLogin, "Main");
 
-			await loginClient.Workflow.RegisterAsync(email, password);
+			await loginClient.WorkflowAfterCrypto.RegisterAsync(email, password);
 			while (isRunning)
 			{
 				await Task.Delay(1000);
@@ -63,7 +63,7 @@ namespace ChatClient
 			{
 				Console.WriteLine($"Register failed with {result.Response}.");
 				Console.WriteLine($"Try Login...");
-				await loginClient.Workflow.LoginAsync(email, password);
+				await loginClient.WorkflowAfterCrypto.LoginAsync(email, password);
 				return;
 			}
 

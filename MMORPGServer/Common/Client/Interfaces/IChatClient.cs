@@ -4,10 +4,7 @@ using ReliableUdp;
 
 namespace Common.Client.Interfaces
 {
-	public interface IChatClient : IBaseClient
+	public interface IChatClient : IBaseClient<ChatWorkflow>
 	{
-		ChatWorkflow Workflow { get; set; }
-
-		void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow);
 	}
 }

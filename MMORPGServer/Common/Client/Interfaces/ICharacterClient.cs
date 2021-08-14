@@ -4,9 +4,7 @@ using ReliableUdp;
 
 namespace Common.Client.Interfaces
 {
-	public interface ICharacterClient : IBaseClient
+	public interface ICharacterClient : IBaseClient<CharacterWorkflow>
 	{
-		CharacterWorkflow Workflow { get; set; }
-		void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow);
 	}
 }

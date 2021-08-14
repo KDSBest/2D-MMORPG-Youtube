@@ -8,20 +8,5 @@ namespace Common.Client
 
 	public class ChatClient : BaseClient<ChatWorkflow>, IChatClient
 	{
-		public override bool IsConnected
-		{
-			get
-			{
-				return base.IsConnected && Workflow != null;
-			}
-		}
-
-		public ChatWorkflow Workflow { get; set; }
-
-		public override void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
-		{
-			Workflow = newWorkflow as ChatWorkflow;
-		}
-
 	}
 }

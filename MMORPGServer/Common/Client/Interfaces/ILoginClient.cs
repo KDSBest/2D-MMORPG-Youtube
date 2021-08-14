@@ -4,11 +4,8 @@ using ReliableUdp;
 
 namespace Common.Client.Interfaces
 {
-	public interface ILoginClient : IBaseClient
+	public interface ILoginClient : IBaseClient<CryptoWorkflow<LoginWorkflow>>
 	{
-		bool IsConnected { get; }
-		LoginWorkflow Workflow { get; set; }
-
-		void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow);
+		LoginWorkflow WorkflowAfterCrypto { get; set; }
 	}
 }

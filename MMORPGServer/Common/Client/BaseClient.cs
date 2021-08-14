@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace Common.Client
 {
-	public class BaseClient<TWorkflow> : BaseUdpListener<TWorkflow>, IBaseClient where TWorkflow : IWorkflow, new()
+
+	public class BaseClient<TWorkflow> : BaseUdpListener<TWorkflow>, IBaseClient<TWorkflow> where TWorkflow : class, IWorkflow, new()
 	{
 		public UdpPeer Peer { get; set; }
 		private const int delayMs = 50;
@@ -19,11 +20,13 @@ namespace Common.Client
 		private bool disconnect = false;
 		private Task updateThread;
 
+		public TWorkflow Workflow { get; set; }
+
 		public virtual bool IsConnected
 		{
 			get
 			{
-				return Peer != null && Peer.ConnectionState == ConnectionState.Connected && !disconnect;
+				return Peer != null && Peer.ConnectionState == ConnectionState.Connected && !disconnect && Workflow != null;
 			}
 		}
 
@@ -80,6 +83,14 @@ namespace Common.Client
 			{
 				await Task.Delay(delayMs);
 			}
+		}
+
+		public override void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow)
+		{
+			var wf = newWorkflow as TWorkflow;
+
+			if(wf != null)
+				Workflow = wf;
 		}
 	}
 }

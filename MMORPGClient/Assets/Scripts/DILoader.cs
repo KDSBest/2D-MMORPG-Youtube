@@ -34,6 +34,12 @@ namespace Assets.Scripts
 			DI.Instance.Register<IMapClient>(() => new MapClient(), RegistrationType.Singleton);
 			DI.Instance.Register<IMapClientWrapper>(() => new MapClientWrapper(), RegistrationType.Singleton);
 
+			DI.Instance.Register<IInventoryClient>(() => new InventoryClient(), RegistrationType.Singleton);
+			DI.Instance.Register<IInventoryClientWrapper>(() => new InventoryClientWrapper(), RegistrationType.Singleton);
+
+			DI.Instance.Register<IPlayerEventClient>(() => new PlayerEventClient(), RegistrationType.Singleton);
+			DI.Instance.Register<IPlayerEventClientWrapper>(() => new PlayerEventClientWrapper(), RegistrationType.Singleton);
+
 			isInitialized = true;
 		}
 	}

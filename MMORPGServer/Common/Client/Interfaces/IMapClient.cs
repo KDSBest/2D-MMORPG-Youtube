@@ -4,10 +4,7 @@ using ReliableUdp;
 
 namespace Common.Client.Interfaces
 {
-	public interface IMapClient : IBaseClient
+	public interface IMapClient : IBaseClient<MapWorkflow>
 	{
-		MapWorkflow Workflow { get; set; }
-
-		void OnWorkflowSwitch(UdpPeer peer, IWorkflow newWorkflow);
 	}
 }

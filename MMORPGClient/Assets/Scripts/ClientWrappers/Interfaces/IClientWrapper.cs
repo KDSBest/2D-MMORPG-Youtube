@@ -2,7 +2,7 @@
 
 namespace Assets.Scripts.ClientWrappers
 {
-	public interface IMapClientWrapper
+	public interface IClientWrapper
 	{
 		bool IsInitialized { get; }
 

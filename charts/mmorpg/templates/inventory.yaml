@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory
+  labels:
+    app: inventory
+    {{ include "mmorpg.labels" . | nindent 4 }}
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: inventory
+  template:
+    metadata:
+      labels:
+        app: inventory
+        {{ include "mmorpg.labels" . | nindent 8 }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: inventoryservice
+        imagePullPolicy: Always
+        image: {{ .Values.inventoryServiceImage }}
+        ports:
+        - name: inventory
+          containerPort: 3337
+        env:
+        - name: CosmosUrl
+          valueFrom:
+            secretKeyRef:
+              name: cosmossecret
+              key: CosmosUrl
+        - name: CosmosKey
+          valueFrom:
+            secretKeyRef:
+              name: cosmossecret
+              key: CosmosKey
+        - name: JwtSecret
+          value: {{ .Values.jwtSecret }}
