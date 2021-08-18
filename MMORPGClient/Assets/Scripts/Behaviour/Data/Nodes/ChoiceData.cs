@@ -6,6 +6,8 @@ namespace Assets.Scripts.Behaviour.Data.Nodes
     public class ChoiceData
 	{
         public string Text { get; set; }
+
+		public string Condition { get; set; }
         public Guid GuidNext { get; set; }
 	}
 }

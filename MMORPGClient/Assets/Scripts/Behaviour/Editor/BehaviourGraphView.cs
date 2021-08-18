@@ -120,8 +120,8 @@ namespace Assets.Scripts.Behaviour.Editor
 
 			foreach (var choice in nodeData.Choices)
 			{
-				var outputPort = outputNode.OutputPort.First(x => x.portName == choice.Text);
-				ConnectNodes(nodes, outputPort, choice.GuidNext);
+				var outputPort = outputNode.OutputPort.First(x => x.Port.portName == choice.Text);
+				ConnectNodes(nodes, outputPort.Port, choice.GuidNext);
 			}
 		}
 
@@ -138,11 +138,14 @@ namespace Assets.Scripts.Behaviour.Editor
 		{
 			var node = new DialogNode(this, new Vector2(nodeData.Position.X, nodeData.Position.Y));
 			node.Guid = nodeData.Guid;
-			NodeHelper.SetNodeText(node, dNodeData.Text);
+			node.DisplayName = dNodeData.Name;
+			node.TextFieldDisplayName.SetValueWithoutNotify(node.DisplayName);
+
+			NodeHelper.SetNodeText(node, dNodeData.Text, node.DisplayName + ": ");
 
 			foreach (var nodeChoiceData in dNodeData.Choices)
 			{
-				node.AddPort(nodeChoiceData.Text);
+				node.AddPort(nodeChoiceData.Text, nodeChoiceData.Condition);
 			}
 
 			nodes.Add(node.Guid, node);

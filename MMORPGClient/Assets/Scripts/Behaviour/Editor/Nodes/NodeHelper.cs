@@ -10,5 +10,11 @@ namespace Assets.Scripts.Behaviour.Editor.Nodes
 			node.title = text.Split('\r', '\n')[0];
 			node.TextField.SetValueWithoutNotify(text);
 		}
+
+		public static void SetNodeText(ITextfieldNode node, string text, string titlePrefix)
+		{
+			SetNodeText(node, text);
+			node.title = titlePrefix + node.title;
+		}
 	}
 }

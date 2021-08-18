@@ -13,9 +13,11 @@ namespace Assets.Scripts.Behaviour.Editor.Nodes
 	public class DialogNode : BaseNode, ITextfieldNode
 	{
 		public string Text { get; set; }
+		public string DisplayName { get; set; }
 
 		public TextField TextField { get; set; }
-		public List<Port> OutputPort { get; set; } = new List<Port>();
+		public TextField TextFieldDisplayName { get; set; }
+		public List<ConditionPort> OutputPort { get; set; } = new List<ConditionPort>();
 
 		private GraphView graphView;
 
@@ -39,16 +41,26 @@ namespace Assets.Scripts.Behaviour.Editor.Nodes
 			this.RefreshPorts();
 			this.SetPosition(new Rect(position, new Vector2(200, 150)));
 
-			var textField = new TextField("");
-			textField.multiline = true;
-			textField.RegisterValueChangedCallback(evt =>
+			this.TextFieldDisplayName = new TextField("");
+			this.TextFieldDisplayName.RegisterValueChangedCallback(evt =>
 			{
-				NodeHelper.SetNodeText(this, evt.newValue);
+				this.DisplayName = evt.newValue;
+				NodeHelper.SetNodeText(this, this.Text, this.DisplayName + ": ");
 			});
-			textField.SetValueWithoutNotify(this.title);
-			this.TextField = textField;
 
-			this.mainContainer.Add(textField);
+			this.mainContainer.Add(new Label("Display Name:"));
+			this.mainContainer.Add(TextFieldDisplayName);
+
+			this.TextField = new TextField("");
+			this.TextField.multiline = true;
+			this.TextField.RegisterValueChangedCallback(evt =>
+			{
+				NodeHelper.SetNodeText(this, evt.newValue, this.DisplayName + ": ");
+			});
+			this.TextField.SetValueWithoutNotify(this.title);
+
+			this.mainContainer.Add(new Label("Dialog Text:"));
+			this.mainContainer.Add(this.TextField);
 
 			var button = new Button(() => { AddPort(); })
 			{
@@ -57,39 +69,52 @@ namespace Assets.Scripts.Behaviour.Editor.Nodes
 			this.titleButtonContainer.Add(button);
 		}
 
-		public void AddPort(string name = null)
+		public void AddPort(string name = null, string condition = "true")
 		{
-			var newPort = this.InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(BaseNode));
+			var newPort = new ConditionPort()
+			{
+				Port = this.InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(BaseNode))
+			};
 
 			var outputPortCount = this.outputContainer.Children().Where(x => x is Port).Count();
 			var outputPortName = string.IsNullOrEmpty(name) ? $"Choice {outputPortCount + 1}" : name;
 
-			newPort.portName = outputPortName;
+			newPort.Port.portName = outputPortName;
 
 			var textField = new TextField()
 			{
 				name = string.Empty,
 				value = outputPortName
 			};
-			textField.RegisterValueChangedCallback(evt => newPort.portName = evt.newValue);
-			newPort.contentContainer.Add(textField);
+			textField.RegisterValueChangedCallback(evt => newPort.Port.portName = evt.newValue);
+			newPort.Port.contentContainer.Add(textField);
+			newPort.Port.contentContainer.Add(new Label("Answer:"));
+
+			var conditionTextField = new TextField()
+			{
+				name = string.Empty,
+				value = condition
+			};
+			conditionTextField.RegisterValueChangedCallback(evt => newPort.Condition = evt.newValue);
+			newPort.Port.contentContainer.Add(conditionTextField);
+			newPort.Port.contentContainer.Add(new Label("Condition:"));
 
 			var deleteButton = new Button(() => RemovePort(newPort))
 			{
 				text = "Remove Choice"
 			};
-			newPort.contentContainer.Add(deleteButton);
+			newPort.Port.contentContainer.Add(deleteButton);
 
-			this.outputContainer.Add(newPort);
+			this.outputContainer.Add(newPort.Port);
 			this.OutputPort.Add(newPort);
 
 			this.RefreshPorts();
 			this.RefreshExpandedState();
 		}
 
-		private void RemovePort(Port port)
+		private void RemovePort(ConditionPort port)
 		{
-			var edgeToRemove = graphView.edges.ToList().FirstOrDefault(x => x.output.portName == port.portName && x.output.node == port.node);
+			var edgeToRemove = graphView.edges.ToList().FirstOrDefault(x => x.output.portName == port.Port.portName && x.output.node == port.Port.node);
 
 			if (edgeToRemove != null)
 			{
@@ -97,7 +122,7 @@ namespace Assets.Scripts.Behaviour.Editor.Nodes
 				graphView.RemoveElement(edgeToRemove);
 			}
 
-			this.outputContainer.Remove(port);
+			this.outputContainer.Remove(port.Port);
 			this.OutputPort.Remove(port);
 
 			this.RefreshPorts();
@@ -111,17 +136,19 @@ namespace Assets.Scripts.Behaviour.Editor.Nodes
 			{
 				Guid = this.Guid,
 				Position = new System.Numerics.Vector2(pos.x, pos.y),
-				Text = this.Text
+				Text = this.Text,
+				Name = this.DisplayName
 			};
 
 			foreach (var port in OutputPort)
 			{
 				var choice = new ChoiceData();
-				choice.Text = port.portName;
+				choice.Text = port.Port.portName;
+				choice.Condition = port.Condition;
 				choice.GuidNext = Guid.Empty;
-				if (port.connected)
+				if (port.Port.connected)
 				{
-					var otherNode = port.connections.First().input.node as BaseNode;
+					var otherNode = port.Port.connections.First().input.node as BaseNode;
 					if (otherNode != null)
 					{
 						choice.GuidNext = otherNode.Guid;

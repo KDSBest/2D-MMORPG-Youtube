@@ -1,0 +1,142 @@
+{
+  "Properties": [],
+  "Groups": [],
+  "Nodes": {
+    "00000000-0000-0000-0000-000000000000": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.EntryPointNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 100.0,
+        "Y": 400.0
+      },
+      "Start": "79594a35-dfa1-458c-8e74-8da59b8d951a",
+      "Guid": "00000000-0000-0000-0000-000000000000"
+    },
+    "79594a35-dfa1-458c-8e74-8da59b8d951a": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 463.0,
+        "Y": 371.0
+      },
+      "Name": "Hans",
+      "Text": "Hi,\n\nHow are you?",
+      "Choices": [
+        {
+          "Text": "Fine",
+          "Condition": "true",
+          "GuidNext": "c637b99e-e5ec-4016-9164-909e14fcfb3b"
+        },
+        {
+          "Text": "Where am I?",
+          "Condition": "true",
+          "GuidNext": "f8e80dea-7125-4722-835d-c56538424081"
+        },
+        {
+          "Text": "Do you have any work for me?",
+          "Condition": "true",
+          "GuidNext": "37bde745-e805-4726-88ab-c421f19b507e"
+        }
+      ],
+      "Guid": "79594a35-dfa1-458c-8e74-8da59b8d951a"
+    },
+    "c637b99e-e5ec-4016-9164-909e14fcfb3b": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 1520.0,
+        "Y": 280.0
+      },
+      "Name": "[Player]",
+      "Text": "Fine, how are you?",
+      "Choices": [
+        {
+          "Text": "Continue",
+          "Condition": "true",
+          "GuidNext": "24ead175-4a90-4a6d-8616-35ec10069d9f"
+        }
+      ],
+      "Guid": "c637b99e-e5ec-4016-9164-909e14fcfb3b"
+    },
+    "f8e80dea-7125-4722-835d-c56538424081": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 1608.0,
+        "Y": 440.0
+      },
+      "Name": "Hans",
+      "Text": "You are in Blockworld....\n\n....\n....",
+      "Choices": [
+        {
+          "Text": "Continue",
+          "Condition": "true",
+          "GuidNext": "12b233bd-10fa-45e7-9cb1-ee50fd0d8af8"
+        }
+      ],
+      "Guid": "f8e80dea-7125-4722-835d-c56538424081"
+    },
+    "12b233bd-10fa-45e7-9cb1-ee50fd0d8af8": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 2181.0,
+        "Y": 405.0
+      },
+      "Name": "Hans",
+      "Text": "More\n\nLore!",
+      "Choices": [],
+      "Guid": "12b233bd-10fa-45e7-9cb1-ee50fd0d8af8"
+    },
+    "37bde745-e805-4726-88ab-c421f19b507e": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 1608.0,
+        "Y": 675.0
+      },
+      "Name": "Hans",
+      "Text": "Please pick up some xxx for me.",
+      "Choices": [
+        {
+          "Text": "Accept Quest",
+          "Condition": "true",
+          "GuidNext": "8982bf3d-b240-478b-a338-e360877cc9e8"
+        },
+        {
+          "Text": "I got no time, sorry!",
+          "Condition": "true",
+          "GuidNext": "00000000-0000-0000-0000-000000000000"
+        }
+      ],
+      "Guid": "37bde745-e805-4726-88ab-c421f19b507e"
+    },
+    "24ead175-4a90-4a6d-8616-35ec10069d9f": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 2181.0,
+        "Y": 206.0
+      },
+      "Name": "Hans",
+      "Text": "Fine, thanks for asking!",
+      "Choices": [],
+      "Guid": "24ead175-4a90-4a6d-8616-35ec10069d9f"
+    },
+    "30c7b106-a73c-4a83-84ef-7599d9aa80b1": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 2626.0,
+        "Y": 584.0
+      },
+      "Name": "[Player]",
+      "Text": "Sure!",
+      "Choices": [],
+      "Guid": "30c7b106-a73c-4a83-84ef-7599d9aa80b1"
+    },
+    "8982bf3d-b240-478b-a338-e360877cc9e8": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.BackendCallNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 2293.0,
+        "Y": 634.0
+      },
+      "Call": "Quest.Accept(\"HansTutorial\")",
+      "NextTrue": "30c7b106-a73c-4a83-84ef-7599d9aa80b1",
+      "NextFalse": "00000000-0000-0000-0000-000000000000",
+      "Guid": "8982bf3d-b240-478b-a338-e360877cc9e8"
+    }
+  }
+}
