@@ -1,0 +1,93 @@
+﻿/*
+    KDSBest Script Language/Engine
+    Copyright (C) 2012  KDSBest (www.kdsbest.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+class Test
+{
+	object rofl;
+	number lala;
+
+	function Test()
+	{
+
+	}
+	/*blabla
+
+	*/ 
+	string la;
+
+	/*rofl*/
+	// some sensless comments to test it
+	function Test(object t /* object that gets cloned */)
+	{
+		this.lala = t.lala; //woot comment
+		rofl = t.rofl;
+	}
+
+	function string smallFunc()
+	{
+		number b;
+		string lalala;
+		lalala = new SuperMario();
+		b = lalala;
+		return b + lalala;
+	}
+
+	function object bigFunction(number rofl, object lalalala)
+	{
+		if(1==2)
+			testStr = "ROFLCopter" + test123.lalla + test123["rofl" + 2 + "copter"] + 4;
+		else
+		{
+			this.lalla = "AAAA";
+		}
+
+		if(2==2)
+		{
+			VM.Console(testStr + ": " + test.DoSomeMath(1.2, 2) + "\n" + -1 + ++i - i-- + i++ + test(test( ), i - 5 * 3 -5 + this.lalala(1-2)));
+			lalalala();
+		}
+
+		for(;;)
+		{
+			a = 0;
+		}
+
+		while(lol)
+			blub=true;
+
+		while(blub)
+		{
+			blub = false;
+		}
+
+		for(i=0; i<100; i++)
+		{
+			VM.Console(i);
+		}
+
+		for(; i>0; --i)
+		{
+			VM.Console(i);
+		}
+	}
+}
+
+class Test2
+{
+
+}

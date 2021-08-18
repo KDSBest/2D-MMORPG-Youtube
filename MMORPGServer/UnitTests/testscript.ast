@@ -1,0 +1,188 @@
+﻿ASTClass: Test
+Attributes:
+ASTLocalVariable:
+Object: rofl
+ASTLocalVariable:
+Number: lala
+ASTLocalVariable:
+String: la
+Constructors:
+ASTConstructor:
+ASTFunction:
+Parameter:
+ CodeBlock:
+ASTConstructor:
+ASTFunction:
+Parameter:
+ASTFunctionParameter:
+Object: t
+ CodeBlock:
+ASTOperator: =
+Left: ASTString: lala
+Right: ASTString: lala
+ASTOperator: =
+Left: ASTIdentifier: rofl
+Right: ASTString: rofl
+Functions:
+ASTFunction:
+Parameter:
+ CodeBlock:
+ASTLocalVariable:
+Number: b
+ASTLocalVariable:
+String: lalala
+ASTOperator: =
+Left: ASTIdentifier: lalala
+Right: ASTFunctionCall: SuperMario.SuperMario
+Parameters:
+ASTOperator: =
+Left: ASTIdentifier: b
+Right: ASTIdentifier: lalala
+ASTReturn:
+ASTOperator: +
+Left: ASTIdentifier: b
+Right: ASTIdentifier: lalala
+ASTFunction:
+Parameter:
+ASTFunctionParameter:
+Number: rofl
+ASTFunctionParameter:
+Object: lalalala
+ CodeBlock:
+ASTIf: 
+Condition:  
+ASTOperator: ==
+Left: ASTNumber: 1
+Right: ASTNumber: 2
+ CodeBlock:
+ASTOperator: =
+Left: ASTIdentifier: testStr
+Right: ASTOperator: +
+Left: ASTOperator: +
+Left: ASTOperator: +
+Left: ASTString: ROFLCopter
+Right: ASTString: lalla
+Right: ASTOperator: +
+Left: ASTOperator: +
+Left: ASTString: rofl
+Right: ASTNumber: 2
+Right: ASTString: copter
+Right: ASTNumber: 4
+Else:
+
+ASTOperator: =
+Left: ASTString: lalla
+Right: ASTString: AAAA
+ASTIf: 
+Condition:  
+ASTOperator: ==
+Left: ASTNumber: 2
+Right: ASTNumber: 2
+ CodeBlock:
+ASTFunctionCall: VM.Console
+Parameters:
+ASTOperator: +
+Left: ASTOperator: +
+Left: ASTOperator: +
+Left: ASTIdentifier: testStr
+Right: ASTString: : 
+Right: ASTFunctionCall: test.DoSomeMath
+Parameters:
+ASTNumber: 1,2
+ASTNumber: 2
+Right: ASTOperator: +
+Left: ASTOperator: +
+Left: ASTOperator: -
+Left: ASTOperator: +
+Left: ASTOperator: +
+Left: ASTString: \n
+Right: ASTOperator: -
+Left: ASTNumber: 1
+Right: (none)
+Right: ASTOperator: ++
+Left: ASTIdentifier: i
+Right: (none)
+Right: ASTOperator: --
+Left: ASTIdentifier: i
+Right: (none)
+Right: ASTOperator: ++
+Left: ASTIdentifier: i
+Right: (none)
+Right: ASTFunctionCall: this.test
+Parameters:
+ASTFunctionCall: this.test
+Parameters:
+ASTOperator: -
+Left: ASTIdentifier: i
+Right: ASTOperator: +
+Left: ASTOperator: -
+Left: ASTOperator: *
+Left: ASTNumber: 5
+Right: ASTNumber: 3
+Right: ASTNumber: 5
+Right: ASTFunctionCall: this.lalala
+Parameters:
+ASTOperator: -
+Left: ASTNumber: 1
+Right: ASTNumber: 2
+ASTFunctionCall: this.lalalala
+Parameters:
+ASTFor:
+Init:
+Condition:
+Counter:
+ CodeBlock:
+ASTOperator: =
+Left: ASTIdentifier: a
+Right: ASTNumber: 0
+ASTWhile:
+Condition:
+ASTIdentifier: lol
+ CodeBlock:
+ASTOperator: =
+Left: ASTIdentifier: blub
+Right: ASTIdentifier: true
+ASTWhile:
+Condition:
+ASTIdentifier: blub
+ CodeBlock:
+ASTOperator: =
+Left: ASTIdentifier: blub
+Right: ASTIdentifier: false
+ASTFor:
+Init:
+ASTOperator: =
+Left: ASTIdentifier: i
+Right: ASTNumber: 0
+Condition:
+ASTOperator: <
+Left: ASTIdentifier: i
+Right: ASTNumber: 100
+Counter:
+ASTOperator: ++
+Left: ASTIdentifier: i
+Right: (none)
+ CodeBlock:
+ASTFunctionCall: VM.Console
+Parameters:
+ASTIdentifier: i
+ASTFor:
+Init:
+Condition:
+ASTOperator: >
+Left: ASTIdentifier: i
+Right: ASTNumber: 0
+Counter:
+ASTOperator: --
+Left: ASTIdentifier: i
+Right: (none)
+ CodeBlock:
+ASTFunctionCall: VM.Console
+Parameters:
+ASTIdentifier: i
+
+ASTClass: Test2
+Attributes:
+Constructors:
+Functions:
+

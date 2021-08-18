@@ -1,0 +1,7 @@
+﻿class Test
+{
+	function void HansQuest()
+	{
+		Quest.Discovered("Hans") && !Quest.IsFinish("AepfelHans") && Character.Level() > 10;
+	}
+}

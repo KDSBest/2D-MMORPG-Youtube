@@ -1,0 +1,14 @@
+﻿ASTOperator: &&
+Left: ASTOperator: &&
+Left: ASTFunctionCall: Quest.Discovered
+Parameters:
+ASTString: Hans
+Right: ASTOperator: !
+Left: ASTFunctionCall: Quest.IsFinish
+Parameters:
+ASTString: AepfelHans
+Right: (none)
+Right: ASTOperator: >
+Left: ASTFunctionCall: Character.Level
+Parameters:
+Right: ASTNumber: 10
