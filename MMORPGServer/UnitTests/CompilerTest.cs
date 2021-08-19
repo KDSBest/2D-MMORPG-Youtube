@@ -23,6 +23,16 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void FixParserOutOfRangeExceptionOnOperatorEnding()
+		{
+			var lexer = new Lexer();
+			var tokens = lexer.Lex("1 + 2++");
+
+			var parser = new Parser();
+			var statement = parser.ParseInlineStatement(tokens);
+		}
+
+		[TestMethod]
 		public void CompileClassTest()
 		{
 			var lexer = new Lexer();

@@ -2,6 +2,7 @@
 using Common.ScriptLanguage.Tokens;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Common.ScriptLanguage
 {
@@ -213,11 +214,17 @@ namespace Common.ScriptLanguage
             {
                 if (currentTokens[currentToken] is SpecialToken)
                 {
-                    if (currentTokens[currentToken].Token == "{" || currentTokens[currentToken].Token == ","
-                         || (currentTokens[currentToken].Token == ")" && countClauses <= 0))
+                    if (
+                        // use case new code block aka statement ends
+                        currentTokens[currentToken].Token == "{" 
+                        
+                        // next parameter aka Character.HasLevel(1, 2) then the , is not part of the statement
+                        || currentTokens[currentToken].Token == ",")
                     {
                         break;
                     }
+
+                    // ; and ] end statement but are skipped for further parsing
                     if (currentTokens[currentToken].Token == ";" || currentTokens[currentToken].Token == "]")
                     {
                         currentToken++;
@@ -237,6 +244,10 @@ namespace Common.ScriptLanguage
                     }
                     else if (currentTokens[currentToken].Token == ")")
                     {
+                        // use case Character.HasLevel(1 + 3) then the clauses () are part of the function call not the statement
+                        if (countClauses <= 0)
+                            break;
+
                         --countClauses;
                     }
                 }
@@ -244,7 +255,7 @@ namespace Common.ScriptLanguage
                 if (currentTokens[currentToken] is OperatorToken)
                 {
                     // 2 Operators means at least one is an unary one
-                    if (currentTokens[currentToken + 1] is OperatorToken)
+                    if (currentTokens.Count > currentToken + 1 && currentTokens[currentToken + 1] is OperatorToken)
                     {
                         // Example case "1++ - 2"
                         if (currentTokens[currentToken].Token == "++" || currentTokens[currentToken].Token == "--")
@@ -342,68 +353,10 @@ namespace Common.ScriptLanguage
             //                currentToken++;
 
             if (nodes.Count > 1)
-            {
-                // Algorithm to take care of operator precedence
-                Stack<ASTNode> parameters = new Stack<ASTNode>();
-                Stack<ASTOperator> operators = new Stack<ASTOperator>();
-                int lastPrecedence = int.MinValue;
-                bool isOperator = false;
-                for (int i = nodes.Count - 1; i >= 0; i--)
-                {
-                    if (nodes[i] is ASTOperator && ((ASTOperator)nodes[i]).Operator == "(")
-                    {
-                        // Build Operator Tree
-                        BuildOperatorTree(parameters, operators);
-
-                        // After a ( always has to come an operator or nothing
-                        isOperator = true;
-                    }
-                    else
-                    {
-                        if (isOperator)
-                        {
-                            if (nodes[i] is ASTOperator)
-                            {
-                                ASTOperator op = (ASTOperator)nodes[i];
-                                if (lastPrecedence < op.Precedence)
-                                {
-                                    BuildOperatorTree(parameters, operators);
-                                }
-
-                                lastPrecedence = op.Precedence;
-
-                                operators.Push(op);
-                            }
-                            else
-                            {
-                                if (parameters.Count == 1)
-                                {
-                                    ASTNode node = parameters.Pop();
-
-                                    if (node is ASTOperator)
-                                    {
-                                        ASTOperator op = (ASTOperator)node;
-                                        op.Left = nodes[i];
-                                        parameters.Push(op);
-                                        continue;
-                                    }
-                                }
-                                // This should never ever happen, because else earlier a exception should be raised
-                                throw new ParserException("Expected an operator.", -1);
-                            }
-                        }
-                        else
-                        {
-                            parameters.Push(nodes[i]);
-                        }
-                        isOperator = !isOperator;
-                    }
-                }
-                BuildOperatorTree(parameters, operators);
-
-                return new ASTStatement() { Statement = parameters.Pop() };
-            }
-            else if (nodes.Count == 1)
+			{
+				return ApplyOperatorPrecedences(nodes);
+			}
+			else if (nodes.Count == 1)
             {
                 return new ASTStatement() { Statement = nodes[0] };
             }
@@ -413,7 +366,117 @@ namespace Common.ScriptLanguage
             }
         }
 
-        private List<ASTNode> ParseCodeBlockOrSingleLineStatement()
+		private ASTStatement ApplyOperatorPrecedences(List<ASTNode> nodes)
+		{
+            // Example Precedences
+            // +: 3
+            // *: 2
+
+            // Algorithm to take care of operator precedence
+            // Rule 1: We process the statement right to left so in 2 - (1 + 2) * 3 we start with the number 3
+            // Rule 2: We add Statements and Operators to a Stack for each
+            // Rule 3: ) are ignored
+            // Rule 4: If we reach ( then we "Process the Operator Stack"
+            // Rule 5: If a the last operator precedense was lower than ours then we "Process the Operator Stack"
+            // Rule 6: end of statement we "Process the Operator Stack"
+            // Rule 7: 1++ or i++ will result in starting with an operator instead of a parameter, so we have to handle that with adding a tree like "++ - 1" or "++ - i" as parameter
+            // Rule 8: If not Rule 7 applies then we have Parameter and Operators after each other starting with a parameter
+
+            // Process the Operator Stack means we Build the tree of operators from left to right (because we use a LIFO Stack)
+            // e.g. 1 * 2 + 3 creates a stack like
+            // Parameters: 3, 2, 1
+            // Operators: +, *
+            // First operator is * so tree starts like this
+            // * -  1
+            //   |- 2
+            //
+            // this is added as Parameter
+            // Next operator is + which results to a tree like
+            // + -  *  -  1
+            //   |     |- 2
+            //   |- 3
+            //
+            // e.g. 3 + 2 * 1 should result in the same tree
+            // since + has a higher precedence than * when we reach the + we process the stack which is
+            // Parameters: 2, 3
+            // Operator: *
+            // New Parameter is added as
+            // * -  1
+            //   |- 2
+            //
+            // Next it will process till end and the stack will look like this
+            // Parameters: * (tree), 3
+            // Operators: +
+            // + - 3
+            //   |- * -  1
+            //      |--  2
+            //
+
+            Stack<ASTNode> parameters = new Stack<ASTNode>();
+			Stack<ASTOperator> operators = new Stack<ASTOperator>();
+			int lastPrecedence = int.MinValue;
+			bool expectOperator = false;
+
+			for (int i = nodes.Count - 1; i >= 0; i--)
+			{
+				if (nodes[i] is ASTOperator && ((ASTOperator)nodes[i]).Operator == "(")
+				{
+					// Build Operator Tree
+					ProcessOperatorStack(parameters, operators);
+
+					// After a ( always has to come an operator or nothing
+					expectOperator = true;
+				}
+				else
+				{
+					if (expectOperator)
+					{
+						if (nodes[i] is ASTOperator)
+						{
+							ASTOperator op = (ASTOperator)nodes[i];
+							if (lastPrecedence < op.Precedence)
+							{
+								ProcessOperatorStack(parameters, operators);
+							}
+
+							lastPrecedence = op.Precedence;
+
+							operators.Push(op);
+						}
+						else
+						{
+                            // Special case for e.g. i++ where we start with an operator then the operator got pushed as an parameter and we have to switch the expectation
+							if (parameters.Count == 1)
+							{
+								ASTNode node = parameters.Pop();
+
+								if (node is ASTOperator)
+								{
+									ASTOperator op = (ASTOperator)node;
+									op.Left = nodes[i];
+									parameters.Push(op);
+									continue;
+								}
+							}
+
+							// This should never ever happen, because else earlier a exception should be raised
+							throw new ParserException("Expected an operator.", -1);
+						}
+					}
+					else
+					{
+						parameters.Push(nodes[i]);
+					}
+					expectOperator = !expectOperator;
+				}
+			}
+
+			ProcessOperatorStack(parameters, operators);
+
+			return new ASTStatement() { Statement = parameters.Pop() };
+		}
+
+		private List<ASTNode> ParseCodeBlockOrSingleLineStatement()
         {
             List<ASTNode> CodeBlock;
             if (currentTokens[currentToken].Token == "{")
@@ -657,6 +720,7 @@ namespace Common.ScriptLanguage
                 currentToken++;
             }
             //else it is a constructor
+
             if (currentTokens[currentToken] is IdentifierToken)
             {
                 string name = currentTokens[currentToken].Token;
@@ -793,7 +857,13 @@ namespace Common.ScriptLanguage
             return classes;
         }
 
-        private void BuildOperatorTree(Stack<ASTNode> parameters, Stack<ASTOperator> operators)
+        /// <summary>
+        /// Is explained in detail in ApplyOperatorPrecedences.
+        /// Creates a tree based on the parameters and operators and adds it as Parameter back to the stack
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="operators"></param>
+        private void ProcessOperatorStack(Stack<ASTNode> parameters, Stack<ASTOperator> operators)
         {
             while (operators.Count > 0)
             {

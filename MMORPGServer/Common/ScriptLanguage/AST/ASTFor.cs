@@ -31,7 +31,7 @@ namespace Common.ScriptLanguage.AST
                 result += "\r\n" + this.Counter.ToString();
             }
 
-            result += "\r\n CodeBlock:";
+            result += "\r\nCodeBlock:";
             foreach (ASTNode codeBlock in this.CodeBlock)
             {
                 if (codeBlock == null)

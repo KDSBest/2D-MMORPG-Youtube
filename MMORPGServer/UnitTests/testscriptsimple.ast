@@ -4,7 +4,7 @@ Constructors:
 Functions:
 ASTFunction:
 Parameter:
- CodeBlock:
+CodeBlock:
 ASTOperator: &&
 Left: ASTOperator: &&
 Left: ASTFunctionCall: Quest.Discovered

@@ -1,1 +1,1 @@
-﻿Quest.Discovered("Hans") && !Quest.IsFinish("AepfelHans") && Character.Level() > 10;
+﻿Quest.Discovered("Hans") && !Quest.IsFinish("AepfelHans") && Character.Level() > 10

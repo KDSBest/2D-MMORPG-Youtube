@@ -17,7 +17,7 @@ namespace Common.ScriptLanguage.AST
             foreach (ASTNode para in this.Parameter)
                 result += "\r\n" + para.ToString();
 
-            result += "\r\n CodeBlock:";
+            result += "\r\nCodeBlock:";
             foreach (ASTNode codeBlock in this.CodeBlock)
             {
                 if (codeBlock == null)
