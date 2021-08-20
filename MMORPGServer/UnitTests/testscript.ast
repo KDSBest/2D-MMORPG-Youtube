@@ -83,6 +83,11 @@ ASTFunctionCall: VM.Console
 Parameters:
 ASTOperator: +
 Left: ASTOperator: +
+Left: ASTOperator: -
+Left: ASTOperator: +
+Left: ASTOperator: +
+Left: ASTOperator: +
+Left: ASTOperator: +
 Left: ASTOperator: +
 Left: ASTIdentifier: testStr
 Right: ASTString: : 
@@ -90,12 +95,7 @@ Right: ASTFunctionCall: test.DoSomeMath
 Parameters:
 ASTNumber: 1,2
 ASTNumber: 2
-Right: ASTOperator: +
-Left: ASTOperator: +
-Left: ASTOperator: -
-Left: ASTOperator: +
-Left: ASTOperator: +
-Left: ASTString: \n
+Right: ASTString: \n
 Right: ASTOperator: -
 Left: ASTNumber: 1
 Right: (none)

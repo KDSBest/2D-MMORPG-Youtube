@@ -36,14 +36,17 @@
                 case "&":
                     Precedence = 6;
                     break;
-                case "|":
+                case "^":
                     Precedence = 7;
                     break;
-                case "&&":
+                case "|":
                     Precedence = 8;
                     break;
-                case "||":
+                case "&&":
                     Precedence = 9;
+                    break;
+                case "||":
+                    Precedence = 10;
                     break;
                 case "=":
                 case "|=":
@@ -53,7 +56,7 @@
                 case "+=":
                 case "-=":
                 case "%=":
-                    Precedence = 10;
+                    Precedence = 11;
                     break;
                 default:
                     throw new LexerException(string.Format("Operator {0} unknown.", token), lineNumber);

@@ -37,7 +37,7 @@ namespace Common.ScriptLanguage
 
 		private List<char> operators = new List<char>{
 											 '-', '+', '*', '/', '=',
-											 '&', '|', '!', '%', '<', '>'
+											 '&', '|', '!', '%', '<', '>', '^'
 										 };
 
 		private Dictionary<char, char> escapeSequenzes = new Dictionary<char, char> {

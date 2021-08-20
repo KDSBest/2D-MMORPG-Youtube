@@ -11,6 +11,21 @@ namespace UnitTests
 	public class CompilerTest
 	{
 		[TestMethod]
+		public void CompilerUnaryOperatorEqualTest()
+		{
+			var lexer = new Lexer();
+			var tokens = lexer.Lex("1++");
+			var tokens2 = lexer.Lex("++1");
+
+			var parser = new Parser();
+			var statement = parser.ParseInlineStatement(tokens);
+			var statement2 = parser.ParseInlineStatement(tokens2);
+			var result = statement.ToString();
+			var result2 = statement2.ToString();
+			Assert.AreEqual(result, result2);
+		}
+
+		[TestMethod]
 		public void CompileStatementTest()
 		{
 			var lexer = new Lexer();
@@ -62,6 +77,29 @@ namespace UnitTests
 				result += c.ToString() + "\r\n\r\n";
 
 			Assert.AreEqual(File.ReadAllText("testscript.ast"), result);
+		}
+
+		[TestMethod]
+		public void CompileComplexClassesMultipleTest()
+		{
+			var lexer = new Lexer();
+			var tokens = lexer.Lex(File.ReadAllText("testscript.kds"));
+			var tokens2 = lexer.Lex(File.ReadAllText("testscript.kds"));
+
+			var parser = new Parser();
+			List<ASTClass> classes = parser.Parse(tokens);
+			List<ASTClass> classes2 = parser.Parse(tokens2);
+
+			string result = string.Empty;
+			foreach (var c in classes)
+				result += c.ToString() + "\r\n\r\n";
+
+			string result2 = string.Empty;
+			foreach (var c in classes2)
+				result2 += c.ToString() + "\r\n\r\n";
+
+			Assert.AreEqual(File.ReadAllText("testscript.ast"), result);
+			Assert.AreEqual(result, result2);
 		}
 	}
 }
