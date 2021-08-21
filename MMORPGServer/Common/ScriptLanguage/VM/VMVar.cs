@@ -159,7 +159,7 @@ namespace Common.ScriptLanguage.VM
 			return result;
 		}
 
-		public static bool operator >(VMVar a, VMVar b)
+		public static VMVar operator >(VMVar a, VMVar b)
 		{
 			var aStr = a.Cast(VMType.Number);
 			var bStr = b.Cast(VMType.Number);
@@ -167,7 +167,7 @@ namespace Common.ScriptLanguage.VM
 			return aStr.ValueNumber > bStr.ValueNumber;
 		}
 
-		public static bool operator <(VMVar a, VMVar b)
+		public static VMVar operator <(VMVar a, VMVar b)
 		{
 			var aStr = a.Cast(VMType.Number);
 			var bStr = b.Cast(VMType.Number);
@@ -175,7 +175,7 @@ namespace Common.ScriptLanguage.VM
 			return aStr.ValueNumber < bStr.ValueNumber;
 		}
 
-		public static bool operator >=(VMVar a, VMVar b)
+		public static VMVar operator >=(VMVar a, VMVar b)
 		{
 			var aStr = a.Cast(VMType.Number);
 			var bStr = b.Cast(VMType.Number);
@@ -183,7 +183,7 @@ namespace Common.ScriptLanguage.VM
 			return aStr.ValueNumber >= bStr.ValueNumber;
 		}
 
-		public static bool operator <=(VMVar a, VMVar b)
+		public static VMVar operator <=(VMVar a, VMVar b)
 		{
 			var aStr = a.Cast(VMType.Number);
 			var bStr = b.Cast(VMType.Number);

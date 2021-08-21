@@ -51,15 +51,15 @@ namespace UnitTests
 		public void VMComplexFormula()
 		{
 			// 1 * 2 = 2
+			// 3 % 4 = 3
 			// -1 + 2 + 3 = 4
-			// 4 % 3 == 1
-			var result = Execute("-1 + 1 * 2 + 3 % 3");
+			var result = Execute("-1 + 1 * 2 + 3 % 4");
 
 			Assert.AreEqual(VMType.Number, result.Type);
-			Assert.AreEqual(1, result.ValueNumber);
+			Assert.AreEqual(4, result.ValueNumber);
 			Assert.AreEqual(true, result.GetBool());
 
-			result = Execute("1 == (-1 + 1 * 2 + 3 % 3)");
+			result = Execute("(-1 + 1 * 2 + 3 % 3) == 1");
 
 			Assert.AreEqual(VMType.Number, result.Type);
 			Assert.AreEqual(-1, result.ValueNumber);
@@ -71,13 +71,13 @@ namespace UnitTests
 			Assert.AreEqual(0, result.ValueNumber);
 			Assert.AreEqual(false, result.GetBool());
 
-			result = Execute("(-1 + 1 * 2 + 3 % 3) == 1");
+			result = Execute("((-1 + 1 * 2 + 3) % 3) == 1");
 
 			Assert.AreEqual(VMType.Number, result.Type);
 			Assert.AreEqual(-1, result.ValueNumber);
 			Assert.AreEqual(true, result.GetBool());
 
-			result = Execute("(-1 + 1 * 2 + 3 % 3) == (-1 + 1 * 2 + 3 % 3)");
+			result = Execute("((-1 + 1 * 2 + 3) % 3) == (-1 + 1 * 2 + 3 % 3)");
 
 			Assert.AreEqual(VMType.Number, result.Type);
 			Assert.AreEqual(-1, result.ValueNumber);
