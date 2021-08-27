@@ -17,7 +17,7 @@ namespace Common.ScriptLanguage.VM
 			if (Type == to)
 				return this.Clone();
 
-			switch(to)
+			switch (to)
 			{
 				case VMType.String:
 					return new VMVar()
@@ -135,7 +135,7 @@ namespace Common.ScriptLanguage.VM
 
 			VMVar aVar = this;
 			VMVar bVar = b as VMVar;
-			if(b == null)
+			if (b == null)
 			{
 				return false;
 			}
@@ -231,12 +231,20 @@ namespace Common.ScriptLanguage.VM
 
 		public static VMVar operator +(VMVar a, VMVar b)
 		{
-			VMVar aNum = a.Cast(VMType.Number);
-			VMVar bNum = b.Cast(VMType.Number);
+			if (a.Type == VMType.Number)
+			{
+				VMVar aNum = a.Cast(VMType.Number);
+				VMVar bNum = b.Cast(VMType.Number);
 
-			aNum.ValueNumber += bNum.ValueNumber;
+				aNum.ValueNumber += bNum.ValueNumber;
+				return aNum;
+			}
 
-			return aNum;
+			VMVar aStr = a.Cast(VMType.String);
+			VMVar bStr = b.Cast(VMType.String);
+
+			aStr.ValueString += bStr.ValueString;
+			return aStr;
 		}
 
 		public static VMVar operator -(VMVar a, VMVar b)

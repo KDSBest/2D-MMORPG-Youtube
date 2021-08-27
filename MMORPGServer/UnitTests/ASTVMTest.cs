@@ -169,7 +169,7 @@ namespace UnitTests
 				ValueNumber = 11
 			});
 
-			var result = Execute("Quest.IsAvailable(\"TutorialQuest\") && Character.Level() > 10", questMock.Object, charcterMock.Object);
+			var result = Execute("Quest.IsAvailable(\"Tutorial\" + \"Quest\") && Character.Level() > 10", questMock.Object, charcterMock.Object);
 
 			Assert.AreEqual(VMType.Number, result.Type);
 			Assert.AreEqual(-1, result.ValueNumber);
