@@ -22,7 +22,7 @@ namespace Assets.Scripts.Behaviour.Editor.Nodes
 			return new BackendCallNodeData()
 			{
 				Guid = this.Guid,
-				Position = new System.Numerics.Vector2(pos.x, pos.y),
+				Position = new UnityEngine.Vector2(pos.x, pos.y),
 				Call = this.Text,
 				NextFalse = FalsePort.connected ? (FalsePort.connections.First().input.node as BaseNode).Guid : Guid.Empty,
 				NextTrue = TruePort.connected ? (TruePort.connections.First().input.node as BaseNode).Guid : Guid.Empty
