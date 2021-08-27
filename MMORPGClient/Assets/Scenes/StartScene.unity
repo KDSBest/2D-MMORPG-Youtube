@@ -7170,7 +7170,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3025568328816809467, guid: bb088927b533b594f9116fae9f398912, type: 3}
   m_PrefabInstance: {fileID: 1455006910}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1455006911}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6134cfa6ce4a5dc4db00926e1bbc9a49, type: 3}
@@ -7686,6 +7686,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1455006912, guid: bb088927b533b594f9116fae9f398912, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 03a8b59e97bcbad4dbb07f2af461207e, type: 2}
     - target: {fileID: 1614646508, guid: bb088927b533b594f9116fae9f398912, type: 3}
       propertyPath: m_Camera
       value: 
@@ -7740,30 +7744,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb088927b533b594f9116fae9f398912, type: 3}
---- !u!1 &1455006911 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2455385777282593066, guid: bb088927b533b594f9116fae9f398912, type: 3}
-  m_PrefabInstance: {fileID: 1455006910}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1455006912
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1455006911}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 03a8b59e97bcbad4dbb07f2af461207e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1457965939
 GameObject:
   m_ObjectHideFlags: 0
@@ -10218,8 +10198,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 44211792c74e9b847a83f7ae11fe7838, type: 3}
-  m_Type: 2
+  m_Sprite: {fileID: 21300000, guid: 1452e2532d1f85d43921a19abb624168, type: 3}
+  m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
@@ -10227,7 +10207,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &1793121480
 CanvasRenderer:
   m_ObjectHideFlags: 0
