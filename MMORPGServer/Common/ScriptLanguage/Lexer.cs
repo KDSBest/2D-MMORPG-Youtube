@@ -39,7 +39,7 @@ namespace Common.ScriptLanguage
 											 '-', '+', '*', '/', '=',
 											 '&', '|', '!', '%', '<', '>', '^'
 										 };
-
+		
 		private Dictionary<char, char> escapeSequenzes = new Dictionary<char, char> {
 													{'n', '\n' },
 													{'\\', '\\' },
