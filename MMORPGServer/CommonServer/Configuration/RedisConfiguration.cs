@@ -9,7 +9,8 @@
 #endif
 
         public static readonly string WorldChatChannelPrefix = "WorldChat";
-        public static readonly string MapChannelNewStatePrefix = "MapState-";
+        public static readonly string MapChannelNewPlayerStatePrefix = "PlMapState-";
+        public static readonly string MapChannelNewPropStatePrefix = "PrMapState-";
         public static readonly string MapChannelRemoveStatePrefix = "MapRemove-";
 
         public static readonly string LoginQueue = "Queue:Login";

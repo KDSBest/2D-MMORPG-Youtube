@@ -6,6 +6,7 @@ using CommonServer.Configuration;
 using MapService.WorldManagement;
 using Common.IoC;
 using Common.PublishSubscribe;
+using Common;
 
 namespace MapService
 {
@@ -15,6 +16,8 @@ namespace MapService
         {
             try
             {
+                Console.WriteLine($"Loading Map... {MapConfiguration.MapName}.");
+
                 DI.Instance.Register<IPubSub>(() => new PubSub(), RegistrationType.Singleton);
                 DI.Instance.Register<IPlayerWorldManagement>(() => new PlayerWorldManagement(), RegistrationType.Singleton);
                 DI.Instance.Resolve<IPlayerWorldManagement>().Initialize();

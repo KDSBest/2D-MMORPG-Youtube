@@ -14,11 +14,12 @@
         Character = 60,
         CharacterRequest = 61,
         PlayerState = 80,
-        TimeSync = 81,
-        RemoveState = 82,
-        RemovePartition = 83,
-        PlayerEvent = 90,
-        ReqInventory = 91,
-        Inventory = 92
+        PropState = 81,
+        TimeSync = 90,
+        RemovePartition = 100,
+        PlayerEvent = 110,
+        ReqInventory = 120,
+        Inventory = 130,
+        RemoveState = 200
     }
 }

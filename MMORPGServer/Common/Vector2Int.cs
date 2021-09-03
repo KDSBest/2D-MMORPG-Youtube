@@ -1,4 +1,5 @@
 ﻿using Common.Protocol.Map;
+using Common.Protocol.Map.Interfaces;
 using System;
 using System.Numerics;
 
@@ -31,7 +32,7 @@ namespace Common
             Y = (int)(y / MapConfiguration.MapAreaSize) * (int)MapConfiguration.MapAreaSize;
         }
 
-        public Vector2Int(PlayerStateMessage msg) : this(msg.Position)
+        public Vector2Int(IMapStateMessage msg) : this(msg.Position)
         {
         }
 

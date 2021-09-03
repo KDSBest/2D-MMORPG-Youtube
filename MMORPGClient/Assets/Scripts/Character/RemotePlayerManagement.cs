@@ -41,27 +41,27 @@ namespace Assets.Scripts.Character
 			pubsub.Subscribe<CharacterMessage>(OnCharacterMessage, this.GetType().Name);
 		}
 
-		private void OnCharacterMessage(CharacterMessage data)
+		private void OnCharacterMessage(CharacterMessage charDisplayData)
 		{
-			if (!remotePlayers.ContainsKey(data.Character.Name))
+			if (!remotePlayers.ContainsKey(charDisplayData.Character.Name))
 				return;
 
-			var player = remotePlayers[data.Character.Name];
-			player.SetStyle(data.Character);
+			var player = remotePlayers[charDisplayData.Character.Name];
+			player.SetStyle(charDisplayData.Character);
 
-			if (data.Character.Name != context.Name)
+			if (charDisplayData.Character.Name != context.Name)
 			{
 				player.ShowCharacter();
 			}
 		}
 
-		private void OnPlayerState(PlayerStateMessage data)
+		private void OnPlayerState(PlayerStateMessage state)
 		{
 			// ignore new player state if remove state is newer
-			if (removedTracking.GetPlayerRemovedServerTime(data.Name) >= data.ServerTime)
+			if (removedTracking.GetPlayerRemovedServerTime(state.Name) >= state.ServerTime)
 				return;
 
-			if (!remotePlayers.ContainsKey(data.Name))
+			if (!remotePlayers.ContainsKey(state.Name))
 			{
 				GameObject newPlayer = GameObject.Instantiate(RemotePlayerPrefab);
 				newPlayer.transform.SetParent(this.transform);
@@ -75,30 +75,30 @@ namespace Assets.Scripts.Character
 				player.Initialize();
 				player.HideCharacter();
 
-				remotePlayers.Add(data.Name, player);
+				remotePlayers.Add(state.Name, player);
 
-				pubsub.Publish(new ReqCharacterStyle(data.Name));
+				pubsub.Publish(new ReqCharacterStyle(state.Name));
 			}
 
 			// TODO: Interpolation and Jitter Protection
-			if (!remotePlayers[data.Name].States.ContainsKey(data.ServerTime))
-				remotePlayers[data.Name].States.Add(data.ServerTime, data);
+			if (!remotePlayers[state.Name].States.ContainsKey(state.ServerTime))
+				remotePlayers[state.Name].States.Add(state.ServerTime, state);
 
-			remotePlayers[data.Name].Update();
+			remotePlayers[state.Name].Update();
 		}
 
-		private void OnRemovePlayerState(RemoveStateMessage data)
+		private void OnRemovePlayerState(RemoveStateMessage removeState)
 		{
-			removedTracking.UpdateRemovedPlayerStateTime(data);
+			removedTracking.UpdateRemovedPlayerStateTime(removeState);
 
-			if (!remotePlayers.ContainsKey(data.Name))
+			if (!remotePlayers.ContainsKey(removeState.Name))
 				return;
 
-			if (remotePlayers[data.Name].States.Last().Key > data.ServerTime)
+			if (remotePlayers[removeState.Name].States.Last().Key > removeState.ServerTime)
 				return;
 
-			GameObject.Destroy(remotePlayers[data.Name].GameObject);
-			remotePlayers.Remove(data.Name);
+			GameObject.Destroy(remotePlayers[removeState.Name].GameObject);
+			remotePlayers.Remove(removeState.Name);
 		}
 	}
 }

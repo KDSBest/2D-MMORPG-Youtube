@@ -1,12 +1,14 @@
-﻿using Common.Protocol.Map.Interfaces;
+﻿using Common.GameDesign;
+using Common.Protocol.Map.Interfaces;
 using ReliableUdp.Utility;
 using System;
 using System.Numerics;
 
 namespace Common.Protocol.Map
 {
-	public class PlayerStateMessage : BaseUdpPackage, IMapStateMessage<PlayerStateMessage>
+	public class PropStateMessage : BaseUdpPackage, IMapStateMessage<PropStateMessage>
     {
+        public PropType Type { get; set; }
         public string Name { get; set; } = string.Empty;
 
         public Vector2 Position { get; set; }
@@ -14,16 +16,21 @@ namespace Common.Protocol.Map
         public int Animation { get; set; }
         public long ServerTime { get; set; }
 
-        public PlayerStateMessage() : base(MessageType.PlayerState)
+        public int Health { get; set; }
+        public int MaxHealth { get; set; }
+
+        public PropStateMessage() : base(MessageType.PropState)
         {
         }
 
-        public bool HasNoVisibleDifference(PlayerStateMessage msg)
-		{
+        public bool HasNoVisibleDifference(PropStateMessage msg)
+        {
             return Math.Abs(this.Position.X - msg.Position.X) < MapConfiguration.SmallDistance
                                 && Math.Abs(this.Position.Y - msg.Position.Y) < MapConfiguration.SmallDistance
                                 && this.IsLookingRight == msg.IsLookingRight
-                                && this.Animation == msg.Animation;     
+                                && this.Animation == msg.Animation
+                                && this.Health == msg.Health
+                                && this.MaxHealth == msg.MaxHealth;
         }
 
         protected override void WriteData(UdpDataWriter writer)
@@ -34,6 +41,9 @@ namespace Common.Protocol.Map
             writer.Put(IsLookingRight);
             writer.Put(Animation);
             writer.Put(ServerTime);
+            writer.Put(Health);
+            writer.Put(MaxHealth);
+            writer.Put((byte)Type);
         }
 
         protected override bool ReadData(UdpDataReader reader)
@@ -43,6 +53,9 @@ namespace Common.Protocol.Map
             IsLookingRight = reader.GetBool();
             Animation = reader.GetInt();
             ServerTime = reader.GetLong();
+            Health = reader.GetInt();
+            MaxHealth = reader.GetInt();
+            Type = (PropType)reader.GetByte();
 
             return true;
         }

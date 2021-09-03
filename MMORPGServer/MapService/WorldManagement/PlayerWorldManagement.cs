@@ -1,6 +1,7 @@
 ﻿using Common;
 using Common.IoC;
 using Common.Protocol.Map;
+using Common.Protocol.Map.Interfaces;
 using Common.PublishSubscribe;
 using CommonServer.Configuration;
 using CommonServer.Redis;
@@ -13,40 +14,41 @@ namespace MapService.WorldManagement
 
 	public class PlayerWorldManagement : IPlayerWorldManagement
 	{
-		private ConcurrentDictionary<string, PlayerStateMessage> LastPlayerPosition = new ConcurrentDictionary<string, PlayerStateMessage>();
-		private ConcurrentDictionary<string, Vector2Int> LastPlayerPartition = new ConcurrentDictionary<string, Vector2Int>();
-		private IPubSub pubsub;
+		private ConcurrentDictionary<string, IMapStateMessage> LastState = new ConcurrentDictionary<string, IMapStateMessage>();
+		private ConcurrentDictionary<string, Vector2Int> LastStatePartition = new ConcurrentDictionary<string, Vector2Int>();
+		private IPubSub pubsubLocal;
 
 		public void Initialize()
 		{
-			pubsub = DI.Instance.Resolve<IPubSub>();
-			RedisPubSub.Subscribe<PlayerStateMessage>(RedisConfiguration.MapChannelNewStatePrefix + MapConfiguration.MapName, OnNewPlayerState);
+			pubsubLocal = DI.Instance.Resolve<IPubSub>();
+			RedisPubSub.Subscribe<PropStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, OnNewState);
+			RedisPubSub.Subscribe<PlayerStateMessage>(RedisConfiguration.MapChannelNewPlayerStatePrefix + MapConfiguration.MapName, OnNewState);
 			RedisPubSub.Subscribe<RemoveStateMessage>(RedisConfiguration.MapChannelRemoveStatePrefix + MapConfiguration.MapName, OnDisconnectedPlayer);
 		}
 
 		private void OnDisconnectedPlayer(RedisChannel channel, RemoveStateMessage msg)
 		{
-			LastPlayerPosition.TryRemove(msg.Name, out var x);
-			if(LastPlayerPartition.TryRemove(msg.Name, out var lastPlayerPartition))
+			LastState.TryRemove(msg.Name, out var x);
+			if(LastStatePartition.TryRemove(msg.Name, out var lastPlayerPartition))
 			{
 				msg.Partition = lastPlayerPartition;
-				pubsub.Publish(msg);
+				pubsubLocal.Publish(msg);
 			}
 		}
 
-		private void OnNewPlayerState(RedisChannel channel, PlayerStateMessage msg)
+		private void OnNewState<T>(RedisChannel channel, T msg) where T : IMapStateMessage<T>
 		{
 			Vector2Int oldPartition = null;
 			Vector2Int newPartition = new Vector2Int(msg);
-			if(LastPlayerPartition.ContainsKey(msg.Name))
+			if (LastStatePartition.ContainsKey(msg.Name))
 			{
-				oldPartition = LastPlayerPartition[msg.Name];
+				oldPartition = LastStatePartition[msg.Name];
 			}
 
 			// Skip unchanged state
-			if(oldPartition == newPartition)
+			if (oldPartition == newPartition)
 			{
-				var lastMsg = LastPlayerPosition[msg.Name];
+				T lastMsg = (T)LastState[msg.Name];
 
 				// state is skipped if:
 				// - Position is only changed by small amount
@@ -54,16 +56,14 @@ namespace MapService.WorldManagement
 				// - Animation is unchanged
 				// - Last Message isn't older than GameConfiguration.AcceptUnchangedPlayerStateAfterSeconds seconds
 				if (lastMsg.ServerTime >= DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(GameConfiguration.AcceptUnchangedPlayerStateAfterSeconds)).Ticks
-					&& Math.Abs(lastMsg.Position.X - msg.Position.X) < MapConfiguration.SmallDistance
-					&& Math.Abs(lastMsg.Position.Y - msg.Position.Y) < MapConfiguration.SmallDistance
-					&& lastMsg.IsLookingRight == msg.IsLookingRight
-					&& lastMsg.Animation == msg.Animation)
+					&& lastMsg.HasNoVisibleDifference(msg))
 					return;
 			}
 
-			LastPlayerPosition.AddOrUpdate(msg.Name, msg, (n, s) => msg);
-			LastPlayerPartition.AddOrUpdate(msg.Name, newPartition, (n, s) => newPartition);
-			pubsub.Publish(new PlayerWorldEvent<PlayerStateMessage>(msg, newPartition, oldPartition));
+			LastState.AddOrUpdate(msg.Name, msg, (n, s) => msg);
+			LastStatePartition.AddOrUpdate(msg.Name, newPartition, (n, s) => newPartition);
+
+			pubsubLocal.Publish(new PlayerWorldEvent<T>(msg, newPartition, oldPartition));
 		}
 	}
 }

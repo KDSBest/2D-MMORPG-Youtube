@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PropManagementService": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

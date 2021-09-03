@@ -60,6 +60,13 @@ namespace Common.Client.Workflow
 					continue;
 				}
 
+				var propMsg = new PropStateMessage();
+				if(propMsg.Read(reader))
+				{
+					PubSub.Publish(propMsg);
+					continue;
+				}
+
 				var removeState = new RemoveStateMessage();
 				if (removeState.Read(reader))
 				{

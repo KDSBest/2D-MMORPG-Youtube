@@ -14,6 +14,7 @@ using MapService.WorldManagement;
 using Common.IoC;
 using Common.PublishSubscribe;
 using Common;
+using Common.Protocol.Map.Interfaces;
 
 namespace MapService
 {
@@ -24,14 +25,14 @@ namespace MapService
 
 		private PlayerWorldState worldState = new PlayerWorldState();
 		private const int maxPackageSize = 1400;
-		private string name = string.Empty;
-		private IPubSub pubsub;
+		private string playerName = string.Empty;
+		private IPubSub pubsubLocal;
 		private UdpPeer peer;
 		private MapPartitionManagement mapPartitionManagement = new MapPartitionManagement();
 
 		public MapWorkflow()
 		{
-			pubsub = DI.Instance.Resolve<IPubSub>();
+			pubsubLocal = DI.Instance.Resolve<IPubSub>();
 		}
 
 		public async Task OnStartAsync(UdpPeer peer)
@@ -41,11 +42,12 @@ namespace MapService
 
 		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
-			pubsub.Unsubscribe<RemoveStateMessage>(name);
-			pubsub.Unsubscribe<PlayerWorldEvent<PlayerStateMessage>>(name);
+			pubsubLocal.Unsubscribe<RemoveStateMessage>(playerName);
+			pubsubLocal.Unsubscribe<PlayerWorldEvent<PlayerStateMessage>>(playerName);
+			pubsubLocal.Unsubscribe<PlayerWorldEvent<PropStateMessage>>(playerName);
 			RedisPubSub.Publish<RemoveStateMessage>(RedisConfiguration.MapChannelRemoveStatePrefix + MapConfiguration.MapName, new RemoveStateMessage()
 			{
-				Name = name,
+				Name = playerName,
 				ServerTime = DateTime.UtcNow.Ticks,
 				Partition = new Vector2Int(0, 0)
 			});
@@ -70,7 +72,7 @@ namespace MapService
 				if (serverTime - playerStateMessage.ServerTime > MapConfiguration.MaxPlayerStateTime)
 					return;
 
-				playerStateMessage.Name = this.name;
+				playerStateMessage.Name = this.playerName;
 
 				var removedPartitions = mapPartitionManagement.UpdatePlayerPartitionRegistrations(playerStateMessage);
 				foreach(var removedPartition in removedPartitions)
@@ -78,7 +80,7 @@ namespace MapService
 					RemovePartition(removedPartition);
 				}
 
-				RedisPubSub.Publish<PlayerStateMessage>(RedisConfiguration.MapChannelNewStatePrefix + MapConfiguration.MapName, playerStateMessage);
+				RedisPubSub.Publish<PlayerStateMessage>(RedisConfiguration.MapChannelNewPlayerStatePrefix + MapConfiguration.MapName, playerStateMessage);
 
 				var worldPackage = worldState.GetPackage(maxPackageSize);
 				if(worldPackage.Length > 0)
@@ -100,9 +102,10 @@ namespace MapService
 
 		public void OnToken(string token)
 		{
-			name = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
-			pubsub.Subscribe<PlayerWorldEvent<PlayerStateMessage>>(OnNewPlayerState, name);
-			pubsub.Subscribe<RemoveStateMessage>(OnPlayerDisconnected, name);
+			playerName = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
+			pubsubLocal.Subscribe<PlayerWorldEvent<PropStateMessage>>(OnNewState, playerName);
+			pubsubLocal.Subscribe<PlayerWorldEvent<PlayerStateMessage>>(OnNewState, playerName);
+			pubsubLocal.Subscribe<RemoveStateMessage>(OnPlayerDisconnected, playerName);
 		}
 
 		private void OnPlayerDisconnected(RemoveStateMessage msg)
@@ -113,18 +116,18 @@ namespace MapService
 			}
 		}
 
-		private void OnNewPlayerState(PlayerWorldEvent<PlayerStateMessage> pwe)
+		private void OnNewState<T>(PlayerWorldEvent<T> state) where T : IMapStateMessage
 		{
-			if(!mapPartitionManagement.IsRegistered(pwe.NewPartition))
+			if (!mapPartitionManagement.IsRegistered(state.NewPartition))
 			{
-				if(pwe.OldPartition != null && mapPartitionManagement.IsRegistered(pwe.OldPartition))
+				if (state.OldPartition != null && mapPartitionManagement.IsRegistered(state.OldPartition))
 				{
-					RemoveState(pwe.State.Name);
+					RemoveState(state.State.Name);
 				}
 				return;
 			}
 
-			worldState.AddState(pwe.State.Name, new State(pwe.State.Name, pwe.State, MapConfiguration.PlayerPriority, pwe.NewPartition));
+			worldState.AddState(state.State.Name, new State(state.State.Name, state.State, MapConfiguration.PlayerPriority, state.NewPartition));
 		}
 
 		private void RemovePartition(Vector2Int partition)
