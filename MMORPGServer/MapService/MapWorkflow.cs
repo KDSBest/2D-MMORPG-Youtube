@@ -103,9 +103,18 @@ namespace MapService
 		public void OnToken(string token)
 		{
 			playerName = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
+			pubsubLocal.Subscribe<PlayerWorldOneTimeEvent<SkillCastMessage>>(OnNewSkillEffect, playerName);
 			pubsubLocal.Subscribe<PlayerWorldEvent<PropStateMessage>>(OnNewState, playerName);
 			pubsubLocal.Subscribe<PlayerWorldEvent<PlayerStateMessage>>(OnNewState, playerName);
 			pubsubLocal.Subscribe<RemoveStateMessage>(OnPlayerDisconnected, playerName);
+		}
+
+		private void OnNewSkillEffect(PlayerWorldOneTimeEvent<SkillCastMessage> ev)
+		{
+			if (!mapPartitionManagement.IsRegistered(ev.Partition))
+				return;
+
+			UdpManager.SendMsg(this.peer.ConnectId, ev.State, ChannelType.Reliable);
 		}
 
 		private void OnPlayerDisconnected(RemoveStateMessage msg)
@@ -116,18 +125,18 @@ namespace MapService
 			}
 		}
 
-		private void OnNewState<T>(PlayerWorldEvent<T> state) where T : IMapStateMessage
+		private void OnNewState<T>(PlayerWorldEvent<T> ev) where T : IMapStateMessage
 		{
-			if (!mapPartitionManagement.IsRegistered(state.NewPartition))
+			if (!mapPartitionManagement.IsRegistered(ev.NewPartition))
 			{
-				if (state.OldPartition != null && mapPartitionManagement.IsRegistered(state.OldPartition))
+				if (ev.OldPartition != null && mapPartitionManagement.IsRegistered(ev.OldPartition))
 				{
-					RemoveState(state.State.Name);
+					RemoveState(ev.State.Name);
 				}
 				return;
 			}
 
-			worldState.AddState(state.State.Name, new State(state.State.Name, state.State, MapConfiguration.PlayerPriority, state.NewPartition));
+			worldState.AddState(ev.State.Name, new State(ev.State.Name, ev.State, MapConfiguration.PlayerPriority, ev.NewPartition));
 		}
 
 		private void RemovePartition(Vector2Int partition)

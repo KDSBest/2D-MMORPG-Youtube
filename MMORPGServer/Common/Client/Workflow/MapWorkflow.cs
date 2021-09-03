@@ -74,6 +74,13 @@ namespace Common.Client.Workflow
 					continue;
 				}
 
+				var skillCast = new SkillCastMessage();
+				if(skillCast.Read(reader))
+				{
+					PubSub.Publish(skillCast);
+					continue;
+				}
+
 				var timeSyncMsg = new TimeSyncMessage();
 				if (timeSyncMsg.Read(reader))
 				{

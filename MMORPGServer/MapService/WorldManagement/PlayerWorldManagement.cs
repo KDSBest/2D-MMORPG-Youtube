@@ -21,8 +21,9 @@ namespace MapService.WorldManagement
 		public void Initialize()
 		{
 			pubsubLocal = DI.Instance.Resolve<IPubSub>();
-			RedisPubSub.Subscribe<PropStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, OnNewState);
-			RedisPubSub.Subscribe<PlayerStateMessage>(RedisConfiguration.MapChannelNewPlayerStatePrefix + MapConfiguration.MapName, OnNewState);
+			RedisPubSub.Subscribe<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, OnOneTimeEvent);
+			RedisPubSub.Subscribe<PropStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, OnStateChange);
+			RedisPubSub.Subscribe<PlayerStateMessage>(RedisConfiguration.MapChannelNewPlayerStatePrefix + MapConfiguration.MapName, OnStateChange);
 			RedisPubSub.Subscribe<RemoveStateMessage>(RedisConfiguration.MapChannelRemoveStatePrefix + MapConfiguration.MapName, OnDisconnectedPlayer);
 		}
 
@@ -36,7 +37,13 @@ namespace MapService.WorldManagement
 			}
 		}
 
-		private void OnNewState<T>(RedisChannel channel, T msg) where T : IMapStateMessage<T>
+		private void OnOneTimeEvent<T>(RedisChannel channel, T msg) where T : IPartitionMessage
+		{
+			var partition = new Vector2Int(msg);
+			pubsubLocal.Publish(new PlayerWorldOneTimeEvent<T>(msg, partition));
+		}
+
+		private void OnStateChange<T>(RedisChannel channel, T msg) where T : IMapStateMessage<T>
 		{
 			Vector2Int oldPartition = null;
 			Vector2Int newPartition = new Vector2Int(msg);

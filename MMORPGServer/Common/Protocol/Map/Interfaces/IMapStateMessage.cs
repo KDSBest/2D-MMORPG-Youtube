@@ -1,11 +1,9 @@
-﻿using System.Numerics;
-
-namespace Common.Protocol.Map.Interfaces
+﻿namespace Common.Protocol.Map.Interfaces
 {
-	public interface IMapStateMessage : IUdpPackage
+
+	public interface IMapStateMessage : IPartitionMessage
 	{
 		string Name { get; set; }
-		Vector2 Position { get; set; }
 		long ServerTime { get; set; }
 	}
 

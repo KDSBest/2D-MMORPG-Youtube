@@ -32,7 +32,7 @@ namespace Common
             Y = (int)(y / MapConfiguration.MapAreaSize) * (int)MapConfiguration.MapAreaSize;
         }
 
-        public Vector2Int(IMapStateMessage msg) : this(msg.Position)
+        public Vector2Int(IPartitionMessage msg) : this(msg.Position)
         {
         }
 
