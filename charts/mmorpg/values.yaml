@@ -21,6 +21,7 @@ inventoryEventProcessorServiceImage: "@@{GameName}@@acr.azurecr.io/inventoryeven
 playerEventProcessorServiceImage: "@@{GameName}@@acr.azurecr.io/playereventprocessorservice:@@{Build.BuildNumber}@@"
 playerEventServiceImage: "@@{GameName}@@acr.azurecr.io/playereventservice:@@{Build.BuildNumber}@@"
 inventoryServiceImage: "@@{GameName}@@acr.azurecr.io/inventoryservice:@@{Build.BuildNumber}@@"
+propManagementServiceImage: "@@{GameName}@@acr.azurecr.io/propmanagementservice:@@{Build.BuildNumber}@@"
 
 serviceType: ClusterIP
 

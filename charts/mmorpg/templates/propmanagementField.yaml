@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: propmgrfield
+  labels:
+    app: propmgrfield
+    {{ include "mmorpg.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: propmgrfield
+  template:
+    metadata:
+      labels:
+        app: propmgrfield
+        {{ include "mmorpg.labels" . | nindent 8 }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: propmanagementservice
+        imagePullPolicy: Always
+        image: {{ .Values.propManagementServiceImage }}
+        env:
+        - name: MAPNAME
+          value: Field
+        - name: CosmosUrl
+          valueFrom:
+            secretKeyRef:
+              name: cosmossecret
+              key: CosmosUrl
+        - name: CosmosKey
+          valueFrom:
+            secretKeyRef:
+              name: cosmossecret
+              key: CosmosKey
+

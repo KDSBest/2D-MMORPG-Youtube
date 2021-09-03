@@ -126,6 +126,23 @@ stages:
         ServicePath: InventoryEventProcessorService
         RepositoryName: inventoryeventprocessorservice
 
+- stage: PropManagementService
+  displayName: PropManagementService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: PropManagementService
+    displayName: PropManagementService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: PropManagementService
+        RepositoryName: propmanagementservice
+
 - stage: InventoryService
   displayName: InventoryService
   dependsOn:
