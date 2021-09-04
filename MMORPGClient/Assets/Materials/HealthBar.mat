@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: HealthBar
-  m_Shader: {fileID: -6465566751694194690, guid: 141fad6e923478d48a403e12a687105e, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 2dfd18156fbdc804197d185168d52c81, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -23,8 +23,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
+    - _BaseMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 36e6970b84831434a9eac79abd03700b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
@@ -50,17 +54,35 @@ Material:
     m_Floats:
     - PixelSnap: 0
     - Vector1_22d09ce614be4cb2a354e79e7c7fb2e2: 0.02
+    - Vector1_3ac6a29132ae4432864ebd2b74513051: 0.02
+    - Vector1_4b6b11fe31dc47958ed5601c32ba651b: 550
     - Vector1_5399b48eef9d4246920239157fdbe8c1: 100
-    - Vector1_5d0ce2559b3f4479b84c6bad79a2e55c: 500
+    - Vector1_5d0ce2559b3f4479b84c6bad79a2e55c: 900
     - Vector1_8bb632c3c82549ef999990799cbcbe34: 0.1
-    - Vector1_c7869bd3cd524492acc546a60a0ef24b: 325
+    - Vector1_c7869bd3cd524492acc546a60a0ef24b: 450
+    - Vector1_de2e6661480345d28da30830dc1d3af7: 800
+    - Vector1_e6be623c26254a309b79f627504a8ed2: 100
     - Vector1_f633b83135664e6eb34aeae456ad2974: 0.02
+    - _AlphaClip: 0
+    - _Blend: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DstBlend: 0
     - _EnableExternalAlpha: 0
+    - _QueueOffset: 0
+    - _SampleGI: 0
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _ZWrite: 1
     m_Colors:
     - Color_3ae5840bd4ea4dbb88f014384b151cfc: {r: 0, g: 0, b: 0, a: 0}
+    - Color_477586d7497c43f39c62c73b1f0ce28f: {r: 0.41509426, g: 0.41509426, b: 0.41509426, a: 0}
+    - Color_8ffb0457431c4a0782f3fe02b026c8bd: {r: 0, g: 1, b: 0.057691544, a: 0}
+    - Color_9568a97974434a6485513e4c932c8ac7: {r: 0, g: 0, b: 0, a: 0}
     - Color_a4917d139f694f8ca46c4f2a4dffe5de: {r: 0, g: 0, b: 0, a: 0}
     - Color_c40920321cd14f3b9e45a496ec6e2635: {r: 0.14863965, g: 0.7254902, b: 0, a: 0}
     - Color_f45962265fda4a0bb1fb8c7890e97a4b: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 0}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
