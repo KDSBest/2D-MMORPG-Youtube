@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: propmgr
+  name: propmgrtown
   labels:
-    app: propmgr
+    app: propmgrtown
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: propmgr
+      app: propmgrtown
   template:
     metadata:
       labels:
-        app: propmgr
+        app: propmgrtown
         {{ include "mmorpg.labels" . | nindent 8 }}
     spec:
       {{- if .Values.imagePullSecrets }}
