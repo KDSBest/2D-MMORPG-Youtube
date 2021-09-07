@@ -8,5 +8,6 @@
 		public static readonly int MapPort = 3336;
 		public static readonly int EventPort = 3337;
 		public static readonly int InventoryPort = 3338;
+		public static readonly int CombatPort = 3339;
 	}
 }

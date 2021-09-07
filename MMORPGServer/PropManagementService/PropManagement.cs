@@ -1,20 +1,27 @@
 ﻿using Common;
 using Common.GameDesign;
+using Common.Protocol.Combat;
 using Common.Protocol.Map;
 using CommonServer.Configuration;
+using CommonServer.GameDesign;
 using CommonServer.Redis;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace PropManagementService
 {
+
 	public class PropManagement
 	{
 		private readonly PropSpawnConfig config;
 		private readonly List<PropStateMessage> props = new List<PropStateMessage>();
 		private readonly Dictionary<string, int> respawnTimer = new Dictionary<string, int>();
 		private readonly Random random = new Random();
+		private readonly DamageCalculator damageCalculator = new DamageCalculator();
+		private readonly DamageQueue damageQueue = new DamageQueue();
 
 		public PropManagement(PropSpawnConfig config)
 		{
@@ -43,6 +50,49 @@ namespace PropManagementService
 
 				SpawnProp(prop);
 			}
+
+			damageQueue.OnDamage = OnDamage;
+			RedisPubSub.Subscribe<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, OnSkillCasted);
+		}
+
+		private void OnDamage(DamageInFuture dmg)
+		{
+			if (dmg.Target.TargetType != SkillCastTargetType.Prop)
+			{
+				return;
+			}
+
+			var effectedProp = props.FirstOrDefault(x => x.Name == dmg.Target.TargetName);
+			if (effectedProp == null)
+				return;
+
+			effectedProp.Health -= dmg.Damage;
+			if (effectedProp.Health < 0)
+				effectedProp.Health = 0;
+
+			RedisPubSub.Publish<DamageDoneMessage>(RedisConfiguration.PlayerDamagePrefix + dmg.Caster, new DamageDoneMessage()
+			{
+				Damage = dmg.Damage,
+				Target = dmg.Target
+			});
+		}
+
+		private void OnSkillCasted(RedisChannel channel, SkillCastMessage msg)
+		{
+			if (msg.Target.TargetType == SkillCastTargetType.Prop)
+			{
+				var effectedProp = props.FirstOrDefault(x => x.Name == msg.Target.TargetName);
+				if (effectedProp == null)
+					return;
+			}
+
+			damageQueue.Enqueue(new DamageInFuture()
+			{
+				Caster = msg.Caster,
+				Damage = damageCalculator.GetDamage(),
+				Target = msg.Target,
+				WaitDuration = msg.DurationInMs - (int)(DateTime.UtcNow - new DateTime(msg.ServerTime)).TotalMilliseconds
+			});
 		}
 
 		private void SpawnProp(PropStateMessage prop)
@@ -73,8 +123,9 @@ namespace PropManagementService
 		public void Update(int timeInMs)
 		{
 			HandleRespawn(timeInMs);
+			damageQueue.Update(timeInMs);
 
-			foreach(var prop in props)
+			foreach (var prop in props)
 			{
 				RedisPubSub.Publish<PropStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, prop);
 			}

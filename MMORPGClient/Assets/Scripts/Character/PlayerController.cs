@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.PubSubEvents.MapClient;
+using Common.GameDesign;
 using Common.IoC;
+using Common.Protocol.Combat;
 using Common.PublishSubscribe;
 using System;
 using System.Collections.Generic;
@@ -41,7 +43,7 @@ namespace Assets.Scripts.Character
 
 		private void OnPlayerControlEnable(PlayerControlEnable data)
 		{
-			if(data.Enabled)
+			if (data.Enabled)
 				controls.Enable();
 			else
 				controls.Disable();
@@ -98,7 +100,7 @@ namespace Assets.Scripts.Character
 				Rigidbody2D.velocity = new Vector2(Rigidbody2D.velocity.x, JumpVelocity);
 			}
 
-			if(isGrounded || Rigidbody2D.velocity.y >= 0)
+			if (isGrounded || Rigidbody2D.velocity.y >= 0)
 			{
 				Rigidbody2D.gravityScale = GravityDefault;
 			}
@@ -126,6 +128,20 @@ namespace Assets.Scripts.Character
 					Animator.SetInteger(Constants.AnimationStateName, 0);
 				}
 			}
+		}
+
+		public void CastSkill()
+		{
+			pubsub.Publish<ReqSkillCastMessage>(new ReqSkillCastMessage()
+			{
+				Position = new System.Numerics.Vector2(),
+				Type = SkillCastType.LightningBolt,
+				Target = new SkillTarget()
+				{
+					TargetName = "F*1",
+					TargetType = SkillCastTargetType.Prop
+				}
+			});
 		}
 	}
 }

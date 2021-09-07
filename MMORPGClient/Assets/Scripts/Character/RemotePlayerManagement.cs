@@ -57,6 +57,7 @@ namespace Assets.Scripts.Character
 
 		private void OnPlayerState(PlayerStateMessage state)
 		{
+			UnityEngine.Debug.Log("Got PlayerStateMessage for " + state.Name);
 			// ignore new player state if remove state is newer
 			if (removedTracking.GetPlayerRemovedServerTime(state.Name) >= state.ServerTime)
 				return;

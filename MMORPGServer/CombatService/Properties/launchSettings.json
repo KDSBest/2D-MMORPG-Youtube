@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CombatService": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -14,6 +14,8 @@
         public static readonly string MapChannelSkillCastPrefix = "SkillCast-";
         public static readonly string MapChannelRemoveStatePrefix = "MapRemove-";
 
+        public static readonly string PlayerDamagePrefix = "Damage-";
+
         public static readonly string LoginQueue = "Queue:Login";
     }
 }

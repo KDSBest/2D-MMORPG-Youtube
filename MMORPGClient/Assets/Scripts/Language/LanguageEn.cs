@@ -7,6 +7,7 @@
 		public string ConnectToLogin { get; } = "Connect to Login Server.";
 		public string ConnectToCharacter { get; } = "Connect to Character Server.";
 		public string ConnectToChat { get; } = "Connect to Chat Server.";
+		public string ConnectToCombat { get; } = "Connect to Combat Server.";
 
 		public string ConnectToGame { get; } = "Connect to Game.";
 

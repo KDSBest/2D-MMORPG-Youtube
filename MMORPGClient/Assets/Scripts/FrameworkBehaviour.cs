@@ -25,6 +25,7 @@ namespace Assets.Scripts
 		private static readonly int mapPort = 3336;
 		private static readonly int eventPort = 3337;
 		private static readonly int inventoryPort = 3338;
+		private static readonly int combatPort = 3339;
 
 		private const int waitMS = 50;
 		private IPubSub pubsub;
@@ -89,8 +90,17 @@ namespace Assets.Scripts
 			this.StartCoroutine(InitializeClientWrapper(client, worldChatPort, DI.Instance.Resolve<ILanguage>().ConnectToChat, () =>
 			{
 				pubsub.Publish<ControlChatScreen>(new ControlChatScreen());
+				InitCombatClient();
+			}, 0.25f, 0.35f));
+		}
+
+		public void InitCombatClient()
+		{
+			var client = DI.Instance.Resolve<ICombatClientWrapper>();
+			this.StartCoroutine(InitializeClientWrapper(client, combatPort, DI.Instance.Resolve<ILanguage>().ConnectToCombat, () =>
+			{
 				InitInventoryClient();
-			}, 0.25f, 0.5f));
+			}, 0.35f, 0.5f));
 		}
 
 		public void InitInventoryClient()

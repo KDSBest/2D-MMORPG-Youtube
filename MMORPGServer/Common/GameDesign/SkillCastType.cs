@@ -2,6 +2,7 @@
 {
 	public enum SkillCastType : byte
 	{
-		Fireball
+		Fireball,
+		LightningBolt
 	}
 }

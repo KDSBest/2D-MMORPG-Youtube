@@ -40,6 +40,9 @@ namespace Assets.Scripts
 			DI.Instance.Register<IPlayerEventClient>(() => new PlayerEventClient(), RegistrationType.Singleton);
 			DI.Instance.Register<IPlayerEventClientWrapper>(() => new PlayerEventClientWrapper(), RegistrationType.Singleton);
 
+			DI.Instance.Register<ICombatClient>(() => new CombatClient(), RegistrationType.Singleton);
+			DI.Instance.Register<ICombatClientWrapper>(() => new CombatClientWrapper(), RegistrationType.Singleton);
+
 			isInitialized = true;
 		}
 	}
