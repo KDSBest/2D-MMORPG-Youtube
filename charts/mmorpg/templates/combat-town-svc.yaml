@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: character-svc
+  labels:
+    app: character
+    {{ include "mmorpg.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.serviceType }}
+  selector:
+    app: character
+    {{ include "mmorpg.selectorLabels" . | nindent 4 }}
+  sessionAffinity: ClientIP
+  ports:
+  - name: character
+    protocol: UDP
+    port: {{ .Values.characterPort }}
+    targetPort: 3335
+    {{- if eq .Values.serviceType "NodePort" }}
+    nodePort: {{ .Values.characterPort }}
+    {{- end }}

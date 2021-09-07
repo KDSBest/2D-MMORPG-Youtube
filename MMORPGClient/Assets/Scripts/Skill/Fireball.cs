@@ -2,45 +2,52 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fireball : MonoBehaviour
+namespace Assets.Scripts.Skills
 {
-    public float Duration = 1000;
-    public float ImpactDuration = 1000;
-    public Transform Target;
+	public class Fireball : MonoBehaviour
+	{
+		private float duration = 1000;
+		public float ImpactDuration = 1000;
+		public Vector3 Target;
 
-    public List<GameObject> DeactiveOnImpact = new List<GameObject>();
+		public List<GameObject> DeactiveOnImpact = new List<GameObject>();
 
-    public List<GameObject> ActivateOnImpact = new List<GameObject>();
+		public List<GameObject> ActivateOnImpact = new List<GameObject>();
 
-    public Transform Caster;
+		public Vector3 Caster;
 
-    private Vector3 startPosition;
-    private Vector3 endPosition;
-    private Vector3 direction;
-    private float elapsedTime = 0;
+		private Vector3 direction;
+		private float elapsedTime = 0;
 
-    private void UpdateTargeting()
-    {
-        startPosition = Caster.position;
-        endPosition = Target.position;
-        direction = endPosition - startPosition;
-    }
+		private void UpdateTargeting()
+		{
+			direction = Target - Caster;
+		}
 
-    public void Update()
-    {
-        UpdateTargeting();
-        elapsedTime += Time.deltaTime * 1000;
-        float percentToTarget = elapsedTime / Duration;
-        if (percentToTarget >= 1)
-        {
-            ImpactDuration -= Time.deltaTime * 1000;
+		public void Start()
+		{
+			this.transform.position = Caster;
+		}
 
-            DeactiveOnImpact.ForEach(x => x.SetActive(false));
+		public void Update()
+		{
+			UpdateTargeting();
+			elapsedTime += Time.deltaTime * 1000;
+			float percentToTarget = elapsedTime / duration;
+			if (percentToTarget >= 1)
+			{
+				ImpactDuration -= Time.deltaTime * 1000;
 
-            ActivateOnImpact.ForEach(x => x.SetActive(ImpactDuration > 0));
-            percentToTarget = 1;
-        }
+				DeactiveOnImpact.ForEach(x => x.SetActive(false));
 
-        this.transform.position = startPosition + direction * percentToTarget;
-    }
+				ActivateOnImpact.ForEach(x => x.SetActive(ImpactDuration > 0));
+				percentToTarget = 1;
+
+				if (ImpactDuration <= 0)
+					GameObject.Destroy(this.gameObject);
+			}
+
+			this.transform.position = Caster + direction * percentToTarget;
+		}
+	}
 }

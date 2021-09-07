@@ -9,8 +9,6 @@ namespace Common.Protocol.Map
     {
         public SkillCastType Type { get; set; }
 
-        public int DurationInMs { get; set; }
-
         public string Caster { get; set; } = string.Empty;
 
         public Vector2 Position { get; set; }
@@ -30,7 +28,6 @@ namespace Common.Protocol.Map
             writer.Put(Position.Y);
             writer.Put(ServerTime);
             writer.Put((byte)Type);
-            writer.Put(DurationInMs);
             Target.WriteData(writer);
         }
 
@@ -40,7 +37,6 @@ namespace Common.Protocol.Map
             Position = new Vector2(reader.GetFloat(), reader.GetFloat());
             ServerTime = reader.GetLong();
             Type = (SkillCastType)reader.GetByte();
-            DurationInMs = reader.GetInt();
             Target.ReadData(reader);
 
             return true;

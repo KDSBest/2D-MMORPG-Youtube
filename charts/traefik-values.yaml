@@ -254,6 +254,16 @@ ports:
     expose: true
     exposedPort: inventory
     protocol: UDP
+  combattown:
+    port: 3340
+    expose: true
+    exposedPort: inventory
+    protocol: UDP
+  combatfield:
+    port: 3341
+    expose: true
+    exposedPort: inventory
+    protocol: UDP
 
 # TLS Options are created as TLSOption CRDs
 # https://doc.traefik.io/traefik/https/tls/#tls-options

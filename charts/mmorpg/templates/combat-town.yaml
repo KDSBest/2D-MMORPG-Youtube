@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: character
+  labels:
+    app: character
+    {{ include "mmorpg.labels" . | nindent 4 }}
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: character
+  template:
+    metadata:
+      labels:
+        app: character
+        {{ include "mmorpg.labels" . | nindent 8 }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: characterservice
+        imagePullPolicy: Always
+        image: {{ .Values.characterServiceImage }}
+        ports:
+        - name: character
+          containerPort: 3335
+        env:
+        - name: CosmosUrl
+          valueFrom:
+            secretKeyRef:
+              name: cosmossecret
+              key: CosmosUrl
+        - name: CosmosKey
+          valueFrom:
+            secretKeyRef:
+              name: cosmossecret
+              key: CosmosKey
+        - name: JwtSecret
+          value: {{ .Values.jwtSecret }}

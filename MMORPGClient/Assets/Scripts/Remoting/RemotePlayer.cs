@@ -1,11 +1,12 @@
-﻿using Common.Protocol.Character;
+﻿using Assets.Scripts.Character;
+using Common.Protocol.Character;
 using Common.Protocol.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.Character
+namespace Assets.Scripts.Remoting
 {
 	public class RemotePlayer
 	{

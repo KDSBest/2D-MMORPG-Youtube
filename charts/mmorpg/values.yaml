@@ -8,6 +8,8 @@ mapTownPort: 3336
 mapFieldPort: 3337
 playerEventPort: 3338
 inventoryPort: 3339
+combattownPort: 3340
+combafieldPort: 3341
 
 cosmosUrl: "@@{CosmosUrl}@@"
 cosmosKey: "@@{CosmosKey}@@"
@@ -22,6 +24,7 @@ playerEventProcessorServiceImage: "@@{GameName}@@acr.azurecr.io/playereventproce
 playerEventServiceImage: "@@{GameName}@@acr.azurecr.io/playereventservice:@@{Build.BuildNumber}@@"
 inventoryServiceImage: "@@{GameName}@@acr.azurecr.io/inventoryservice:@@{Build.BuildNumber}@@"
 propManagementServiceImage: "@@{GameName}@@acr.azurecr.io/propmanagementservice:@@{Build.BuildNumber}@@"
+combatServiceImage: "@@{GameName}@@acr.azurecr.io/combatservice:@@{Build.BuildNumber}@@"
 
 serviceType: ClusterIP
 

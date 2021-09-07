@@ -1,7 +1,7 @@
 ﻿using Common.Protocol.Map;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.Character
+namespace Assets.Scripts.Remoting
 {
 	public class RemotePlayerRemovedTracking
 	{

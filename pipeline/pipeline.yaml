@@ -143,6 +143,23 @@ stages:
         ServicePath: PropManagementService
         RepositoryName: propmanagementservice
 
+- stage: CombatService
+  displayName: CombatService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: CombatService
+    displayName: CombatService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: CombatService
+        RepositoryName: combatservice
+        
 - stage: InventoryService
   displayName: InventoryService
   dependsOn:

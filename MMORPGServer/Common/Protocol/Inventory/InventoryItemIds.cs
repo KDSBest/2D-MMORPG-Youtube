@@ -7,5 +7,6 @@ namespace Common.Protocol.Inventory
 	public static class InventoryItemIds
 	{
 		public const string Coins = "Coins";
+		public const string Flowers = "Flower";
 	}
 }

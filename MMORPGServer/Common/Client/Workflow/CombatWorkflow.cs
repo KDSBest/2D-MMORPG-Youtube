@@ -21,7 +21,7 @@ namespace Common.Client.Workflow
 
 		public override async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
-			var msg = new DamageDoneMessage();
+			var msg = new DamageMessage();
 			if (msg.Read(reader))
 			{
 				PubSub.Publish(msg);

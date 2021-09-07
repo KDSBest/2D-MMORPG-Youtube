@@ -11,7 +11,7 @@ namespace CommonServer.GameDesign
 	{
 		private List<DamageInFuture> damageInFutures = new List<DamageInFuture>();
 
-		public Action<DamageInFuture> OnDamage;
+		public Func<DamageInFuture, Task> OnDamage;
 
 		public void Enqueue(DamageInFuture damage)
 		{
@@ -21,16 +21,23 @@ namespace CommonServer.GameDesign
 			}
 		}
 
-		public void Update(int timeInMs)
+		public async Task Update(int timeInMs)
 		{
+			List<DamageInFuture> damages;
+
 			lock (damageInFutures)
 			{
 				damageInFutures.ForEach(x => x.WaitDuration -= timeInMs);
 
-				var damages = damageInFutures.Where(x => x.WaitDuration <= 0).ToList();
-				for (int i = 0; i < damages.Count; i++)
+				damages = damageInFutures.Where(x => x.WaitDuration <= 0).ToList();
+			}
+
+			for (int i = 0; i < damages.Count; i++)
+			{
+				await OnDamage(damages[i]);
+
+				lock (damageInFutures)
 				{
-					OnDamage(damages[i]);
 					damageInFutures.Remove(damages[i]);
 				}
 			}

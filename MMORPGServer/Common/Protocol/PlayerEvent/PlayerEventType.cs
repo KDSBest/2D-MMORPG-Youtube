@@ -5,6 +5,7 @@
 		DailyLogin,
 		Quest,
 		TradeItem,
-		MobKill
+		MobKill,
+		PropKill
 	}
 }

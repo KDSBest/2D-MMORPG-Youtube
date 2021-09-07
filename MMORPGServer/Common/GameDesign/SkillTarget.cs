@@ -21,7 +21,7 @@ namespace Common.GameDesign
                     writer.Put(TargetPosition.X);
                     writer.Put(TargetPosition.Y);
                     break;
-                case SkillCastTargetType.Prop:
+                case SkillCastTargetType.SingleTarget:
                     writer.Put(TargetName);
                     break;
             }
@@ -36,7 +36,7 @@ namespace Common.GameDesign
                 case SkillCastTargetType.Position:
                     TargetPosition = new Vector2(reader.GetFloat(), reader.GetFloat());
                     break;
-                case SkillCastTargetType.Prop:
+                case SkillCastTargetType.SingleTarget:
                     TargetName = reader.GetString();
                     break;
             }

@@ -95,6 +95,74 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Skills"",
+            ""id"": ""c48517fe-d95f-4c4f-a2f3-55a2d2fd899f"",
+            ""actions"": [
+                {
+                    ""name"": ""CastQ"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d55a63f-1cd3-49df-9aee-ee7b9ae3a41d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""CastE"",
+                    ""type"": ""Button"",
+                    ""id"": ""45295559-2cd4-487f-addf-a4c49a296694"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""51701f27-868d-4fef-a078-9d52e72ae3c5"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CastQ"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""064d5acf-aee3-48e8-8e30-28beb5c1ef2f"",
+                    ""path"": ""<DualShockGamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CastQ"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""54c46a0e-32c7-4b1b-8a67-455a4268fdd3"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CastE"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf6351bb-7c08-4899-8a75-d5a87f6363e3"",
+                    ""path"": ""<DualShockGamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CastE"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -102,6 +170,10 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         // Movement
         m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
         m_Movement_Run = m_Movement.FindAction("Run", throwIfNotFound: true);
+        // Skills
+        m_Skills = asset.FindActionMap("Skills", throwIfNotFound: true);
+        m_Skills_CastQ = m_Skills.FindAction("CastQ", throwIfNotFound: true);
+        m_Skills_CastE = m_Skills.FindAction("CastE", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -180,8 +252,54 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         }
     }
     public MovementActions @Movement => new MovementActions(this);
+
+    // Skills
+    private readonly InputActionMap m_Skills;
+    private ISkillsActions m_SkillsActionsCallbackInterface;
+    private readonly InputAction m_Skills_CastQ;
+    private readonly InputAction m_Skills_CastE;
+    public struct SkillsActions
+    {
+        private @PlayerControls m_Wrapper;
+        public SkillsActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @CastQ => m_Wrapper.m_Skills_CastQ;
+        public InputAction @CastE => m_Wrapper.m_Skills_CastE;
+        public InputActionMap Get() { return m_Wrapper.m_Skills; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(SkillsActions set) { return set.Get(); }
+        public void SetCallbacks(ISkillsActions instance)
+        {
+            if (m_Wrapper.m_SkillsActionsCallbackInterface != null)
+            {
+                @CastQ.started -= m_Wrapper.m_SkillsActionsCallbackInterface.OnCastQ;
+                @CastQ.performed -= m_Wrapper.m_SkillsActionsCallbackInterface.OnCastQ;
+                @CastQ.canceled -= m_Wrapper.m_SkillsActionsCallbackInterface.OnCastQ;
+                @CastE.started -= m_Wrapper.m_SkillsActionsCallbackInterface.OnCastE;
+                @CastE.performed -= m_Wrapper.m_SkillsActionsCallbackInterface.OnCastE;
+                @CastE.canceled -= m_Wrapper.m_SkillsActionsCallbackInterface.OnCastE;
+            }
+            m_Wrapper.m_SkillsActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @CastQ.started += instance.OnCastQ;
+                @CastQ.performed += instance.OnCastQ;
+                @CastQ.canceled += instance.OnCastQ;
+                @CastE.started += instance.OnCastE;
+                @CastE.performed += instance.OnCastE;
+                @CastE.canceled += instance.OnCastE;
+            }
+        }
+    }
+    public SkillsActions @Skills => new SkillsActions(this);
     public interface IMovementActions
     {
         void OnRun(InputAction.CallbackContext context);
+    }
+    public interface ISkillsActions
+    {
+        void OnCastQ(InputAction.CallbackContext context);
+        void OnCastE(InputAction.CallbackContext context);
     }
 }

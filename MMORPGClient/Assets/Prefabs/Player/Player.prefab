@@ -5236,6 +5236,17 @@ MonoBehaviour:
   Animator: {fileID: 2980137752846734676}
   GravityDefault: 10
   GravityFall: 15
+  Skills:
+  - Type: 0
+    CooldownBackground: {fileID: 0}
+    LayerMask:
+      serializedVersion: 2
+      m_Bits: 384
+  - Type: 1
+    CooldownBackground: {fileID: 0}
+    LayerMask:
+      serializedVersion: 2
+      m_Bits: 384
 --- !u!50 &1349308286
 Rigidbody2D:
   serializedVersion: 4

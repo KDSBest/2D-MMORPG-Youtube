@@ -16,18 +16,18 @@ using CommonServer.Redis;
 using Common.Protocol.Map;
 using Common;
 using StackExchange.Redis;
+using Common.GameDesign;
 
 namespace CombatService
 {
 	public class CombatWorkflow : IJwtWorkflow
 	{
-		private InventoryRepository repo = new InventoryRepository();
 		public UdpManager UdpManager { get; set; }
 		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 
 		private string playerId = string.Empty;
 		private UdpPeer peer;
-		private Dictionary<string, DateTime> usedSkill = new Dictionary<string, DateTime>();
+		private Dictionary<SkillCastType, DateTime> usedSkill = new Dictionary<SkillCastType, DateTime>();
 
 		public async Task OnStartAsync(UdpPeer peer)
 		{
@@ -42,16 +42,35 @@ namespace CombatService
 		{
 		}
 
+		private bool CheckCooldown(ReqSkillCastMessage reqMsg)
+		{
+			if (usedSkill.ContainsKey(reqMsg.Type))
+			{
+				var elapsedTime = (DateTime.UtcNow - usedSkill[reqMsg.Type]).TotalMilliseconds + GameDesignConfiguration.CooldownLatencyAllowance;
+				if (elapsedTime < GameDesignConfiguration.Cooldowns[reqMsg.Type])
+					return false;
+
+				usedSkill[reqMsg.Type] = DateTime.UtcNow;
+			}
+			else
+			{
+				usedSkill.Add(reqMsg.Type, DateTime.UtcNow);
+			}
+			return true;
+		}
+
 		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
 			var reqMsg = new ReqSkillCastMessage();
 			if (reqMsg.Read(reader))
 			{
+				if (!CheckCooldown(reqMsg))
+					return;
+
 				RedisPubSub.Publish<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, new SkillCastMessage()
 				{
 					Caster = playerId,
 					Type = reqMsg.Type,
-					DurationInMs = 2000,
 					Position = reqMsg.Position,
 					ServerTime = DateTime.UtcNow.Ticks,
 					Target = reqMsg.Target
@@ -62,10 +81,10 @@ namespace CombatService
 		public void OnToken(string token)
 		{
 			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
-			RedisPubSub.Subscribe<DamageDoneMessage>(RedisConfiguration.PlayerDamagePrefix + playerId, OnDamageDone);
+			RedisPubSub.Subscribe<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + playerId, OnDamageDone);
 		}
 
-		private void OnDamageDone(RedisChannel channel, DamageDoneMessage dmg)
+		private void OnDamageDone(RedisChannel channel, DamageMessage dmg)
 		{
 			UdpManager.SendMsg(this.peer.ConnectId, dmg, ChannelType.Unreliable);
 		}

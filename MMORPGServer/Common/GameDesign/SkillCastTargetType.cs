@@ -2,7 +2,7 @@
 {
 	public enum SkillCastTargetType : byte
 	{
-		Prop,
+		SingleTarget,
 		Position
 	}
 }

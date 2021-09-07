@@ -2,7 +2,7 @@ using Assets.Scripts;
 using System;
 using UnityEngine;
 
-namespace Assets.Scripts.Character
+namespace Assets.Scripts.Remoting
 {
 
 	public class RemotePlayerRenderer : MonoBehaviour

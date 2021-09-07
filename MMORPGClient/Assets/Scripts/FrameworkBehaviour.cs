@@ -123,7 +123,6 @@ namespace Assets.Scripts
 
 		public void OnNewLoginToken(LoginRegisterResponseMessage data)
 		{
-			UnityEngine.Debug.Log($"Token: {data.Token}");
 			DI.Instance.Resolve<ITokenProvider>().Token = data.Token;
 
 			if (data.Response == LoginRegisterResponse.Successful)

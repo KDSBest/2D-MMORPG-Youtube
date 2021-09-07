@@ -1,8 +1,12 @@
 ﻿using Common;
 using Common.GameDesign;
 using Common.Protocol.Combat;
+using Common.Protocol.Inventory;
 using Common.Protocol.Map;
+using Common.Protocol.PlayerEvent;
 using CommonServer.Configuration;
+using CommonServer.CosmosDb;
+using CommonServer.CosmosDb.Model;
 using CommonServer.GameDesign;
 using CommonServer.Redis;
 using StackExchange.Redis;
@@ -10,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 
 namespace PropManagementService
 {
@@ -22,6 +27,7 @@ namespace PropManagementService
 		private readonly Random random = new Random();
 		private readonly DamageCalculator damageCalculator = new DamageCalculator();
 		private readonly DamageQueue damageQueue = new DamageQueue();
+		private readonly InventoryEventRepository inventoryEventRepo = new InventoryEventRepository();
 
 		public PropManagement(PropSpawnConfig config)
 		{
@@ -55,9 +61,9 @@ namespace PropManagementService
 			RedisPubSub.Subscribe<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, OnSkillCasted);
 		}
 
-		private void OnDamage(DamageInFuture dmg)
+		private async Task OnDamage(DamageInFuture dmg)
 		{
-			if (dmg.Target.TargetType != SkillCastTargetType.Prop)
+			if (dmg.Target.TargetType != SkillCastTargetType.SingleTarget)
 			{
 				return;
 			}
@@ -70,7 +76,22 @@ namespace PropManagementService
 			if (effectedProp.Health < 0)
 				effectedProp.Health = 0;
 
-			RedisPubSub.Publish<DamageDoneMessage>(RedisConfiguration.PlayerDamagePrefix + dmg.Caster, new DamageDoneMessage()
+			if(effectedProp.Health == 0)
+			{
+				// TODO: Configurable and so on
+				await inventoryEventRepo.SaveAsync(new InventoryEvent()
+				{
+					Id = Guid.NewGuid(),
+					PlayerId = dmg.Caster,
+					Type = PlayerEventType.PropKill,
+					Add = new Dictionary<string, int>
+						{
+							{ InventoryItemIds.Flowers, 1 }
+						}
+				}, dmg.Caster);
+			}
+
+			RedisPubSub.Publish<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + dmg.Caster, new DamageMessage()
 			{
 				Damage = dmg.Damage,
 				Target = dmg.Target
@@ -79,7 +100,7 @@ namespace PropManagementService
 
 		private void OnSkillCasted(RedisChannel channel, SkillCastMessage msg)
 		{
-			if (msg.Target.TargetType == SkillCastTargetType.Prop)
+			if (msg.Target.TargetType == SkillCastTargetType.SingleTarget)
 			{
 				var effectedProp = props.FirstOrDefault(x => x.Name == msg.Target.TargetName);
 				if (effectedProp == null)
@@ -91,7 +112,7 @@ namespace PropManagementService
 				Caster = msg.Caster,
 				Damage = damageCalculator.GetDamage(),
 				Target = msg.Target,
-				WaitDuration = msg.DurationInMs - (int)(DateTime.UtcNow - new DateTime(msg.ServerTime)).TotalMilliseconds
+				WaitDuration = GameDesignConfiguration.AnimationDelay[msg.Type] - (int)(DateTime.UtcNow - new DateTime(msg.ServerTime)).TotalMilliseconds
 			});
 		}
 
@@ -120,10 +141,10 @@ namespace PropManagementService
 			}
 		}
 
-		public void Update(int timeInMs)
+		public async Task Update(int timeInMs)
 		{
 			HandleRespawn(timeInMs);
-			damageQueue.Update(timeInMs);
+			await damageQueue.Update(timeInMs);
 
 			foreach (var prop in props)
 			{

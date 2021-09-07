@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: combattown-svc
+
+spec:
+  entryPoints:
+    - combattown
+  routes:
+  - services:
+    - name: combattown-svc
+      port: 3339

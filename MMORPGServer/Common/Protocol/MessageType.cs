@@ -21,7 +21,7 @@
         ReqInventory = 120,
         Inventory = 130,
         ReqCastSkill = 140,
-        DamageDone = 141,
+        Damage = 141,
         CastSkill = 142,
         RemoveState = 200
     }

@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: combatfield-svc
+
+spec:
+  entryPoints:
+    - combatfield
+  routes:
+  - services:
+    - name: combatfield-svc
+      port: 3339

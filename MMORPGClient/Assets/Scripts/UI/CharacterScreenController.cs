@@ -50,7 +50,6 @@ namespace Assets.Scripts.UI
             if (!CharacterScreen.activeSelf)
                 return;
 
-            UnityEngine.Debug.Log($"Got Char Message with Name: {charMessage.Character.Name} and Token: {charMessage.Token}");
             Eyes.value = charMessage.Character.Eyes;
             Colors.value = charMessage.Character.Color;
             Name.text = charMessage.Character.Name;

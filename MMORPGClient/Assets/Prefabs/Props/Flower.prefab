@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 3837753991385346112}
   - component: {fileID: 1703683059952330033}
   - component: {fileID: 7254806724156050013}
-  m_Layer: 0
+  - component: {fileID: 4790688377591270715}
+  m_Layer: 8
   m_Name: Flower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,6 +98,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Renderer: {fileID: 6860955213699376384}
+--- !u!61 &4790688377591270715
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2179396704911867877}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 6.35, y: 8.09}
+    newSize: {x: 6.35, y: 8.09}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 6.35, y: 8.09}
+  m_EdgeRadius: 0
 --- !u!1 &5200748530463863310
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,7 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7416816426496562303}
   - component: {fileID: 6860955213699376384}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}

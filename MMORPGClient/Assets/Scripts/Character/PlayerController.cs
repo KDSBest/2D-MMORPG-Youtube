@@ -13,6 +13,7 @@ namespace Assets.Scripts.Character
 	{
 		private PlayerControls controls;
 		private PlayerControls.MovementActions movementActions;
+		private PlayerControls.SkillsActions skillActions;
 		private Vector2 movementVector = Vector2.zero;
 		private IPubSub pubsub;
 		public Rigidbody2D Rigidbody2D;
@@ -25,20 +26,28 @@ namespace Assets.Scripts.Character
 		public Animator Animator;
 		public float GravityDefault = 5;
 		public float GravityFall = 10;
+		public List<PlayerSkill> Skills = new List<PlayerSkill>() { new PlayerSkill(SkillCastType.Fireball), new PlayerSkill(SkillCastType.LightningBolt) };
 
 		public void Awake()
 		{
 			DILoader.Initialize();
+
+			pubsub = DI.Instance.Resolve<IPubSub>();
+			pubsub.Subscribe<PlayerControlEnable>(OnPlayerControlEnable, this.GetType().Name);
 
 			floorFilter = new ContactFilter2D();
 			floorFilter.useLayerMask = true;
 			floorFilter.layerMask = FloorLayer;
 
 			controls = new PlayerControls();
+			
 			movementActions = controls.Movement;
 			movementActions.Run.performed += ctx => movementVector = ctx.ReadValue<Vector2>();
-			pubsub = DI.Instance.Resolve<IPubSub>();
-			pubsub.Subscribe<PlayerControlEnable>(OnPlayerControlEnable, this.GetType().Name);
+
+			skillActions = controls.Skills;
+			skillActions.CastQ.performed += ctx => CastSkill(0);
+			skillActions.CastE.performed += ctx => CastSkill(1);
+
 		}
 
 		private void OnPlayerControlEnable(PlayerControlEnable data)
@@ -51,6 +60,11 @@ namespace Assets.Scripts.Character
 
 		private void FixedUpdate()
 		{
+			foreach (var skill in Skills)
+			{
+				skill.Update((int) (Time.fixedDeltaTime * 1000.0f));
+			}
+
 			bool isGrounded = false;
 			List<Collider2D> collisionResults = new List<Collider2D>();
 			if (FloorCollider.OverlapCollider(floorFilter, collisionResults) > 0)
@@ -130,18 +144,9 @@ namespace Assets.Scripts.Character
 			}
 		}
 
-		public void CastSkill()
+		public void CastSkill(int index)
 		{
-			pubsub.Publish<ReqSkillCastMessage>(new ReqSkillCastMessage()
-			{
-				Position = new System.Numerics.Vector2(),
-				Type = SkillCastType.LightningBolt,
-				Target = new SkillTarget()
-				{
-					TargetName = "F*1",
-					TargetType = SkillCastTargetType.Prop
-				}
-			});
+			Skills[index].Cast(this.transform.position, MirrorTransform.localScale.x > 0 ? Vector3.right : Vector3.left);
 		}
 	}
 }

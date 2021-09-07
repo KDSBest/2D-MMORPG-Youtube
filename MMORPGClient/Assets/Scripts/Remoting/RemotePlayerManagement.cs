@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.PubSubEvents.CharacterClient;
+﻿using Assets.Scripts.Character;
+using Assets.Scripts.PubSubEvents.CharacterClient;
 using Common.IoC;
 using Common.Protocol.Character;
 using Common.Protocol.Map;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.Character
+namespace Assets.Scripts.Remoting
 {
 
 	public class RemotePlayerManagement : MonoBehaviour
@@ -57,7 +58,6 @@ namespace Assets.Scripts.Character
 
 		private void OnPlayerState(PlayerStateMessage state)
 		{
-			UnityEngine.Debug.Log("Got PlayerStateMessage for " + state.Name);
 			// ignore new player state if remove state is newer
 			if (removedTracking.GetPlayerRemovedServerTime(state.Name) >= state.ServerTime)
 				return;

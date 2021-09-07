@@ -4,13 +4,13 @@ using System.Numerics;
 
 namespace Common.Protocol.Combat
 {
-	public class DamageDoneMessage : BaseUdpPackage
+	public class DamageMessage : BaseUdpPackage
     {
         public int Damage { get; set; }
 
         public SkillTarget Target { get; set; } = new SkillTarget();
 
-        public DamageDoneMessage() : base(MessageType.DamageDone)
+        public DamageMessage() : base(MessageType.Damage)
         {
         }
 

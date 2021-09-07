@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.Character
+namespace Assets.Scripts.Remoting
 {
 
 	public class RemotePropManagement : MonoBehaviour
@@ -38,7 +38,6 @@ namespace Assets.Scripts.Character
 
 		private void OnPropState(PropStateMessage state)
 		{
-			UnityEngine.Debug.Log("Got PropStateMessage for " + state.Name);
 			if (!remoteProps.ContainsKey(state.Name))
 			{
 				GameObject go = GameObject.Instantiate(RemotePropPrefab);

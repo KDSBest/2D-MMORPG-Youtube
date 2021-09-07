@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Assets.Scripts.Character;
+using Assets.Scripts.Remoting;
 
 namespace Assets.Scripts.Debug
 {
 
-    public class PlayerCountTracker : MonoBehaviour
+	public class PlayerCountTracker : MonoBehaviour
     {
         public TMP_Text DebugText;
         public RemotePlayerManagement PlayerManagement;
