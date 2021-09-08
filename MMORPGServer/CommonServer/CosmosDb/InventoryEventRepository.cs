@@ -1,4 +1,8 @@
-﻿using CommonServer.CosmosDb.Model;
+﻿using Common.GameDesign.Loot;
+using Common.Protocol.PlayerEvent;
+using CommonServer.CosmosDb.Model;
+using System;
+using System.Threading.Tasks;
 
 namespace CommonServer.CosmosDb
 {
@@ -10,5 +14,16 @@ namespace CommonServer.CosmosDb
         {
             LeaseManagement = new EventSourcingLeaseManagement(CosmosClientSinglton.Instance.InventoryEventESLeaseContainer.Value);
         }
-    }
+
+		public async Task GiveLoot(string playerId, Lotttable loottable, PlayerEventType type)
+		{
+			await SaveAsync(new InventoryEvent()
+			{
+				Id = Guid.NewGuid(),
+				PlayerId = playerId,
+				Type = type,
+				Add = loottable.GetLoot()
+			}, playerId);
+		}
+	}
 }

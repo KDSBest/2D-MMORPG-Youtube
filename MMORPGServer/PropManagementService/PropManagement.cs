@@ -78,17 +78,7 @@ namespace PropManagementService
 
 			if(effectedProp.Health == 0)
 			{
-				// TODO: Configurable and so on
-				await inventoryEventRepo.SaveAsync(new InventoryEvent()
-				{
-					Id = Guid.NewGuid(),
-					PlayerId = dmg.Caster,
-					Type = PlayerEventType.PropKill,
-					Add = new Dictionary<string, int>
-						{
-							{ InventoryItemIds.Flowers, 1 }
-						}
-				}, dmg.Caster);
+				await inventoryEventRepo.GiveLoot(dmg.Caster, LoottableConfiguration.Prop[effectedProp.Type], PlayerEventType.PropKill);
 			}
 
 			RedisPubSub.Publish<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + dmg.Caster, new DamageMessage()

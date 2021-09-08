@@ -1,4 +1,5 @@
-﻿using Common.Protocol.Inventory;
+﻿using Common.GameDesign;
+using Common.Protocol.Inventory;
 using Common.Protocol.PlayerEvent;
 using CommonServer.Configuration;
 using CommonServer.CosmosDb;
@@ -35,17 +36,7 @@ namespace DailyLoginService
 				{
 					Console.WriteLine($"Daily Login for {val.PlayerId}.");
 
-					// TODO: Configurable and so on
-					await inventoryEventRepo.SaveAsync(new InventoryEvent()
-					{
-						Id = Guid.NewGuid(),
-						PlayerId = val.PlayerId,
-						Type = PlayerEventType.DailyLogin,
-						Add = new Dictionary<string, int>
-						{
-							{ InventoryItemIds.Coins, 100 }
-						}
-					}, val.PlayerId);
+					await inventoryEventRepo.GiveLoot(val.PlayerId, LoottableConfiguration.Daily, PlayerEventType.DailyLogin);
 
 					await repo.SaveAsync(new UserLastLogin()
 					{
