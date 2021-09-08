@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: character
+  name: combattown
   labels:
-    app: character
+    app: combattown
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
   replicas: 2
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: character
+      app: combattown
   template:
     metadata:
       labels:
-        app: character
+        app: combattown
         {{ include "mmorpg.labels" . | nindent 8 }}
     spec:
       {{- if .Values.imagePullSecrets }}
@@ -22,12 +22,12 @@ spec:
         {{ toYaml .Values.imagePullSecrets | nindent 8 }}
       {{- end }}
       containers:
-      - name: characterservice
+      - name: combattownservice
         imagePullPolicy: Always
-        image: {{ .Values.characterServiceImage }}
+        image: {{ .Values.combatServiceImage }}
         ports:
-        - name: character
-          containerPort: 3335
+        - name: combattown
+          containerPort: 3339
         env:
         - name: CosmosUrl
           valueFrom:

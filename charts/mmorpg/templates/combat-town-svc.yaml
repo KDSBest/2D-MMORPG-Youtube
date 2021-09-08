@@ -1,21 +1,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: character-svc
+  name: combattown-svc
   labels:
-    app: character
+    app: combattown
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.serviceType }}
   selector:
-    app: character
+    app: combattown
     {{ include "mmorpg.selectorLabels" . | nindent 4 }}
   sessionAffinity: ClientIP
   ports:
-  - name: character
+  - name: combattown
     protocol: UDP
-    port: {{ .Values.characterPort }}
-    targetPort: 3335
+    port: {{ .Values.combatTownPort }}
+    targetPort: 3339
     {{- if eq .Values.serviceType "NodePort" }}
-    nodePort: {{ .Values.characterPort }}
+    nodePort: {{ .Values.combatTownPort }}
     {{- end }}
