@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.PubSubEvents.MapClient;
+using Assets.Scripts.PubSubEvents.StartUI;
 using Common.GameDesign;
 using Common.IoC;
 using Common.Protocol.Combat;
@@ -14,6 +15,7 @@ namespace Assets.Scripts.Character
 		private PlayerControls controls;
 		private PlayerControls.MovementActions movementActions;
 		private PlayerControls.SkillsActions skillActions;
+		private PlayerControls.UIsActions uiActions;
 		private Vector2 movementVector = Vector2.zero;
 		private IPubSub pubsub;
 		public Rigidbody2D Rigidbody2D;
@@ -48,6 +50,8 @@ namespace Assets.Scripts.Character
 			skillActions.CastQ.performed += ctx => CastSkill(0);
 			skillActions.CastE.performed += ctx => CastSkill(1);
 
+			uiActions = controls.UIs;
+			uiActions.ToggleInventory.performed += ctx => pubsub.Publish<ToggleInventoryScreen>(new ToggleInventoryScreen());
 		}
 
 		private void OnPlayerControlEnable(PlayerControlEnable data)

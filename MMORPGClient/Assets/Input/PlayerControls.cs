@@ -163,6 +163,44 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""UIs"",
+            ""id"": ""54d88080-8bba-43d7-bb06-58618c4581e1"",
+            ""actions"": [
+                {
+                    ""name"": ""ToggleInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""abfab3e1-68be-4d24-8d12-9f6e2ff57207"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""4f109666-822f-4582-a410-8683105f9b18"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3d796970-b2f1-4447-8fd0-7e454faff6d6"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -174,6 +212,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Skills = asset.FindActionMap("Skills", throwIfNotFound: true);
         m_Skills_CastQ = m_Skills.FindAction("CastQ", throwIfNotFound: true);
         m_Skills_CastE = m_Skills.FindAction("CastE", throwIfNotFound: true);
+        // UIs
+        m_UIs = asset.FindActionMap("UIs", throwIfNotFound: true);
+        m_UIs_ToggleInventory = m_UIs.FindAction("ToggleInventory", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -293,6 +334,39 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         }
     }
     public SkillsActions @Skills => new SkillsActions(this);
+
+    // UIs
+    private readonly InputActionMap m_UIs;
+    private IUIsActions m_UIsActionsCallbackInterface;
+    private readonly InputAction m_UIs_ToggleInventory;
+    public struct UIsActions
+    {
+        private @PlayerControls m_Wrapper;
+        public UIsActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ToggleInventory => m_Wrapper.m_UIs_ToggleInventory;
+        public InputActionMap Get() { return m_Wrapper.m_UIs; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIsActions set) { return set.Get(); }
+        public void SetCallbacks(IUIsActions instance)
+        {
+            if (m_Wrapper.m_UIsActionsCallbackInterface != null)
+            {
+                @ToggleInventory.started -= m_Wrapper.m_UIsActionsCallbackInterface.OnToggleInventory;
+                @ToggleInventory.performed -= m_Wrapper.m_UIsActionsCallbackInterface.OnToggleInventory;
+                @ToggleInventory.canceled -= m_Wrapper.m_UIsActionsCallbackInterface.OnToggleInventory;
+            }
+            m_Wrapper.m_UIsActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @ToggleInventory.started += instance.OnToggleInventory;
+                @ToggleInventory.performed += instance.OnToggleInventory;
+                @ToggleInventory.canceled += instance.OnToggleInventory;
+            }
+        }
+    }
+    public UIsActions @UIs => new UIsActions(this);
     public interface IMovementActions
     {
         void OnRun(InputAction.CallbackContext context);
@@ -301,5 +375,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     {
         void OnCastQ(InputAction.CallbackContext context);
         void OnCastE(InputAction.CallbackContext context);
+    }
+    public interface IUIsActions
+    {
+        void OnToggleInventory(InputAction.CallbackContext context);
     }
 }
