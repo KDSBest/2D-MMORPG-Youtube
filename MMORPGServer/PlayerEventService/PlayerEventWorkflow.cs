@@ -56,7 +56,7 @@ namespace EventService
 			var events = repo.GetEvents(playerId);
 			foreach(var ev in events)
 			{
-				UdpManager.SendMsg(new PlayerEventMessage()
+				UdpManager.SendMsg(this.peer.ConnectId, new PlayerEventMessage()
 				{
 					Type = ev.Type,
 					CreationDate = ev.CreationDate,

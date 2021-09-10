@@ -46,7 +46,7 @@ namespace InventoryService
 				if(inventory != null)
 					cInv.Items = inventory.Items;
 	
-				UdpManager.SendMsg(new InventoryMessage()
+				UdpManager.SendMsg(this.peer.ConnectId, new InventoryMessage()
 				{
 					Inventory = cInv
 				}, ChannelType.ReliableOrdered);
