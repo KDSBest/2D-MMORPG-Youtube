@@ -72,7 +72,12 @@ namespace PropManagementService
 			if (effectedProp == null)
 				return;
 
-			effectedProp.Health -= dmg.Damage;
+			// Prop is already dead, without this a bug when the prop is attacked multiple
+			// times at the same time occurse
+			if (effectedProp.Health <= 0)
+				return;
+
+				effectedProp.Health -= dmg.Damage;
 			if (effectedProp.Health < 0)
 				effectedProp.Health = 0;
 
