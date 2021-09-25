@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CommonServer.GameDesign
@@ -9,13 +10,14 @@ namespace CommonServer.GameDesign
 
 	public class DamageQueue
 	{
+		private object lockObject = new object();
 		private List<DamageInFuture> damageInFutures = new List<DamageInFuture>();
 
 		public Func<DamageInFuture, Task> OnDamage;
 
 		public void Enqueue(DamageInFuture damage)
 		{
-			lock (damageInFutures)
+			lock (lockObject)
 			{
 				damageInFutures.Add(damage);
 			}
@@ -25,7 +27,7 @@ namespace CommonServer.GameDesign
 		{
 			List<DamageInFuture> damages;
 
-			lock (damageInFutures)
+			lock (lockObject)
 			{
 				damageInFutures.ForEach(x => x.WaitDuration -= timeInMs);
 
@@ -36,7 +38,7 @@ namespace CommonServer.GameDesign
 			{
 				await OnDamage(damages[i]);
 
-				lock (damageInFutures)
+				lock (lockObject)
 				{
 					damageInFutures.Remove(damages[i]);
 				}

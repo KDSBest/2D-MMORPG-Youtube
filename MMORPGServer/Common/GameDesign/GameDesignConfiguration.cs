@@ -15,7 +15,5 @@ namespace Common.GameDesign
 		};
 
 		public static int CooldownLatencyAllowance = 100;
-
-
 	}
 }
