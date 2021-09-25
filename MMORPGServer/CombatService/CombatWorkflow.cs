@@ -47,7 +47,7 @@ namespace CombatService
 			if (usedSkill.ContainsKey(reqMsg.Type))
 			{
 				var elapsedTime = (DateTime.UtcNow - usedSkill[reqMsg.Type]).TotalMilliseconds + GameDesignConfiguration.CooldownLatencyAllowance;
-				if (elapsedTime < GameDesignConfiguration.Cooldowns[reqMsg.Type])
+				if (elapsedTime < GameDesignConfiguration.Skills.SkillTable[reqMsg.Type].GetStats(1).Cooldown)
 					return false;
 
 				usedSkill[reqMsg.Type] = DateTime.UtcNow;

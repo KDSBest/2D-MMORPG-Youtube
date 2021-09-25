@@ -1,12 +1,13 @@
 ﻿using Common.GameDesign;
+using Common.Protocol.Combat;
 
 namespace CommonServer.GameDesign
 {
 	public class DamageInFuture
 	{
-		public int Damage;
 		public string Caster;
 		public int WaitDuration;
 		public SkillTarget Target;
+		public DamageInfo DamageInfo;
 	}
 }

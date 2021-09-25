@@ -31,7 +31,9 @@ namespace Assets.Scripts.Character
 			if (Cooldown < 0)
 				Cooldown = 0;
 
-			float fillAmount = (float)(GameDesignConfiguration.Cooldowns[Type] - Cooldown) / (float)GameDesignConfiguration.Cooldowns[Type];
+			int cooldown = GameDesignConfiguration.Skills.SkillTable[Type].GetStats(1).Cooldown;
+
+			float fillAmount = (float)(cooldown - Cooldown) / (float)cooldown;
 			CooldownBackground.sizeDelta = new Vector2(CooldownBackground.sizeDelta.x, fillAmount * rectHeight);
 		}
 
@@ -44,7 +46,7 @@ namespace Assets.Scripts.Character
 			if (hit.collider == null)
 				return;
 
-			Cooldown = GameDesignConfiguration.Cooldowns[Type];
+			Cooldown = GameDesignConfiguration.Skills.SkillTable[Type].GetStats(1).Cooldown;
 
 			pubsub.Publish<ReqSkillCastMessage>(new ReqSkillCastMessage()
 			{

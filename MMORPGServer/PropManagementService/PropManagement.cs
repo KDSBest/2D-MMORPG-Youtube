@@ -24,6 +24,7 @@ namespace PropManagementService
 		private readonly PropSpawnConfig config;
 		private readonly List<PropStateMessage> props = new List<PropStateMessage>();
 		private readonly Dictionary<string, int> respawnTimer = new Dictionary<string, int>();
+		private readonly Dictionary<string, EntityStats> propStats = new Dictionary<string, EntityStats>();
 		private readonly Random random = new Random();
 		private readonly DamageCalculator damageCalculator = new DamageCalculator();
 		private readonly DamageQueue damageQueue = new DamageQueue();
@@ -47,12 +48,13 @@ namespace PropManagementService
 				{
 					Name = config.PropPrefix + i,
 					Animation = 0,
-					MaxHealth = config.MaxHealth,
+					MaxHealth = config.Stats.MaxHP,
 					IsLookingRight = false,
 					Type = config.Type
 				};
 
 				props.Add(prop);
+				propStats.Add(prop.Name, config.Stats);
 
 				SpawnProp(prop);
 			}
@@ -77,7 +79,7 @@ namespace PropManagementService
 			if (effectedProp.Health <= 0)
 				return;
 
-				effectedProp.Health -= dmg.Damage;
+				effectedProp.Health -= dmg.DamageInfo.Damage;
 			if (effectedProp.Health < 0)
 				effectedProp.Health = 0;
 
@@ -88,24 +90,28 @@ namespace PropManagementService
 
 			RedisPubSub.Publish<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + dmg.Caster, new DamageMessage()
 			{
-				Damage = dmg.Damage,
-				Target = dmg.Target
+				DamageInfo = dmg.DamageInfo,
+				Target = dmg.Target,
 			});
 		}
 
 		private void OnSkillCasted(RedisChannel channel, SkillCastMessage msg)
 		{
+			string propName = string.Empty;
 			if (msg.Target.TargetType == SkillCastTargetType.SingleTarget)
 			{
 				var effectedProp = props.FirstOrDefault(x => x.Name == msg.Target.TargetName);
+				propName = effectedProp.Name;
 				if (effectedProp == null)
 					return;
 			}
 
+			var damageInfo = damageCalculator.GetDamage(new EntityStats(), propStats[propName], GameDesignConfiguration.Skills.SkillTable[msg.Type].GetStats(1));
+
 			damageQueue.Enqueue(new DamageInFuture()
 			{
 				Caster = msg.Caster,
-				Damage = damageCalculator.GetDamage(),
+				DamageInfo = damageInfo,
 				Target = msg.Target,
 				WaitDuration = GameDesignConfiguration.AnimationDelay[msg.Type] - (int)(DateTime.UtcNow - new DateTime(msg.ServerTime)).TotalMilliseconds
 			});
@@ -115,7 +121,7 @@ namespace PropManagementService
 		{
 			prop.ServerTime = DateTime.UtcNow.Ticks;
 			prop.Position = GetRandomPosition();
-			prop.Health = config.MaxHealth;
+			prop.Health = config.Stats.MaxHP;
 
 			respawnTimer[prop.Name] = config.RespawnTimeInMs;
 		}

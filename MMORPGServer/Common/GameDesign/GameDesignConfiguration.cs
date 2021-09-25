@@ -6,16 +6,12 @@ namespace Common.GameDesign
 {
 	public static class GameDesignConfiguration
 	{
-		public static Dictionary<SkillCastType, int> Cooldowns = new Dictionary<SkillCastType, int>()
-		{
-			{ SkillCastType.Fireball, 10000  },
-			{ SkillCastType.LightningBolt, 5000  },
-		};
+		public static GameDesignSkills Skills = new GameDesignSkills();
 
 		public static Dictionary<SkillCastType, int> AnimationDelay = new Dictionary<SkillCastType, int>()
 		{
 			{ SkillCastType.Fireball, 1000  },
-			{ SkillCastType.LightningBolt, 1000  },
+			{ SkillCastType.LightningBolt, 700  },
 		};
 
 		public static int CooldownLatencyAllowance = 100;

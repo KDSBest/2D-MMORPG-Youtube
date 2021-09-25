@@ -40,7 +40,7 @@ namespace Assets.Scripts.Remoting
 			go.transform.position = GetTargetPosition(msg);
 			go.transform.SetParent(this.transform, true);
 			var dmgDisplay = go.GetComponent<DamageDisplay>();
-			dmgDisplay.SetDamage(msg.Damage);
+			dmgDisplay.SetDamage(msg.DamageInfo);
 		}
 
 		private bool CheckValidTargeting(DamageMessage msg)

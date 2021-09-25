@@ -22,7 +22,15 @@ namespace PropManagementService
 				new PropSpawnConfig()
 				{
 					PropPrefix = "F*",
-					MaxHealth = 30,
+					Stats = new EntityStats()
+					{
+						Attack = 1,
+						Defense = 1,
+						MAttack = 1,
+						MDefense = 1,
+						Level = 1,
+						MaxHP = 25
+					},
 					SpawnCount = 10,
 					SpawnStart = new System.Numerics.Vector2(-10, -44.5f),
 					SpawnEnd = new System.Numerics.Vector2(44, -44.5f),
