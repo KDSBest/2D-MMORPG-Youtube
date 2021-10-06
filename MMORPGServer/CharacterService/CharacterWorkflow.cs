@@ -15,6 +15,7 @@ using System.Security.Claims;
 using CommonServer.Redis;
 using Common.Protocol.Combat;
 using StackExchange.Redis;
+using Common.GameDesign;
 
 namespace CharacterService
 {
@@ -136,6 +137,15 @@ namespace CharacterService
 		{
 			CharacterInformation c = repo.GetAsync(playerId).Result;
 			c.Experience += msg.ExpGain;
+
+			if(c.Level < ExpCurve.MaxLevel)
+			{
+				if (c.Experience > ExpCurve.FullExp[c.Level])
+				{
+					c.Level++;
+					SendPlayerCharacter(c);
+				}
+			}
 			repo.SaveAsync(c, playerId).FireAndForget();
 		}
 	}

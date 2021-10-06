@@ -1,7 +1,9 @@
 using Assets.Scripts.Character;
 using Assets.Scripts.PubSubEvents.StartUI;
+using Assets.Scripts.UI.SubScreen;
 using Common.IoC;
 using Common.Protocol.Character;
+using Common.Protocol.Combat;
 using Common.Protocol.Inventory;
 using Common.PublishSubscribe;
 using System;
@@ -17,12 +19,41 @@ namespace Assets.Scripts.UI
         public GameObject HUD;
         public TMP_Text Coins;
 
+        public AutoHideInfoController ExpGain;
+        public ExpBarController ExpController;
+        public TMP_Text Level;
+        private ICurrentContext context;
+
         public void OnEnable()
         {
             DILoader.Initialize();
             pubsub = DI.Instance.Resolve<IPubSub>();
 
             pubsub.Subscribe<InventoryMessage>(OnInventory, this.GetType().Name);
+            pubsub.Subscribe<CharacterMessage>(OnCharacterMessage, this.GetType().Name);
+            pubsub.Subscribe<ExpMessage>(OnExpMessage, this.GetType().Name);
+
+            context = DI.Instance.Resolve<ICurrentContext>();
+            Level.text = this.context.Character.Level.ToString();
+        }
+
+		private void OnExpMessage(ExpMessage msg)
+		{
+            context.Character.Experience += msg.ExpGain;
+            ExpGain.Show($"+ {msg.ExpGain}", 5);
+
+            ExpController.UpdateExp(context.Character.Experience, context.Character.Level);
+        }
+
+		private void OnCharacterMessage(CharacterMessage msg)
+		{
+            if(msg.Character.Name == context.Character.Name)
+			{
+                Level.text = msg.Character.Level.ToString();
+                ExpController.UpdateExp(msg.Character.Experience, msg.Character.Level);
+
+                // TODO: Play level up animation
+            }
         }
 
 		private void OnInventory(InventoryMessage inv)
@@ -38,6 +69,8 @@ namespace Assets.Scripts.UI
 		public void OnDisable()
         {
             pubsub.Unsubscribe<InventoryMessage>(this.GetType().Name);
+            pubsub.Unsubscribe<CharacterMessage>(this.GetType().Name);
+            pubsub.Unsubscribe<ExpMessage>(this.GetType().Name);
         }
-	}
+    }
 }

@@ -18,6 +18,8 @@ namespace Common.Protocol.Character
             writer.Put(Character.Name);
             writer.Put(Character.Color);
             writer.Put(Character.Eyes);
+            writer.Put(Character.Level);
+            writer.Put(Character.Experience);
             writer.Put(Token);
         }
 
@@ -27,6 +29,8 @@ namespace Common.Protocol.Character
             Character.Name = reader.GetString();
             Character.Color = reader.GetByte();
             Character.Eyes = reader.GetByte();
+            Character.Level = reader.GetByte();
+            Character.Experience = reader.GetInt();
             Token = reader.GetString();
             return true;
         }

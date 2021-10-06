@@ -30,9 +30,13 @@ namespace Assets.Scripts
 		private const int waitMS = 50;
 		private IPubSub pubsub;
 
+		private ICurrentContext context;
+
 		public void OnEnable()
 		{
 			DILoader.Initialize();
+			this.context = DI.Instance.Resolve<ICurrentContext>();
+
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			pubsub.Subscribe<LoginRegisterResponseMessage>(OnNewLoginToken, this.GetType().Name);
 			pubsub.Subscribe<CharacterMessage>(OnCharacterMessage, this.GetType().Name);
@@ -59,9 +63,8 @@ namespace Assets.Scripts
 		{
 			if (!string.IsNullOrEmpty(data.Token))
 			{
-				var context = DI.Instance.Resolve<ICurrentContext>();
 				context.Token = data.Token;
-				context.Name = data.Character.Name;
+				context.Character = data.Character;
 
 				pubsub.Publish(new ControlCharacterScreen()
 				{
@@ -69,6 +72,10 @@ namespace Assets.Scripts
 				});
 
 				InitMapClient();
+			}
+			else if(context.Character != null && context.Character.Name == data.Character.Name)
+			{
+				context.Character = data.Character;
 			}
 		}
 

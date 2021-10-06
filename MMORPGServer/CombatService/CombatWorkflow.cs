@@ -89,7 +89,7 @@ namespace CombatService
 
 		private void OnExpGain(RedisChannel channel, ExpMessage msg)
 		{
-			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Unreliable);
+			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Reliable);
 		}
 
 		private void OnDamageDone(RedisChannel channel, DamageMessage msg)
