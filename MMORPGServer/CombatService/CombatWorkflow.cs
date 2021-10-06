@@ -36,6 +36,8 @@ namespace CombatService
 
 		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
+			RedisPubSub.UnSubscribe(RedisConfiguration.PlayerDamagePrefix + playerId);
+			RedisPubSub.UnSubscribe(RedisConfiguration.PlayerExpPrefix + playerId);
 		}
 
 		public async Task OnLatencyUpdateAsync(int latency)
@@ -82,11 +84,17 @@ namespace CombatService
 		{
 			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
 			RedisPubSub.Subscribe<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + playerId, OnDamageDone);
+			RedisPubSub.Subscribe<ExpMessage>(RedisConfiguration.PlayerExpPrefix + playerId, OnExpGain);
 		}
 
-		private void OnDamageDone(RedisChannel channel, DamageMessage dmg)
+		private void OnExpGain(RedisChannel channel, ExpMessage msg)
 		{
-			UdpManager.SendMsg(this.peer.ConnectId, dmg, ChannelType.Unreliable);
+			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Unreliable);
+		}
+
+		private void OnDamageDone(RedisChannel channel, DamageMessage msg)
+		{
+			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Unreliable);
 		}
 	}
 }

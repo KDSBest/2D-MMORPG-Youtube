@@ -23,6 +23,7 @@
         ReqCastSkill = 140,
         Damage = 141,
         CastSkill = 142,
+        Exp = 150,
         RemoveState = 200
     }
 }

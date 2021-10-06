@@ -86,6 +86,11 @@ namespace PropManagementService
 			if(effectedProp.Health == 0)
 			{
 				await inventoryEventRepo.GiveLoot(dmg.Caster, LoottableConfiguration.Prop[effectedProp.Type], PlayerEventType.PropKill);
+
+				RedisPubSub.Publish<ExpMessage>(RedisConfiguration.PlayerExpPrefix + dmg.Caster, new ExpMessage()
+				{
+					ExpGain = ExpTable.Prop[effectedProp.Type]
+				});
 			}
 
 			RedisPubSub.Publish<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + dmg.Caster, new DamageMessage()

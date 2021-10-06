@@ -12,6 +12,9 @@ using CommonServer.CosmosDb;
 using Common.Extensions;
 using System.Collections.Generic;
 using System.Security.Claims;
+using CommonServer.Redis;
+using Common.Protocol.Combat;
+using StackExchange.Redis;
 
 namespace CharacterService
 {
@@ -19,7 +22,7 @@ namespace CharacterService
 	{
 		public UdpManager UdpManager { get; set; }
 		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
-		private string email = string.Empty;
+		private string playerId = string.Empty;
 		private CharacterInformationRepository repo = new CharacterInformationRepository();
 		private UdpPeer peer;
 
@@ -27,7 +30,7 @@ namespace CharacterService
 		{
 			this.peer = peer;
 
-			if (await repo.ExistsAsync(email))
+			if (await repo.ExistsAsync(playerId))
 			{
 				await SendPlayerHisCharacterAsync(true);
 			}
@@ -39,14 +42,14 @@ namespace CharacterService
 
 		private async Task SendPlayerHisCharacterAsync(bool sendToken)
 		{
-			CharacterInformation c = await repo.GetAsync(email);
+			CharacterInformation c = await repo.GetAsync(playerId);
 			string token = string.Empty;
 
 			if (sendToken)
 			{
 				token = JwtTokenHelper.GenerateToken(new List<Claim>
 				{
-					new Claim(SecurityConfiguration.EmailClaimType, email),
+					new Claim(SecurityConfiguration.EmailClaimType, playerId),
 					new Claim(SecurityConfiguration.CharClaimType, c.Name)
 				});
 			}
@@ -74,6 +77,7 @@ namespace CharacterService
 
 		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
+			RedisPubSub.UnSubscribe(RedisConfiguration.PlayerExpPrefix + playerId);
 		}
 
 		public async Task OnLatencyUpdateAsync(int latency)
@@ -95,7 +99,7 @@ namespace CharacterService
 			var charMessage = new CharacterMessage();
 			if (charMessage.Read(reader))
 			{
-				charMessage.Character.Id = email;
+				charMessage.Character.Id = playerId;
 				charMessage.Character.Name = charMessage.Character.Name.Trim();
 				if (string.IsNullOrEmpty(charMessage.Character.Name))
 				{
@@ -103,7 +107,7 @@ namespace CharacterService
 					return;
 				}
 
-				if (await repo.ExistsAsync(email))
+				if (await repo.ExistsAsync(playerId))
 				{
 					await SendPlayerHisCharacterAsync(false);
 					return;
@@ -124,7 +128,15 @@ namespace CharacterService
 
 		public void OnToken(string token)
 		{
-			email = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
+			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
+			RedisPubSub.Subscribe<ExpMessage>(RedisConfiguration.PlayerExpPrefix + playerId, OnExpGain);
+		}
+
+		private void OnExpGain(RedisChannel channel, ExpMessage msg)
+		{
+			CharacterInformation c = repo.GetAsync(playerId).Result;
+			c.Experience += msg.ExpGain;
+			repo.SaveAsync(c, playerId).FireAndForget();
 		}
 	}
 }
