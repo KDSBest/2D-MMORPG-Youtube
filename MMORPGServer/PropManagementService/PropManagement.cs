@@ -111,7 +111,7 @@ namespace PropManagementService
 					return;
 			}
 
-			var damageInfo = damageCalculator.GetDamage(new EntityStats(), propStats[propName], GameDesignConfiguration.Skills.SkillTable[msg.Type].GetStats(1));
+			var damageInfo = damageCalculator.GetDamage(msg.CasterStats, propStats[propName], GameDesignConfiguration.Skills.SkillTable[msg.Type].GetStats(1));
 
 			damageQueue.Enqueue(new DamageInFuture()
 			{

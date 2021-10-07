@@ -140,13 +140,19 @@ namespace CharacterService
 
 			if(c.Level < ExpCurve.MaxLevel)
 			{
-				if (c.Experience > ExpCurve.FullExp[c.Level])
+				if (c.Experience >= ExpCurve.FullExp[c.Level])
 				{
 					c.Level++;
 					SendPlayerCharacter(c);
+					SendCharacterUpdate();
 				}
 			}
 			repo.SaveAsync(c, playerId).FireAndForget();
+		}
+
+		private void SendCharacterUpdate()
+		{
+			RedisPubSub.Publish<UpdateCharacterMessage>(RedisConfiguration.CharUpdatePrefix + playerId, new UpdateCharacterMessage());
 		}
 	}
 }

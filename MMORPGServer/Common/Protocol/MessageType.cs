@@ -13,6 +13,7 @@
         Chat = 50,
         Character = 60,
         CharacterRequest = 61,
+        UpdateCharacter = 62,
         PlayerState = 80,
         PropState = 81,
         TimeSync = 90,

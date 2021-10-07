@@ -114,6 +114,9 @@ namespace MapService
 			if (!mapPartitionManagement.IsRegistered(ev.Partition))
 				return;
 
+			// no need to send player stats to client
+			ev.State.CasterStats = null;
+
 			UdpManager.SendMsg(this.peer.ConnectId, ev.State, ChannelType.Reliable);
 		}
 

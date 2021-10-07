@@ -17,6 +17,8 @@ namespace Common.Protocol.Map
 
         public SkillTarget Target { get; set; } = new SkillTarget();
 
+        public EntityStats CasterStats { get; set; }
+
         public SkillCastMessage() : base(MessageType.CastSkill)
         {
         }
@@ -29,6 +31,16 @@ namespace Common.Protocol.Map
             writer.Put(ServerTime);
             writer.Put((byte)Type);
             Target.WriteData(writer);
+
+            if (CasterStats == null)
+            {
+                writer.Put((byte)0);
+            }
+            else
+            {
+                writer.Put((byte)1);
+                CasterStats.WriteData(writer);
+            }
         }
 
         protected override bool ReadData(UdpDataReader reader)
@@ -38,6 +50,12 @@ namespace Common.Protocol.Map
             ServerTime = reader.GetLong();
             Type = (SkillCastType)reader.GetByte();
             Target.ReadData(reader);
+
+            if(reader.GetByte() == 1)
+			{
+                CasterStats = new EntityStats();
+                CasterStats.ReadData(reader);
+			}
 
             return true;
         }

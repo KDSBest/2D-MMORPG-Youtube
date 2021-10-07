@@ -17,6 +17,7 @@ using Common.Protocol.Map;
 using Common;
 using StackExchange.Redis;
 using Common.GameDesign;
+using Common.Protocol.Character;
 
 namespace CombatService
 {
@@ -28,6 +29,7 @@ namespace CombatService
 		private string playerId = string.Empty;
 		private UdpPeer peer;
 		private Dictionary<SkillCastType, DateTime> usedSkill = new Dictionary<SkillCastType, DateTime>();
+		private CharacterInformation charInfo;
 
 		public async Task OnStartAsync(UdpPeer peer)
 		{
@@ -38,6 +40,7 @@ namespace CombatService
 		{
 			RedisPubSub.UnSubscribe(RedisConfiguration.PlayerDamagePrefix + playerId);
 			RedisPubSub.UnSubscribe(RedisConfiguration.PlayerExpPrefix + playerId);
+			RedisPubSub.UnSubscribe(RedisConfiguration.CharUpdatePrefix + playerId);
 		}
 
 		public async Task OnLatencyUpdateAsync(int latency)
@@ -75,7 +78,11 @@ namespace CombatService
 					Type = reqMsg.Type,
 					Position = reqMsg.Position,
 					ServerTime = DateTime.UtcNow.Ticks,
-					Target = reqMsg.Target
+					Target = reqMsg.Target,
+					CasterStats = new EntityStats()
+					{
+						Level = charInfo.Level
+					}
 				});
 			}
 		}
@@ -83,8 +90,22 @@ namespace CombatService
 		public void OnToken(string token)
 		{
 			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
+
+			UpdateCharInfo();
+
+			RedisPubSub.Subscribe<UpdateCharacterMessage>(RedisConfiguration.CharUpdatePrefix + playerId, OnCharUpdate);
 			RedisPubSub.Subscribe<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + playerId, OnDamageDone);
 			RedisPubSub.Subscribe<ExpMessage>(RedisConfiguration.PlayerExpPrefix + playerId, OnExpGain);
+		}
+
+		private void OnCharUpdate(RedisChannel channel, UpdateCharacterMessage msg)
+		{
+			UpdateCharInfo();
+		}
+
+		public void UpdateCharInfo()
+		{
+			charInfo = new CharacterInformationRepository().GetAsync(playerId).Result;
 		}
 
 		private void OnExpGain(RedisChannel channel, ExpMessage msg)
