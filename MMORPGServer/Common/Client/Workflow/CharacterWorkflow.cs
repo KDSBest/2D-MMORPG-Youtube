@@ -1,5 +1,6 @@
 ﻿using Common.Extensions;
 using Common.Protocol.Character;
+using Common.Protocol.Combat;
 using Common.Workflow;
 using ReliableUdp;
 using ReliableUdp.Enums;
@@ -26,6 +27,13 @@ namespace Common.Client.Workflow
 			if(charMsg.Read(reader))
 			{
 				PubSub.Publish(charMsg);
+				return;
+			}
+
+			var expMsg = new ExpMessage();
+			if (expMsg.Read(reader))
+			{
+				PubSub.Publish(expMsg);
 				return;
 			}
 		}

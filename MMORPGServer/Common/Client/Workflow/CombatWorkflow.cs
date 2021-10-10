@@ -28,13 +28,6 @@ namespace Common.Client.Workflow
 				return;
 			}
 
-			var expMsg = new ExpMessage();
-			if(expMsg.Read(reader))
-			{
-				PubSub.Publish(expMsg);
-				return;
-			}
-
 			await base.OnReceiveAsync(reader, channel);
 		}
 

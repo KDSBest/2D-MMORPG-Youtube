@@ -10,10 +10,12 @@ namespace Assets.Scripts.UI.SubScreen
 		public Image Renderer;
 		public TMP_Text ProgressText;
 		private Material material;
+		private int expBarValue = 0;
 
 		public void Awake()
 		{
 			material = Renderer.material;
+			SetExpBarVisual();
 		}
 
 		public void UpdateExp(int currentMaxExp, int currentLevel)
@@ -28,12 +30,20 @@ namespace Assets.Scripts.UI.SubScreen
 			ProgressText.text = $"{expEarnedTillNextLevel} / {expNeededTillNextLevel}";
 
 			float percentBar = (float)expEarnedTillNextLevel / (float)expNeededTillNextLevel;
-			int expBarValue = (int)(percentBar * 1000.0f);
+			this.expBarValue = (int)(percentBar * 1000.0f);
 
-			if (expBarValue > 1000)
-				expBarValue = 1000;
+			if (this.expBarValue > 1000)
+				this.expBarValue = 1000;
 
-			material.SetInt("Health", expBarValue);
+			SetExpBarVisual();
+		}
+
+		private void SetExpBarVisual()
+		{
+			if (material != null)
+			{
+				material.SetInt("Health", expBarValue);
+			}
 		}
 	}
 }

@@ -39,7 +39,6 @@ namespace CombatService
 		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
 			RedisPubSub.UnSubscribe(RedisConfiguration.PlayerDamagePrefix + playerId);
-			RedisPubSub.UnSubscribe(RedisConfiguration.PlayerExpPrefix + playerId);
 			RedisPubSub.UnSubscribe(RedisConfiguration.CharUpdatePrefix + playerId);
 		}
 
@@ -95,7 +94,6 @@ namespace CombatService
 
 			RedisPubSub.Subscribe<UpdateCharacterMessage>(RedisConfiguration.CharUpdatePrefix + playerId, OnCharUpdate);
 			RedisPubSub.Subscribe<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + playerId, OnDamageDone);
-			RedisPubSub.Subscribe<ExpMessage>(RedisConfiguration.PlayerExpPrefix + playerId, OnExpGain);
 		}
 
 		private void OnCharUpdate(RedisChannel channel, UpdateCharacterMessage msg)
@@ -106,11 +104,6 @@ namespace CombatService
 		public void UpdateCharInfo()
 		{
 			charInfo = new CharacterInformationRepository().GetAsync(playerId).Result;
-		}
-
-		private void OnExpGain(RedisChannel channel, ExpMessage msg)
-		{
-			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Reliable);
 		}
 
 		private void OnDamageDone(RedisChannel channel, DamageMessage msg)

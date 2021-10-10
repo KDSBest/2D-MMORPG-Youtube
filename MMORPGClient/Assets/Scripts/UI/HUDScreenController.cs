@@ -34,7 +34,6 @@ namespace Assets.Scripts.UI
             pubsub.Subscribe<ExpMessage>(OnExpMessage, this.GetType().Name);
 
             context = DI.Instance.Resolve<ICurrentContext>();
-            Level.text = this.context.Character.Level.ToString();
         }
 
 		private void OnExpMessage(ExpMessage msg)
@@ -47,7 +46,7 @@ namespace Assets.Scripts.UI
 
 		private void OnCharacterMessage(CharacterMessage msg)
 		{
-            if(msg.Character.Name == context.Character.Name)
+            if(context.Character != null && msg.Character.Name == context.Character.Name)
 			{
                 Level.text = msg.Character.Level.ToString();
                 ExpController.UpdateExp(msg.Character.Experience, msg.Character.Level);
@@ -59,6 +58,8 @@ namespace Assets.Scripts.UI
 		private void OnInventory(InventoryMessage inv)
 		{
             HUD.SetActive(true);
+
+            Level.text = this.context.Character.Level.ToString();
 
             if (inv.Inventory.Items.ContainsKey(InventoryItemIds.Coins))
                 Coins.text = inv.Inventory.Items[InventoryItemIds.Coins].ToString();

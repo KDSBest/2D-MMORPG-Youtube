@@ -135,19 +135,25 @@ namespace CharacterService
 
 		private void OnExpGain(RedisChannel channel, ExpMessage msg)
 		{
+			bool updateOtherServices = false;
 			CharacterInformation c = repo.GetAsync(playerId).Result;
 			c.Experience += msg.ExpGain;
 
-			if(c.Level < ExpCurve.MaxLevel)
+			while (c.Level < ExpCurve.MaxLevel && c.Experience >= ExpCurve.FullExp[c.Level])
 			{
-				if (c.Experience >= ExpCurve.FullExp[c.Level])
-				{
-					c.Level++;
-					SendPlayerCharacter(c);
-					SendCharacterUpdate();
-				}
+				c.Level++;
+				SendPlayerCharacter(c);
+				updateOtherServices = true;
 			}
-			repo.SaveAsync(c, playerId).FireAndForget();
+
+			repo.SaveAsync(c, playerId).Wait();
+
+			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Reliable);
+
+			if (updateOtherServices)
+			{
+				SendCharacterUpdate();
+			}
 		}
 
 		private void SendCharacterUpdate()
