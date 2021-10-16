@@ -65,6 +65,7 @@ namespace Assets.Scripts.UI
 				{
                     var go = GameObject.Instantiate(InventorySlotPrefab);
                     var slot = go.GetComponent<InventorySlot>();
+                    slot.Id = item.Key;
                     slot.Image.sprite = FlowerSprite;
                     slot.transform.SetParent(InventorySlotParent);
                     slots.Add(item.Key, slot);

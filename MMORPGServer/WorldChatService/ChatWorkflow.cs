@@ -36,6 +36,8 @@ namespace WorldChatService
 			if (chatMessage.Read(reader))
 			{
 				chatMessage.Sender = name;
+				chatMessage.Message = chatMessage.Message.Replace("<", string.Empty);
+				chatMessage.Message = chatMessage.Message.Replace(">", string.Empty);
 				RedisPubSub.Publish<ChatMessage>(RedisConfiguration.WorldChatChannelPrefix, chatMessage);
 			}
 		}

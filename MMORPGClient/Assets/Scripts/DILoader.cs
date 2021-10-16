@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Character;
 using Assets.Scripts.ClientWrappers;
+using Assets.Scripts.GameDesign;
 using Assets.Scripts.Language;
 using Common.Client;
 using Common.Client.Interfaces;
@@ -16,6 +17,9 @@ namespace Assets.Scripts
 		{
 			if (isInitialized)
 				return;
+			
+			DI.Instance.Register<ItemProvider>(() => new ItemProvider(), RegistrationType.Singleton);
+			DI.Instance.Register<RarityColorConfig>(() => new RarityColorConfig(), RegistrationType.Singleton);
 
 			DI.Instance.Register<ILanguage>(() => new LanguageEn(), RegistrationType.Singleton);
 			DI.Instance.Register<ICurrentContext>(() => new CurrentContext(), RegistrationType.Singleton);

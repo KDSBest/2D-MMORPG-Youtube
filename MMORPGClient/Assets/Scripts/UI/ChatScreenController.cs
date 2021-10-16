@@ -1,11 +1,15 @@
+using Assets.Scripts.Character;
 using Assets.Scripts.PubSubEvents.ChatClient;
 using Assets.Scripts.PubSubEvents.StartUI;
+using Assets.Scripts.UI.SubScreen;
 using Common.IoC;
 using Common.Protocol.Chat;
 using Common.PublishSubscribe;
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.UI
@@ -20,6 +24,34 @@ namespace Assets.Scripts.UI
 		public ScrollRect ScrollRect;
 		public GameObject Background;
 
+		public void Awake()
+		{
+			ChatMessageInput.onEndEdit.AddListener(new UnityAction<string>(OnChatInputEnd));
+			ChatMessageInput.onSelect.AddListener(new UnityAction<string>(OnSelect));
+			ChatMessageInput.onDeselect.AddListener(new UnityAction<string>(OnDeselect));
+		}
+
+		private void OnDeselect(string ev)
+		{
+			pubsub.Publish<PlayerControlEnable>(new PlayerControlEnable()
+			{
+				Enabled = true
+			});
+		}
+
+		private void OnChatInputEnd(string ev)
+		{
+			SendChatMessage();
+		}
+
+		private void OnSelect(string ev)
+		{
+			pubsub.Publish<PlayerControlEnable>(new PlayerControlEnable()
+			{
+				Enabled = false
+			});
+		}
+
 		public void OnEnable()
 		{
 			DILoader.Initialize();
@@ -32,8 +64,8 @@ namespace Assets.Scripts.UI
 		private void OnChatMessage(ChatMessage chatMessage)
 		{
 			GameObject newMessageGo = GameObject.Instantiate(ChatMessagePrefab);
-			newMessageGo.GetComponent<TMP_Text>().text = $"{chatMessage.Sender}: {chatMessage.Message}";
 			newMessageGo.transform.SetParent(ChatMessageParent);
+			newMessageGo.GetComponent<ItemLinkDetection>().SetText($"{chatMessage.Sender}: {chatMessage.Message}");
 
 			bool isScrolledToBottom = ScrollRect.normalizedPosition.y < 0.0001f;
 			if (isScrolledToBottom)
