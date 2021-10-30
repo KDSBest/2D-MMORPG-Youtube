@@ -1,5 +1,6 @@
 using Assets.Scripts.Character;
 using Assets.Scripts.ClientWrappers;
+using Assets.Scripts.GameDesign;
 using Assets.Scripts.Language;
 using Assets.Scripts.PubSubEvents.StartUI;
 using Common.Client.Interfaces;
@@ -51,6 +52,7 @@ namespace Assets.Scripts
 
 		public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 		{
+			DI.Instance.Resolve<ItemProvider>().Initialize();
 			InitLoginClient();
 		}
 
