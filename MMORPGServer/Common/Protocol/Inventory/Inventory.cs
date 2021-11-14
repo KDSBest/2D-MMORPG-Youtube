@@ -11,6 +11,14 @@ namespace Common.Protocol.Inventory
 	{
 		public Dictionary<string, int> Items = new Dictionary<string, int>();
 
+		public int GetAmount(string itemId)
+		{
+			if (!Items.ContainsKey(itemId))
+				return 0;
+
+			return Items[itemId];
+		}
+
 		public override string ToString()
 		{
 			return JsonConvert.SerializeObject(this);

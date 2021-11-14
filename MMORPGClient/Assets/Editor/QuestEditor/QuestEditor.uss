@@ -1,0 +1,16 @@
+Box
+{
+	flex-grow: 1;
+}
+
+TemplateContainer
+{
+	flex-grow: 1;
+	flex-direction: row;
+}
+
+ListView
+{
+	width: 250px;
+	-unity-text-align: middle-center;
+}

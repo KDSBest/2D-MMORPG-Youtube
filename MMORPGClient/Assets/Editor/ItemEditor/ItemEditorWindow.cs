@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 public class ItemEditorWindow : EditorWindow
 {
     [MenuItem("KDSBest/Item Editor")]
-    public static void ShowWindos()
+    public static void ShowWindow()
 	{
 		var windows = GetWindow<ItemEditorWindow>();
 		windows.titleContent = new GUIContent("Item Editor");
@@ -69,18 +69,5 @@ public class ItemEditorWindow : EditorWindow
 	{
 		ItemProvider itemProvider = new ItemProvider();
 		return itemProvider.Initialize();
-
-		/* Another way
-		string[] guids = AssetDatabase.FindAssets("t:ItemData");
-		ItemData[] result = new ItemData[guids.Length];
-		for(int i = 0; i < guids.Length; i++)
-		{
-			var path = AssetDatabase.GUIDToAssetPath(guids[i]);
-			result[i] = AssetDatabase.LoadAssetAtPath<ItemData>(path);
-		}
-
-		/* Another way
-		return Resources.LoadAll<ItemData>("Items");
-		*/
 	}
 }
