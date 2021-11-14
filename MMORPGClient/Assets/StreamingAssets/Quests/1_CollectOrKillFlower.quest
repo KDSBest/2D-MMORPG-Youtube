@@ -1,1 +1,0 @@
-{"Path":"C:/Users/kseti/Desktop/GameProjects/MMORPGYoutube/MMORPGClient/Assets/StreamingAssets\\Quests\\1_CollectOrKillFlower.quest","Name":"1_CollectOrKillFlower","Level":1,"PreQuest":"","UnityReferenceTask":"CollectOrKillFlower","Task":{"A":{"ItemId":"Flower","Amount":10},"B":{"MobId":"Flower","Amount":5,"Id":"0c5b9be9-868d-42e8-980f-f3f3f9bb47d0"}}}

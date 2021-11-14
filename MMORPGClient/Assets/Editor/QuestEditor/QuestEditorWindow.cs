@@ -58,6 +58,7 @@ public class QuestEditorWindow : EditorWindow
 			editorQuest.Name = quest.Name;
 			editorQuest.Level = quest.Level;
 			editorQuest.PreQuest = quest.PreQuest;
+			editorQuest.Rewards = quest.Rewards;
 			editorQuest.Task = (QuestEditorAbstractTask)Resources.Load($"QuestTasks/{quest.UnityReferenceTask}");
 
 			Toolbar toolbar = new Toolbar();
@@ -76,7 +77,6 @@ public class QuestEditorWindow : EditorWindow
 			{
 				PropertyField prop = new PropertyField(itemProperty);
 
-				prop.SetEnabled(itemProperty.name != "m_Script");
 				prop.Bind(serializedQuest);
 				questInfo.Add(prop);
 			}
@@ -89,7 +89,7 @@ public class QuestEditorWindow : EditorWindow
 		quest.Level = editorQuest.Level;
 		quest.PreQuest = editorQuest.PreQuest;
 		quest.UnityReferenceTask = editorQuest.Task.name;
-
+		quest.Rewards = editorQuest.Rewards;
 		quest.Task = ParseEditorTask(editorQuest.Task);
 
 		string newFileName = $"{quest.Name}.quest";
@@ -101,7 +101,10 @@ public class QuestEditorWindow : EditorWindow
 			quest.Path = Path.Combine(path, newFileName);
 		}
 
-		string json = JsonConvert.SerializeObject(quest);
+		string json = JsonConvert.SerializeObject(quest, new JsonSerializerSettings()
+		{
+			TypeNameHandling = TypeNameHandling.Auto
+		});
 		File.WriteAllText(quest.Path, json);
 
 		CreateItemListView();
@@ -151,7 +154,10 @@ public class QuestEditorWindow : EditorWindow
 		for(int i = 0; i < files.Length; i++)
 		{
 			string json = File.ReadAllText(files[i]);
-			quests[i] = JsonConvert.DeserializeObject<Quest>(json);
+			quests[i] = JsonConvert.DeserializeObject<Quest>(json, new JsonSerializerSettings()
+			{
+				TypeNameHandling = TypeNameHandling.Auto
+			});
 			quests[i].Path = files[i];
 		}
 

@@ -1,0 +1,1 @@
+{"Path":"C:\\Users\\kseti\\Desktop\\GameProjects\\MMORPGYoutube\\MMORPGClient\\Assets\\StreamingAssets\\Quests\\Collect10Flowers.quest","Name":"Collect10Flowers","Level":2,"PreQuest":"","Rewards":[{"ItemId":"Exp","Amount":10000}],"UnityReferenceTask":"Collect10Flower","Task":{"$type":"Common.QuestSystem.InventoryQuestTask, Common","ItemId":"Flower","Amount":10}}
