@@ -1,4 +1,6 @@
-﻿using Assets.Scripts.PubSubEvents.MapClient;
+﻿using Assets.Scripts.NPC;
+using Assets.Scripts.PubSubEvents.Dialog;
+using Assets.Scripts.PubSubEvents.MapClient;
 using Assets.Scripts.PubSubEvents.StartUI;
 using Common.GameDesign;
 using Common.IoC;
@@ -29,6 +31,8 @@ namespace Assets.Scripts.Character
 		public float GravityDefault = 5;
 		public float GravityFall = 10;
 		public List<PlayerSkill> Skills = new List<PlayerSkill>() { new PlayerSkill(SkillCastType.Fireball), new PlayerSkill(SkillCastType.LightningBolt) };
+		public LayerMask NPCLayerMask;
+		private NPCController currentNPC;
 
 		public void Awake()
 		{
@@ -36,6 +40,7 @@ namespace Assets.Scripts.Character
 
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			pubsub.Subscribe<PlayerControlEnable>(OnPlayerControlEnable, this.GetType().Name);
+			pubsub.Subscribe<DialogDone>(OnDialogDone, this.GetType().Name);
 
 			floorFilter = new ContactFilter2D();
 			floorFilter.useLayerMask = true;
@@ -49,9 +54,24 @@ namespace Assets.Scripts.Character
 			skillActions = controls.Skills;
 			skillActions.CastQ.performed += ctx => CastSkill(0);
 			skillActions.CastE.performed += ctx => CastSkill(1);
+			skillActions.InteractNPC.performed += ctx => InteractNPC();
 
 			uiActions = controls.UIs;
 			uiActions.ToggleInventory.performed += ctx => pubsub.Publish<ToggleInventoryScreen>(new ToggleInventoryScreen());
+		}
+
+		private void OnDialogDone(DialogDone data)
+		{
+			controls.Enable();
+		}
+
+		private void InteractNPC()
+		{
+			if(currentNPC != null)
+			{
+				controls.Disable();
+				currentNPC.OnInteract();
+			}
 		}
 
 		private void OnPlayerControlEnable(PlayerControlEnable data)
@@ -81,6 +101,8 @@ namespace Assets.Scripts.Character
 			HandleJump(isGrounded);
 
 			HandleAnimation(isGrounded, isMovingRightLeft);
+
+			HandleNPC();
 
 			PlayerState state = new PlayerState()
 			{
@@ -145,6 +167,37 @@ namespace Assets.Scripts.Character
 				{
 					Animator.SetInteger(Constants.AnimationStateName, 0);
 				}
+			}
+		}
+
+		private void HandleNPC()
+		{
+			var hit = Physics2D.Raycast(this.transform.position, MirrorTransform.localScale.x > 0 ? Vector3.right : Vector3.left, 10, NPCLayerMask);
+			if (hit.collider == null)
+			{
+				DeselectCurrentNPC();
+				return;
+			}
+
+			var npcController = hit.collider.gameObject.GetComponent<NPCController>();
+			if (npcController == null)
+				return;
+
+			if (npcController == currentNPC)
+				return;
+
+			DeselectCurrentNPC();
+			currentNPC = npcController;
+			currentNPC.OnSelected(true);
+
+		}
+
+		private void DeselectCurrentNPC()
+		{
+			if (currentNPC != null)
+			{
+				currentNPC.OnSelected(false);
+				currentNPC = null;
 			}
 		}
 

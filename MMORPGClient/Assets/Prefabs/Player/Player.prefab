@@ -5247,6 +5247,9 @@ MonoBehaviour:
     LayerMask:
       serializedVersion: 2
       m_Bits: 384
+  NPCLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!50 &1349308286
 Rigidbody2D:
   serializedVersion: 4

@@ -115,6 +115,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""InteractNPC"",
+                    ""type"": ""Button"",
+                    ""id"": ""edc31688-1754-4f3d-b477-f8042beb20da"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -159,6 +167,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""CastE"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9be406d6-317a-4189-b5ee-8b8672c12a98"",
+                    ""path"": ""<DualShockGamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InteractNPC"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3da634e6-da6a-4679-a716-32814211833a"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InteractNPC"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -212,6 +242,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Skills = asset.FindActionMap("Skills", throwIfNotFound: true);
         m_Skills_CastQ = m_Skills.FindAction("CastQ", throwIfNotFound: true);
         m_Skills_CastE = m_Skills.FindAction("CastE", throwIfNotFound: true);
+        m_Skills_InteractNPC = m_Skills.FindAction("InteractNPC", throwIfNotFound: true);
         // UIs
         m_UIs = asset.FindActionMap("UIs", throwIfNotFound: true);
         m_UIs_ToggleInventory = m_UIs.FindAction("ToggleInventory", throwIfNotFound: true);
@@ -299,12 +330,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private ISkillsActions m_SkillsActionsCallbackInterface;
     private readonly InputAction m_Skills_CastQ;
     private readonly InputAction m_Skills_CastE;
+    private readonly InputAction m_Skills_InteractNPC;
     public struct SkillsActions
     {
         private @PlayerControls m_Wrapper;
         public SkillsActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @CastQ => m_Wrapper.m_Skills_CastQ;
         public InputAction @CastE => m_Wrapper.m_Skills_CastE;
+        public InputAction @InteractNPC => m_Wrapper.m_Skills_InteractNPC;
         public InputActionMap Get() { return m_Wrapper.m_Skills; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -320,6 +353,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @CastE.started -= m_Wrapper.m_SkillsActionsCallbackInterface.OnCastE;
                 @CastE.performed -= m_Wrapper.m_SkillsActionsCallbackInterface.OnCastE;
                 @CastE.canceled -= m_Wrapper.m_SkillsActionsCallbackInterface.OnCastE;
+                @InteractNPC.started -= m_Wrapper.m_SkillsActionsCallbackInterface.OnInteractNPC;
+                @InteractNPC.performed -= m_Wrapper.m_SkillsActionsCallbackInterface.OnInteractNPC;
+                @InteractNPC.canceled -= m_Wrapper.m_SkillsActionsCallbackInterface.OnInteractNPC;
             }
             m_Wrapper.m_SkillsActionsCallbackInterface = instance;
             if (instance != null)
@@ -330,6 +366,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @CastE.started += instance.OnCastE;
                 @CastE.performed += instance.OnCastE;
                 @CastE.canceled += instance.OnCastE;
+                @InteractNPC.started += instance.OnInteractNPC;
+                @InteractNPC.performed += instance.OnInteractNPC;
+                @InteractNPC.canceled += instance.OnInteractNPC;
             }
         }
     }
@@ -375,6 +414,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     {
         void OnCastQ(InputAction.CallbackContext context);
         void OnCastE(InputAction.CallbackContext context);
+        void OnInteractNPC(InputAction.CallbackContext context);
     }
     public interface IUIsActions
     {
