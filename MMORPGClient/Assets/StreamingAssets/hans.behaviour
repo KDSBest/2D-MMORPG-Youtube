@@ -18,7 +18,7 @@
         "Y": 371.0
       },
       "Name": "Hans",
-      "Text": "Hi,\n\nHow are you?",
+      "Text": "Hi [Player],\n\nHow are you?",
       "Choices": [
         {
           "Text": "Fine",

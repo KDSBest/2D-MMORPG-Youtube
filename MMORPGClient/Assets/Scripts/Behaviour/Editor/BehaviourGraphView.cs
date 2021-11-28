@@ -49,7 +49,7 @@ namespace Assets.Scripts.Behaviour.Editor
 			{
 				Dictionary<Guid, BaseNode> nodes = new Dictionary<Guid, BaseNode>();
 
-				var entryPoint = new EntryPointNode(new Vector2(graph.Nodes[Guid.Empty].Position.x, graph.Nodes[Guid.Empty].Position.y));
+				var entryPoint = new EntryPointNode(new Vector2(graph.Nodes[Guid.Empty].Position.X, graph.Nodes[Guid.Empty].Position.Y));
 				AddElement(entryPoint);
 				nodes.Add(Guid.Empty, entryPoint);
 
@@ -136,7 +136,7 @@ namespace Assets.Scripts.Behaviour.Editor
 
 		private void CreateDialogNodeFromData(Dictionary<Guid, BaseNode> nodes, BaseNodeData nodeData, DialogNodeData dNodeData)
 		{
-			var node = new DialogNode(this, new Vector2(nodeData.Position.x, nodeData.Position.y));
+			var node = new DialogNode(this, new Vector2(nodeData.Position.X, nodeData.Position.Y));
 			node.Guid = nodeData.Guid;
 			node.DisplayName = dNodeData.Name;
 			node.TextFieldDisplayName.SetValueWithoutNotify(node.DisplayName);
@@ -154,7 +154,7 @@ namespace Assets.Scripts.Behaviour.Editor
 
 		private void CreateBackendCallNodeFromData(Dictionary<Guid, BaseNode> nodes, BaseNodeData nodeData, BackendCallNodeData bNodeData)
 		{
-			var bNode = new BackendCallNode(new Vector2(nodeData.Position.x, nodeData.Position.y));
+			var bNode = new BackendCallNode(new Vector2(nodeData.Position.X, nodeData.Position.Y));
 			bNode.Guid = nodeData.Guid;
 			NodeHelper.SetNodeText(bNode, bNodeData.Call);
 

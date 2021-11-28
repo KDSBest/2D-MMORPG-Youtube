@@ -37,13 +37,6 @@ namespace Assets.Scripts.NPC
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			context = DI.Instance.Resolve<ICurrentContext>();
-
-			pubsub.Subscribe<SelectDialogOption>(OnSelectDialogOption, this.GetType().Name);
-		}
-
-		public void OnDisable()
-		{
-			pubsub.Unsubscribe<SelectDialogOption>(this.GetType().Name);
 		}
 
 		private List<ChoiceData> GetAvailableChoices()
@@ -60,6 +53,7 @@ namespace Assets.Scripts.NPC
 					}
 				};
 			}
+
 			return currentDialogNode.Choices;
 		}
 
@@ -71,14 +65,17 @@ namespace Assets.Scripts.NPC
 		public void OnInteract()
 		{
 			EntryPointNodeData startNode = graph.Nodes[Guid.Empty] as EntryPointNodeData;
+			pubsub.Subscribe<SelectDialogOption>(OnSelectDialogOption, this.GetType().Name);
 			NextNode(startNode.Start);
 		}
 
 		private void NextNode(Guid guid)
 		{
+			// End of Dialog Tree means guid is Empty
 			if (guid == Guid.Empty)
 			{
 				pubsub.Publish(new DialogDone());
+				pubsub.Unsubscribe<SelectDialogOption>(this.GetType().Name);
 				return;
 			}
 
@@ -96,12 +93,18 @@ namespace Assets.Scripts.NPC
 					this.currentDialogNode = dialog;
 					pubsub.Publish<ShowDialog>(new ShowDialog()
 					{
-						Name = dialog.Name.Replace("[Player]", context.Character.Name),
-						Text = dialog.Text,
+						Name = ReplaceTokens(dialog.Name),
+						Text = ReplaceTokens(dialog.Text),
 						DialogOptions = GetAvailableChoices().ConvertAll<string>(x => x.Text).ToArray()
 					});
 					break;
 			}
+		}
+
+		private string ReplaceTokens(string text)
+		{
+			return text.Replace("[Player]", context.Character.Name)
+				.Replace("[Level]", context.Character.Level.ToString());
 		}
 
 		public void OnSelected(bool selected)

@@ -9,6 +9,6 @@ namespace Assets.Scripts.Behaviour.Data.Nodes
 	{
         public Guid Guid { get; set; }
 
-        public Vector2 Position;
+        public System.Numerics.Vector2 Position;
     }
 }

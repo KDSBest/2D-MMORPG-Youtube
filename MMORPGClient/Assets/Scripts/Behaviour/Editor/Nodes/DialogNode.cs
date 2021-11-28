@@ -135,7 +135,7 @@ namespace Assets.Scripts.Behaviour.Editor.Nodes
 			var nodeData = new DialogNodeData()
 			{
 				Guid = this.Guid,
-				Position = new UnityEngine.Vector2(pos.x, pos.y),
+				Position = new System.Numerics.Vector2(pos.x, pos.y),
 				Text = this.Text,
 				Name = this.DisplayName
 			};
