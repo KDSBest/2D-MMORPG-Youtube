@@ -1,4 +1,5 @@
 ﻿using Common.Protocol.Inventory;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -6,9 +7,14 @@ namespace Common.QuestSystem
 {
 	public class QuestTracking
 	{
+		[JsonProperty("id")]
+		public string Id { get; set; }
+
 		public Inventory Inventory { get; set; }
 
-		public Dictionary<string, int> QuestTrackingValues { get; set; }
+		public Dictionary<string, int> QuestTrackingValues { get; set; } = new Dictionary<string, int>();
+
+		public List<string> AcceptedQuests { get; set; } = new List<string>();
 
 		private string GetKey(string questName, string questTaskId, string mobId)
 		{

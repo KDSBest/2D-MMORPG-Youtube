@@ -32,7 +32,7 @@
         },
         {
           "Text": "Do you have any work for me?",
-          "Condition": "true",
+          "Condition": "Quest.IsAvailable(\"Collect10Flowers\")",
           "GuidNext": "37bde745-e805-4726-88ab-c421f19b507e"
         }
       ],
@@ -133,7 +133,7 @@
         "X": 2293.0,
         "Y": 634.0
       },
-      "Call": "Quest.Accept(\"HansTutorial\")",
+      "Call": "Quest.Accept(\"Collect10Flowers\")",
       "NextTrue": "30c7b106-a73c-4a83-84ef-7599d9aa80b1",
       "NextFalse": "00000000-0000-0000-0000-000000000000",
       "Guid": "8982bf3d-b240-478b-a338-e360877cc9e8"

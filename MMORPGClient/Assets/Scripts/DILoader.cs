@@ -35,6 +35,9 @@ namespace Assets.Scripts
 			DI.Instance.Register<IChatClient>(() => new ChatClient(), RegistrationType.Singleton);
 			DI.Instance.Register<IChatClientWrapper>(() => new ChatClientWrapper(), RegistrationType.Singleton);
 
+			DI.Instance.Register<IQuestTrackingClient>(() => new QuestTrackingClient(), RegistrationType.Singleton);
+			DI.Instance.Register<IQuestTrackingClientWrapper>(() => new QuestTrackingClientWrapper(), RegistrationType.Singleton);
+
 			DI.Instance.Register<IMapClient>(() => new MapClient(), RegistrationType.Singleton);
 			DI.Instance.Register<IMapClientWrapper>(() => new MapClientWrapper(), RegistrationType.Singleton);
 

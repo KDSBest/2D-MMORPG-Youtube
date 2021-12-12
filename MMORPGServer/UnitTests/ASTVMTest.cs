@@ -125,6 +125,26 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void VMTrueTest()
+		{
+			var result = Execute("true");
+
+			Assert.AreEqual(VMType.Number, result.Type);
+			Assert.AreEqual(-1, result.ValueNumber);
+			Assert.AreEqual(true, result.GetBool());
+		}
+
+		[TestMethod]
+		public void VMFalseTest()
+		{
+			var result = Execute("false");
+
+			Assert.AreEqual(VMType.Number, result.Type);
+			Assert.AreEqual(0, result.ValueNumber);
+			Assert.AreEqual(false, result.GetBool());
+		}
+
+		[TestMethod]
 		public void VMScopeTest()
 		{
 			Mock<IVMScope> questMock = new Mock<IVMScope>();

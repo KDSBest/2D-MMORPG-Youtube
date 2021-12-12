@@ -1,5 +1,6 @@
 ﻿using Common.Protocol;
 using CommonServer.Configuration;
+using CommonServer.CosmosDb;
 using CommonServer.Udp;
 using System;
 using System.Threading.Tasks;
@@ -10,6 +11,9 @@ namespace InventoryService
 	{
 		public static async Task Main(string[] args)
 		{
+            Console.WriteLine("Initialize CosmosDb Connection.");
+            var repo = new InventoryRepository();
+
             UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new InventoryUdpListener());
 
             Console.WriteLine("Open Inventory Service");

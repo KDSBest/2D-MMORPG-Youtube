@@ -9,5 +9,6 @@
 		public static readonly int EventPort = 3337;
 		public static readonly int InventoryPort = 3338;
 		public static readonly int CombatPort = 3339;
+		public static readonly int QuestPort = 3340;
 	}
 }

@@ -352,8 +352,19 @@ namespace Common.ScriptLanguage
 				}
 				else
 				{
-					ValidateIdentifier(sToken);
-					token.Add(new IdentifierToken(sToken.Token, sToken.LineNumber));
+					if(sToken.Token.ToLower() == "true")
+					{
+						token.Add(new NumberToken("-1", sToken.LineNumber));
+					}
+					else if(sToken.Token.ToLower() == "false")
+					{
+						token.Add(new NumberToken("0", sToken.LineNumber));
+					}
+					else
+					{
+						ValidateIdentifier(sToken);
+						token.Add(new IdentifierToken(sToken.Token, sToken.LineNumber));
+					}
 				}
 			}
 

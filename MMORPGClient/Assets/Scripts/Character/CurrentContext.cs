@@ -1,4 +1,5 @@
 ﻿using Common.Protocol.Character;
+using Common.QuestSystem;
 
 namespace Assets.Scripts.Character
 {
@@ -7,5 +8,7 @@ namespace Assets.Scripts.Character
 		public string Token { get; set; } = string.Empty;
 
 		public CharacterInformation Character { get; set; }
+
+		public QuestTracking QuestTracking { get; set; }
 	}
 }

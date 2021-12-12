@@ -8,6 +8,7 @@ using Common.IoC;
 using Common.Protocol.Character;
 using Common.Protocol.Inventory;
 using Common.Protocol.Login;
+using Common.Protocol.Quest;
 using Common.PublishSubscribe;
 using System;
 using System.Collections;
@@ -27,6 +28,7 @@ namespace Assets.Scripts
 		private static readonly int eventPort = 3337;
 		private static readonly int inventoryPort = 3338;
 		private static readonly int combatPort = 3339;
+		private static readonly int questTrackingPort = 3340;
 
 		private const int waitMS = 50;
 		private IPubSub pubsub;
@@ -88,9 +90,19 @@ namespace Assets.Scripts
 			this.StartCoroutine(InitializeClientWrapper(client, mapPort, DI.Instance.Resolve<ILanguage>().ConnectToGame, () =>
 			{
 				pubsub.Publish<PlayerControlEnable>(new PlayerControlEnable());
-				InitChatClient();
+				InitQuestTrackingClient();
 			}, 0, 0.25f));
 
+		}
+
+		public void InitQuestTrackingClient()
+		{
+			var client = DI.Instance.Resolve<IQuestTrackingClientWrapper>();
+			this.StartCoroutine(InitializeClientWrapper(client, questTrackingPort, DI.Instance.Resolve<ILanguage>().ConnectToQuestTracking, () =>
+			{
+				pubsub.Publish<RequestQuestTracking>(new RequestQuestTracking());
+				InitChatClient();
+			}, 0.25f, 0.30f));
 		}
 
 		public void InitChatClient()
@@ -100,7 +112,7 @@ namespace Assets.Scripts
 			{
 				pubsub.Publish<ControlChatScreen>(new ControlChatScreen());
 				InitCombatClient();
-			}, 0.25f, 0.35f));
+			}, 0.30f, 0.35f));
 		}
 
 		public void InitCombatClient()

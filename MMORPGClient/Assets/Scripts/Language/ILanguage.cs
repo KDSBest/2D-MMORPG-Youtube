@@ -5,6 +5,7 @@
 		string Starting { get; }
 		string ConnectToLogin { get; }
 		string ConnectToChat { get; }
+		string ConnectToQuestTracking { get; }
 		string ConnectToCombat { get; }
 		string ConnectToPlayerEvent { get; }
 		string ConnectToInventory { get; }

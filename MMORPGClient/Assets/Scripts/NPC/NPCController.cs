@@ -10,6 +10,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.NPC
@@ -22,6 +24,7 @@ namespace Assets.Scripts.NPC
 		private DialogNodeData currentDialogNode;
 		private IPubSub pubsub;
 		private ICurrentContext context;
+		private NPCScriptEngine scriptEngine = new NPCScriptEngine();
 
 		public void Awake()
 		{
@@ -54,7 +57,11 @@ namespace Assets.Scripts.NPC
 				};
 			}
 
-			return currentDialogNode.Choices;
+			return currentDialogNode.Choices.Where(x =>
+			{
+				var result = scriptEngine.Execute(x.Condition);
+				return result.ValueNumber != 0;
+			}).ToList();
 		}
 
 		private void OnSelectDialogOption(SelectDialogOption data)
@@ -87,7 +94,15 @@ namespace Assets.Scripts.NPC
 			switch (node)
 			{
 				case BackendCallNodeData backend:
-					NextNode(backend.NextTrue);
+					var result = scriptEngine.Execute(backend.Call);
+					if (result.ValueNumber == 0)
+					{
+						NextNode(backend.NextFalse);
+					}
+					else
+					{
+						NextNode(backend.NextTrue);
+					}
 					break;
 				case DialogNodeData dialog:
 					this.currentDialogNode = dialog;

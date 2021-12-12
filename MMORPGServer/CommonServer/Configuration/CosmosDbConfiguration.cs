@@ -16,6 +16,7 @@ namespace CommonServer.Configuration
         public static readonly string CosmosDbUserLastLoginDbCollection = "UserLastLoginCollection";
         public static readonly string CosmosDbCharacterDbCollection = "CharacterCollection";
         public static readonly string CosmosDbInventoryDbCollection = "InventoryCollection";
+        public static readonly string CosmosDbQuestTrackingDbCollection = "QuestTrackingCollection";
         public static readonly string CosmosDbInventoryEventDbCollection = "InventoryEventCollection";
         public static readonly string CosmosDbInventoryEventLeaseDbCollection = "InventoryEventLeaseCollection";
         public static readonly string CosmosDbInventoryEventESLeaseDbCollection = "InventoryEventESLeaseCollection";

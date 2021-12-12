@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CommonServer\CommonServer.csproj" />
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\UnityAzureNetworkEngine\Core\ReliableUdp\ReliableUdp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Quests\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\MMORPGClient\Assets\StreamingAssets\Quests\Collect10Flowers.quest" Link="Quests\Collect10Flowers.quest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+	  <Content Include="..\..\MMORPGClient\Assets\StreamingAssets\Quests\CollectOrKillFlower 1.quest" Link="Quests\CollectOrKillFlower 1.quest">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+  </ItemGroup>
+
+</Project>
