@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 
-namespace CommonServer
+namespace Common
 {
 	public static class QuestLoader
 	{

@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.PubSubEvents.LoginClient;
+﻿using Assets.Scripts.Character;
+using Assets.Scripts.PubSubEvents.LoginClient;
 using Common.Client.Interfaces;
 using Common.IoC;
 using Common.Protocol.Inventory;
@@ -12,6 +13,7 @@ namespace Assets.Scripts.ClientWrappers
 	public class InventoryClientWrapper : IInventoryClientWrapper
 	{
 		public IInventoryClient client;
+		private ICurrentContext context;
 		private DateTime LastRequestTime = DateTime.MinValue;
 
 		public bool IsInitialized { get { return client.IsConnected; } }
@@ -22,8 +24,20 @@ namespace Assets.Scripts.ClientWrappers
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			client = DI.Instance.Resolve<IInventoryClient>();
+			context = DI.Instance.Resolve<ICurrentContext>();
 			pubsub.Subscribe<RequestInventoryMessage>(OnRequestInventory, this.GetType().Name);
+			pubsub.Subscribe<InventoryMessage>(OnInventory, this.GetType().Name);
 			pubsub.Subscribe<PlayerEventMessage>(OnPlayerEvent, this.GetType().Name);
+		}
+
+		private void OnInventory(InventoryMessage data)
+		{
+			context.Inventory = data.Inventory;
+
+			if(context.QuestTracking != null)
+			{
+				context.QuestTracking.Inventory = context.Inventory;
+			}
 		}
 
 		private void OnPlayerEvent(PlayerEventMessage ev)

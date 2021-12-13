@@ -1,4 +1,5 @@
-﻿using Common.Protocol;
+﻿using Common;
+using Common.Protocol;
 using CommonServer;
 using CommonServer.Configuration;
 using CommonServer.CosmosDb;

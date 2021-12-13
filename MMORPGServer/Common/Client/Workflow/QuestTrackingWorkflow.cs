@@ -1,5 +1,4 @@
 ﻿using Common.Extensions;
-using Common.Protocol.Chat;
 using Common.Protocol.Quest;
 using Common.Workflow;
 using ReliableUdp;
@@ -42,6 +41,15 @@ namespace Common.Client.Workflow
 		public void SendAcceptQuestMessage(string questName)
 		{
 			var msg = new AcceptQuestMessage
+			{
+				QuestName = questName
+			};
+			UdpManager.SendMsg(msg, ChannelType.Reliable);
+		}
+
+		public void SendAbbandonQuestMessage(string questName)
+		{
+			var msg = new AbbandonQuestMessage
 			{
 				QuestName = questName
 			};

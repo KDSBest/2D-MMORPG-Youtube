@@ -1,5 +1,6 @@
 ﻿using Common.Client.Interfaces;
 using Common.Protocol.Character;
+using Common.Protocol.Inventory;
 using Common.QuestSystem;
 
 namespace Assets.Scripts.Character
@@ -9,5 +10,6 @@ namespace Assets.Scripts.Character
 	{
 		CharacterInformation Character { get; set; }
 		QuestTracking QuestTracking { get; set; }
+		Inventory Inventory { get; set; }
 	}
 }

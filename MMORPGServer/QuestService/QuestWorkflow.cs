@@ -44,44 +44,62 @@ namespace QuestService
 			AcceptQuestMessage acceptQuestMsg = new AcceptQuestMessage();
 			if (acceptQuestMsg.Read(reader))
 			{
-				QuestResultMessage resp;
-				if (questTracking.AcceptedQuests.Contains(acceptQuestMsg.QuestName))
-				{
-					resp = new QuestResultMessage()
-					{
-						Id = acceptQuestMsg.QuestName,
-						Result = false
-					};
+				await AcceptQuest(acceptQuestMsg);
+				return;
+			}
 
-					UdpManager.SendMsg(this.peer.ConnectId, resp, ChannelType.ReliableOrdered);
-					return;
-				}
-
-				questTracking.AcceptedQuests.Add(acceptQuestMsg.QuestName);
-				
-				await repo.SaveAsync(questTracking, questTracking.Id);
-
-				resp = new QuestResultMessage()
-				{
-					Id = acceptQuestMsg.QuestName,
-					Result = true
-				};
-
-				UdpManager.SendMsg(this.peer.ConnectId, resp, ChannelType.ReliableOrdered);
+			AbbandonQuestMessage abbondonQuestMsg = new AbbandonQuestMessage();
+			if(abbondonQuestMsg.Read(reader))
+			{
+				await AbbandonQuest(abbondonQuestMsg);
 				return;
 			}
 
 			RequestQuestTracking reqMsg = new RequestQuestTracking();
 			if (reqMsg.Read(reader))
 			{
-				ResponseQuestTrackingMessage resp = new ResponseQuestTrackingMessage()
-				{
-					QuestTracking = questTracking
-				};
-
-				UdpManager.SendMsg(this.peer.ConnectId, resp, ChannelType.ReliableOrdered);
+				SendQuestTracking();
 				return;
 			}
+		}
+
+		private void SendQuestTracking()
+		{
+			ResponseQuestTrackingMessage resp = new ResponseQuestTrackingMessage()
+			{
+				QuestTracking = questTracking
+			};
+
+			UdpManager.SendMsg(this.peer.ConnectId, resp, ChannelType.ReliableOrdered);
+		}
+
+		private async Task AcceptQuest(AcceptQuestMessage acceptQuestMsg)
+		{
+			if (questTracking.AcceptedQuests.Contains(acceptQuestMsg.QuestName))
+			{
+				return;
+			}
+
+			questTracking.AcceptedQuests.Add(acceptQuestMsg.QuestName);
+
+			await repo.SaveAsync(questTracking, questTracking.Id);
+
+			SendQuestTracking();
+		}
+
+		private async Task AbbandonQuest(AbbandonQuestMessage msg)
+		{
+			if (!questTracking.AcceptedQuests.Contains(msg.QuestName))
+			{
+				SendQuestTracking();
+				return;
+			}
+
+			questTracking.AcceptedQuests.Remove(msg.QuestName);
+
+			await repo.SaveAsync(questTracking, questTracking.Id);
+
+			SendQuestTracking();
 		}
 
 		public void OnToken(string token)

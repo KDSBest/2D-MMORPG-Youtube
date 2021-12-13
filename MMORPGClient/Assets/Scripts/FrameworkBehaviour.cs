@@ -3,6 +3,7 @@ using Assets.Scripts.ClientWrappers;
 using Assets.Scripts.GameDesign;
 using Assets.Scripts.Language;
 using Assets.Scripts.PubSubEvents.StartUI;
+using Common;
 using Common.Client.Interfaces;
 using Common.IoC;
 using Common.Protocol.Character;
@@ -12,6 +13,7 @@ using Common.Protocol.Quest;
 using Common.PublishSubscribe;
 using System;
 using System.Collections;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -100,7 +102,8 @@ namespace Assets.Scripts
 			var client = DI.Instance.Resolve<IQuestTrackingClientWrapper>();
 			this.StartCoroutine(InitializeClientWrapper(client, questTrackingPort, DI.Instance.Resolve<ILanguage>().ConnectToQuestTracking, () =>
 			{
-				pubsub.Publish<RequestQuestTracking>(new RequestQuestTracking());
+				QuestLoader.Load(Path.Combine(Application.streamingAssetsPath, "Quests"));
+				pubsub.Publish<ControlQuestScreen>(new ControlQuestScreen());
 				InitChatClient();
 			}, 0.25f, 0.30f));
 		}
