@@ -34,6 +34,11 @@
           "Text": "Do you have any work for me?",
           "Condition": "Quest.IsAvailable(\"Collect10Flowers\")",
           "GuidNext": "37bde745-e805-4726-88ab-c421f19b507e"
+        },
+        {
+          "Text": "Give Flowers",
+          "Condition": "Quest.IsQuestFinished(\"Collect10Flowers\")",
+          "GuidNext": "bd7151f3-3ae4-4bf4-a564-67fcd12e5647"
         }
       ],
       "Guid": "79594a35-dfa1-458c-8e74-8da59b8d951a"
@@ -127,6 +132,17 @@
       "Choices": [],
       "Guid": "30c7b106-a73c-4a83-84ef-7599d9aa80b1"
     },
+    "8c3d32bd-d21f-42d7-b8ea-a1b6c884b8d5": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 2073.0,
+        "Y": 903.0
+      },
+      "Name": "Hans",
+      "Text": "Thank you so much!",
+      "Choices": [],
+      "Guid": "8c3d32bd-d21f-42d7-b8ea-a1b6c884b8d5"
+    },
     "8982bf3d-b240-478b-a338-e360877cc9e8": {
       "$type": "Assets.Scripts.Behaviour.Data.Nodes.BackendCallNodeData, Assembly-CSharp",
       "Position": {
@@ -137,6 +153,17 @@
       "NextTrue": "30c7b106-a73c-4a83-84ef-7599d9aa80b1",
       "NextFalse": "00000000-0000-0000-0000-000000000000",
       "Guid": "8982bf3d-b240-478b-a338-e360877cc9e8"
+    },
+    "bd7151f3-3ae4-4bf4-a564-67fcd12e5647": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.BackendCallNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 1688.0,
+        "Y": 930.0
+      },
+      "Call": "Quest.FinishQuest(\"Collect10Flowers\")",
+      "NextTrue": "8c3d32bd-d21f-42d7-b8ea-a1b6c884b8d5",
+      "NextFalse": "00000000-0000-0000-0000-000000000000",
+      "Guid": "bd7151f3-3ae4-4bf4-a564-67fcd12e5647"
     }
   }
 }
