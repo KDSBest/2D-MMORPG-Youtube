@@ -90,11 +90,14 @@ namespace Assets.Scripts.Behaviour.Editor.Nodes
 			newPort.Port.contentContainer.Add(textField);
 			newPort.Port.contentContainer.Add(new Label("Answer:"));
 
+			newPort.Condition = condition;
+
 			var conditionTextField = new TextField()
 			{
 				name = string.Empty,
 				value = condition
 			};
+
 			conditionTextField.RegisterValueChangedCallback(evt => newPort.Condition = evt.newValue);
 			newPort.Port.contentContainer.Add(conditionTextField);
 			newPort.Port.contentContainer.Add(new Label("Condition:"));

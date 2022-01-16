@@ -1,9 +1,19 @@
-﻿namespace Common.QuestSystem
+﻿using System.Collections.Generic;
+
+namespace Common.QuestSystem
 {
 	public class InventoryQuestTask : IQuestTask
 	{
 		public string ItemId;
 		public int Amount;
+
+		public List<InventoryQuestTask> GetInventoryQuestTasks(string questName, QuestTracking questTracking)
+		{
+			return new List<InventoryQuestTask>()
+			{
+				this
+			};
+		}
 
 		public string GetDisplay(string questName, QuestTracking questTracking)
 		{

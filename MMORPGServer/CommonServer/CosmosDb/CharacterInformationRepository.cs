@@ -13,13 +13,18 @@ namespace CommonServer.CosmosDb
 
         }
 
-		public Task<CharacterInformation> GetByNameAsync(string charName)
-		{
+        public async Task<bool> HasPlayerACharacterAsync(string owner)
+        {
+            return await GetCharacterByOwnerAsync(owner) != null;
+        }
+
+        public Task<CharacterInformation> GetCharacterByOwnerAsync(string owner)
+        {
             return Task.Run(() =>
             {
                 try
                 {
-                    CharacterInformation result = Container.GetItemLinqQueryable<CharacterInformation>(true).Where(x => x.Name == charName).AsEnumerable().FirstOrDefault();
+                    CharacterInformation result = Container.GetItemLinqQueryable<CharacterInformation>(true).Where(x => x.Owner == owner).AsEnumerable().FirstOrDefault();
                     return result;
                 }
                 catch (CosmosException de)

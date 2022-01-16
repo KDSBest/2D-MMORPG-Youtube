@@ -108,12 +108,6 @@ namespace LoginService
 			{
 				new Claim(SecurityConfiguration.EmailClaimType, email)
 			});
-
-			RedisQueue.Enqueue<LoginQueueItem>(RedisConfiguration.LoginQueue, new LoginQueueItem()
-			{
-				PlayerId = user.Id,
-				LoginTime = DateTime.Now
-			});
 		}
 
 		private bool CheckPasswordStrength(string password)

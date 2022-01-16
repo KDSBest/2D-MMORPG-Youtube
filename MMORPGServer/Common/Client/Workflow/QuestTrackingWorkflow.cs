@@ -38,6 +38,16 @@ namespace Common.Client.Workflow
 			await base.OnReceiveAsync(reader, channel);
 		}
 
+
+		public void SendFinishQuestMessage(string questName)
+		{
+			var msg = new FinishQuestMessage
+			{
+				QuestName = questName
+			};
+			UdpManager.SendMsg(msg, ChannelType.Reliable);
+		}
+
 		public void SendAcceptQuestMessage(string questName)
 		{
 			var msg = new AcceptQuestMessage

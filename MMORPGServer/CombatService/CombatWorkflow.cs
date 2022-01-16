@@ -88,7 +88,7 @@ namespace CombatService
 
 		public void OnToken(string token)
 		{
-			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
+			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
 
 			UpdateCharInfo();
 

@@ -44,7 +44,7 @@ namespace EventService
 
 		public void OnToken(string token)
 		{
-			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
+			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
 			timer = new Timer(OnTimer, null, GameConfiguration.DefaultBackendTimer, GameConfiguration.DefaultBackendTimer);
 		}
 

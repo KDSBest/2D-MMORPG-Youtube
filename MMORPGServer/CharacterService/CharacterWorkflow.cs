@@ -16,6 +16,7 @@ using CommonServer.Redis;
 using Common.Protocol.Combat;
 using StackExchange.Redis;
 using Common.GameDesign;
+using CommonServer.Redis.Model;
 
 namespace CharacterService
 {
@@ -23,15 +24,16 @@ namespace CharacterService
 	{
 		public UdpManager UdpManager { get; set; }
 		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
-		private string playerId = string.Empty;
+		private string playerEmail = string.Empty;
 		private CharacterInformationRepository repo = new CharacterInformationRepository();
 		private UdpPeer peer;
+		private string loggedInChar = string.Empty;
 
 		public async Task OnStartAsync(UdpPeer peer)
 		{
 			this.peer = peer;
 
-			if (await repo.ExistsAsync(playerId))
+			if (await repo.HasPlayerACharacterAsync(playerEmail))
 			{
 				await SendPlayerHisCharacterAsync(true);
 			}
@@ -43,14 +45,26 @@ namespace CharacterService
 
 		private async Task SendPlayerHisCharacterAsync(bool sendToken)
 		{
-			CharacterInformation c = await repo.GetAsync(playerId);
+			CharacterInformation c = await repo.GetCharacterByOwnerAsync(playerEmail);
 			string token = string.Empty;
 
 			if (sendToken)
 			{
+				RedisQueue.Enqueue<LoginQueueItem>(RedisConfiguration.LoginQueue, new LoginQueueItem()
+				{
+					PlayerId = c.Name,
+					LoginTime = DateTime.Now
+				});
+
+				if(string.IsNullOrEmpty(loggedInChar) || loggedInChar != c.Name)
+				{
+					RedisPubSub.Subscribe<ExpMessage>(RedisConfiguration.PlayerExpPrefix + c.Name, OnExpGain);
+					loggedInChar = c.Name;
+				}
+
 				token = JwtTokenHelper.GenerateToken(new List<Claim>
 				{
-					new Claim(SecurityConfiguration.EmailClaimType, playerId),
+					new Claim(SecurityConfiguration.EmailClaimType, playerEmail),
 					new Claim(SecurityConfiguration.CharClaimType, c.Name)
 				});
 			}
@@ -60,7 +74,7 @@ namespace CharacterService
 
 		private async Task SendPlayerCharacterAsync(string charName)
 		{
-			var c = await repo.GetByNameAsync(charName);
+			var c = await repo.GetAsync(charName);
 
 			if (c != null)
 			{
@@ -78,7 +92,10 @@ namespace CharacterService
 
 		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
-			RedisPubSub.UnSubscribe(RedisConfiguration.PlayerExpPrefix + playerId);
+			if (string.IsNullOrEmpty(loggedInChar))
+				return;
+
+			RedisPubSub.UnSubscribe(RedisConfiguration.PlayerExpPrefix + loggedInChar);
 		}
 
 		public async Task OnLatencyUpdateAsync(int latency)
@@ -100,21 +117,21 @@ namespace CharacterService
 			var charMessage = new CharacterMessage();
 			if (charMessage.Read(reader))
 			{
-				charMessage.Character.Id = playerId;
-				charMessage.Character.Name = charMessage.Character.Name.Trim();
+				charMessage.Character.Id = charMessage.Character.Name = charMessage.Character.Name.Trim();
+				charMessage.Character.Owner = playerEmail;
 				if (string.IsNullOrEmpty(charMessage.Character.Name))
 				{
 					SendPlayerCharacter(charMessage.Character);
 					return;
 				}
 
-				if (await repo.ExistsAsync(playerId))
+				if (await repo.HasPlayerACharacterAsync(playerEmail))
 				{
 					await SendPlayerHisCharacterAsync(false);
 					return;
 				}
 
-				if (await repo.GetByNameAsync(charMessage.Character.Name) != null)
+				if (await repo.GetAsync(charMessage.Character.Name) != null)
 				{
 					charMessage.Character.Name = "NameAlreadyRegistered!";
 					SendPlayerCharacter(charMessage.Character);
@@ -129,14 +146,13 @@ namespace CharacterService
 
 		public void OnToken(string token)
 		{
-			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
-			RedisPubSub.Subscribe<ExpMessage>(RedisConfiguration.PlayerExpPrefix + playerId, OnExpGain);
+			playerEmail = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
 		}
 
 		private void OnExpGain(RedisChannel channel, ExpMessage msg)
 		{
 			bool updateOtherServices = false;
-			CharacterInformation c = repo.GetAsync(playerId).Result;
+			CharacterInformation c = repo.GetAsync(loggedInChar).Result;
 			c.Experience += msg.ExpGain;
 
 			while (c.Level < ExpCurve.MaxLevel && c.Experience >= ExpCurve.FullExp[c.Level])
@@ -146,7 +162,7 @@ namespace CharacterService
 				updateOtherServices = true;
 			}
 
-			repo.SaveAsync(c, playerId).Wait();
+			repo.SaveAsync(c, loggedInChar).Wait();
 
 			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Reliable);
 
@@ -158,7 +174,7 @@ namespace CharacterService
 
 		private void SendCharacterUpdate()
 		{
-			RedisPubSub.Publish<UpdateCharacterMessage>(RedisConfiguration.CharUpdatePrefix + playerId, new UpdateCharacterMessage());
+			RedisPubSub.Publish<UpdateCharacterMessage>(RedisConfiguration.CharUpdatePrefix + loggedInChar, new UpdateCharacterMessage());
 		}
 	}
 }

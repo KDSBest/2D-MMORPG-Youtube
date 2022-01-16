@@ -13,6 +13,9 @@ using Common.QuestSystem;
 using CommonServer.CosmosDb;
 using Common.Protocol.Quest;
 using Common.Extensions;
+using Common;
+using System.Linq;
+using Common.Protocol.Combat;
 
 namespace QuestService
 {
@@ -25,6 +28,9 @@ namespace QuestService
 
 		private QuestTrackingRepository repo = new QuestTrackingRepository();
 		private QuestTracking questTracking = new QuestTracking();
+		private InventoryRepository invRepo = new InventoryRepository();
+		private CharacterInformationRepository charRepo = new CharacterInformationRepository();
+		private InventoryEventRepository invEventRepo = new InventoryEventRepository();
 
 		public async Task OnStartAsync(UdpPeer peer)
 		{
@@ -48,8 +54,15 @@ namespace QuestService
 				return;
 			}
 
+			FinishQuestMessage finishQuestMsg = new FinishQuestMessage();
+			if (finishQuestMsg.Read(reader))
+			{
+				await FinishQuest(finishQuestMsg);
+				return;
+			}
+
 			AbbandonQuestMessage abbondonQuestMsg = new AbbandonQuestMessage();
-			if(abbondonQuestMsg.Read(reader))
+			if (abbondonQuestMsg.Read(reader))
 			{
 				await AbbandonQuest(abbondonQuestMsg);
 				return;
@@ -73,9 +86,75 @@ namespace QuestService
 			UdpManager.SendMsg(this.peer.ConnectId, resp, ChannelType.ReliableOrdered);
 		}
 
+		private async Task FinishQuest(FinishQuestMessage finishQuestMsg)
+		{
+			if (!QuestLoader.Quests.ContainsKey(finishQuestMsg.QuestName))
+			{
+				return;
+			}
+
+			if (!questTracking.AcceptedQuests.Contains(finishQuestMsg.QuestName))
+			{
+				return;
+			}
+
+			DateTime eventTimestamp = DateTime.UtcNow;
+
+			var lease = await invEventRepo.LeaseManagement.TryAcquireAsync(this.playerId, TimeSpan.FromSeconds(60), eventTimestamp);
+
+			if (!lease.Acquired)
+			{
+				SendQuestTracking();
+				return;
+			}
+
+			var quest = QuestLoader.Quests[finishQuestMsg.QuestName];
+			this.questTracking.Inventory = await invRepo.GetClientInventoryAsync(this.playerId);
+
+			if (!quest.Task.IsFinished(finishQuestMsg.QuestName, this.questTracking))
+				return;
+
+			await GiveReward(finishQuestMsg, quest);
+
+			questTracking.AcceptedQuests.Remove(finishQuestMsg.QuestName);
+			questTracking.FinishedQuests.Add(finishQuestMsg.QuestName);
+
+			await invEventRepo.LeaseManagement.TryFreeAsync(lease);
+			SendQuestTracking();
+		}
+
+		private async Task GiveReward(FinishQuestMessage finishQuestMsg, Quest quest)
+		{
+			var invQuestTasks = quest.Task.GetInventoryQuestTasks(finishQuestMsg.QuestName, this.questTracking);
+
+			var expRewards = quest.Rewards.Where(x => x.ItemId == "Exp").ToList();
+			foreach (var expReward in expRewards)
+			{
+				RedisPubSub.Publish<ExpMessage>(RedisConfiguration.PlayerExpPrefix + playerId, new ExpMessage()
+				{
+					ExpGain = expReward.Amount
+				});
+			}
+
+			await invEventRepo.ApplyInventoryQuestRewardAsync(playerId, quest.Rewards.Where(x => x.ItemId != "Exp").ToList());
+
+			// HINT: If we have multiple quest tasks on the same itemId this will not work so easily
+			foreach (var invQuestTask in invQuestTasks)
+			{
+				await invEventRepo.ApplyInventoryQuestTaskAsync(playerId, invQuestTask);
+			}
+		}
+
 		private async Task AcceptQuest(AcceptQuestMessage acceptQuestMsg)
 		{
-			if (questTracking.AcceptedQuests.Contains(acceptQuestMsg.QuestName))
+			if (!QuestLoader.Quests.ContainsKey(acceptQuestMsg.QuestName))
+			{
+				return;
+			}
+
+			var c = await charRepo.GetAsync(playerId);
+			var quest = QuestLoader.Quests[acceptQuestMsg.QuestName];
+			if (!quest.IsAvailable(questTracking, c.Level))
 			{
 				return;
 			}
@@ -83,7 +162,7 @@ namespace QuestService
 			questTracking.AcceptedQuests.Add(acceptQuestMsg.QuestName);
 
 			await repo.SaveAsync(questTracking, questTracking.Id);
-
+			
 			SendQuestTracking();
 		}
 

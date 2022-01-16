@@ -21,6 +21,7 @@ namespace Common.Protocol.Quest
 			}
 
             writer.Put(QuestTracking.AcceptedQuests.ToArray());
+            writer.Put(QuestTracking.FinishedQuests.ToArray());
         }
 
         protected override bool ReadData(UdpDataReader reader)
@@ -34,6 +35,9 @@ namespace Common.Protocol.Quest
 
             QuestTracking.AcceptedQuests.Clear();
             QuestTracking.AcceptedQuests.AddRange(reader.GetStringArray(1000));
+
+            QuestTracking.FinishedQuests.Clear();
+            QuestTracking.FinishedQuests.AddRange(reader.GetStringArray(1000));
 
             return true;
         }

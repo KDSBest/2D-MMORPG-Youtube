@@ -25,8 +25,18 @@ namespace Assets.Scripts.ClientWrappers
 			context = DI.Instance.Resolve<ICurrentContext>();
 			pubsub.Subscribe<RequestQuestTracking>(OnRequestQuestTracking, this.GetType().Name);
 			pubsub.Subscribe<AcceptQuestMessage>(OnAcceptQuest, this.GetType().Name);
+			pubsub.Subscribe<FinishQuestMessage>(OnFinishQuest, this.GetType().Name);
 			pubsub.Subscribe<AbbandonQuestMessage>(OnAbbandonQuest, this.GetType().Name);
 			pubsub.Subscribe<ResponseQuestTrackingMessage>(OnQuestTracking, this.GetType().Name);
+		}
+
+		private void OnFinishQuest(FinishQuestMessage data)
+		{
+			// Async without await in unity still blocks UI, so we have to create our own Task to make this work
+			Task.Run(() =>
+			{
+				client.Workflow.SendFinishQuestMessage(data.QuestName);
+			});
 		}
 
 		private void OnAbbandonQuest(AbbandonQuestMessage data)

@@ -9,6 +9,8 @@ namespace Common.Protocol.Character
 
         public string Name { get; set; }
 
+        public string Owner { get; set; }
+
         public byte Color { get; set; }
 
         public byte Eyes { get; set; }

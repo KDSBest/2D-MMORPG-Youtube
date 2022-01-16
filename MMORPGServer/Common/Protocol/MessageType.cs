@@ -15,6 +15,7 @@
         AcceptQuest = 32,
         AbbandonQuest = 33,
         QuestResult = 34,
+        FinishQuest = 35,
         Chat = 50,
         Character = 60,
         CharacterRequest = 61,

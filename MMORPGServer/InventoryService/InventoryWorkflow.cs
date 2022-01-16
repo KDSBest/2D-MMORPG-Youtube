@@ -40,11 +40,7 @@ namespace InventoryService
 			RequestInventoryMessage reqMsg = new RequestInventoryMessage();
 			if(reqMsg.Read(reader))
 			{
-				var inventory = await repo.GetAsync(playerId);
-				Inventory cInv = new Inventory();
-
-				if(inventory != null)
-					cInv.Items = inventory.Items;
+				var cInv = await repo.GetClientInventoryAsync(playerId);
 	
 				UdpManager.SendMsg(this.peer.ConnectId, new InventoryMessage()
 				{
@@ -55,7 +51,7 @@ namespace InventoryService
 
 		public void OnToken(string token)
 		{
-			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.EmailClaimType);
+			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
 		}
 	}
 }

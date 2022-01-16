@@ -1,4 +1,6 @@
-﻿namespace Common.QuestSystem
+﻿using System.Collections.Generic;
+
+namespace Common.QuestSystem
 {
 	public interface IQuestTask
 	{
@@ -7,5 +9,7 @@
 		string GetDisplay(string questName, QuestTracking questTracking);
 
 		bool IsFinished(string questName, QuestTracking questTracking);
+
+		List<InventoryQuestTask> GetInventoryQuestTasks(string questName, QuestTracking questTracking);
 	}
 }

@@ -15,6 +15,7 @@ namespace Common.QuestSystem
 		public Dictionary<string, int> QuestTrackingValues { get; set; } = new Dictionary<string, int>();
 
 		public List<string> AcceptedQuests { get; set; } = new List<string>();
+		public List<string> FinishedQuests { get; set; } = new List<string>();
 
 		private string GetKey(string questName, string questTaskId, string mobId)
 		{

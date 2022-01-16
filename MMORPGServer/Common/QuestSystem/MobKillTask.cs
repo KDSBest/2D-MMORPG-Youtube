@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Common.QuestSystem
 {
@@ -7,6 +8,11 @@ namespace Common.QuestSystem
 		public string MobId;
 		public int Amount;
 		public Guid Id = Guid.NewGuid();
+
+		public List<InventoryQuestTask> GetInventoryQuestTasks(string questName, QuestTracking questTracking)
+		{
+			return new List<InventoryQuestTask>();
+		}
 
 		public string GetDisplay(string questName, QuestTracking questTracking)
 		{
