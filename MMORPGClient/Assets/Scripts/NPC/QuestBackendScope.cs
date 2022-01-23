@@ -10,14 +10,14 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts.NPC
 {
-	public class BackendScriptEngineScope : IVMScope
+	public class QuestBackendScope : IVMScope
 	{
 		private readonly IPubSub pubsub;
 		private readonly ICurrentContext context;
 
 		public string Scope => "Quest";
 
-		public BackendScriptEngineScope()
+		public QuestBackendScope()
 		{
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();

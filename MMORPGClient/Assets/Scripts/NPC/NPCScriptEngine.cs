@@ -13,7 +13,8 @@ namespace Assets.Scripts.NPC
 	{
 		public List<IVMScope> Scopes = new List<IVMScope>()
 		{
-			new BackendScriptEngineScope()
+			new QuestBackendScope(),
+			new TeleportBackendScope()
 		};
 
 		public VMVar Execute(string script)

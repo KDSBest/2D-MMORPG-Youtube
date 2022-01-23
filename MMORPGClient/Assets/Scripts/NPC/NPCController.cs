@@ -33,13 +33,11 @@ namespace Assets.Scripts.NPC
 			{
 				TypeNameHandling = TypeNameHandling.Auto
 			});
-		}
 
-		public void OnEnable()
-		{
 			DILoader.Initialize();
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			context = DI.Instance.Resolve<ICurrentContext>();
+			context.NPC.Add(this.Name, this);
 		}
 
 		private List<ChoiceData> GetAvailableChoices()

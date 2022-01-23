@@ -1,0 +1,48 @@
+{
+  "Properties": [],
+  "Groups": [],
+  "Nodes": {
+    "00000000-0000-0000-0000-000000000000": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.EntryPointNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 100.0,
+        "Y": 400.0
+      },
+      "Start": "3a37657f-a172-479f-9f0e-751704a2bdf9",
+      "Guid": "00000000-0000-0000-0000-000000000000"
+    },
+    "3a37657f-a172-479f-9f0e-751704a2bdf9": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.DialogNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 312.0,
+        "Y": 326.0
+      },
+      "Name": "Telelport",
+      "Text": "Do you want to Teleport to Up?",
+      "Choices": [
+        {
+          "Text": "Yes",
+          "Condition": "true",
+          "GuidNext": "f4cae726-caf9-48de-b879-e3f0e1bd5603"
+        },
+        {
+          "Text": "No",
+          "Condition": "true",
+          "GuidNext": "00000000-0000-0000-0000-000000000000"
+        }
+      ],
+      "Guid": "3a37657f-a172-479f-9f0e-751704a2bdf9"
+    },
+    "f4cae726-caf9-48de-b879-e3f0e1bd5603": {
+      "$type": "Assets.Scripts.Behaviour.Data.Nodes.BackendCallNodeData, Assembly-CSharp",
+      "Position": {
+        "X": 805.0,
+        "Y": 326.0
+      },
+      "Call": "Teleport.To(\"teleportup\")",
+      "NextTrue": "00000000-0000-0000-0000-000000000000",
+      "NextFalse": "00000000-0000-0000-0000-000000000000",
+      "Guid": "f4cae726-caf9-48de-b879-e3f0e1bd5603"
+    }
+  }
+}

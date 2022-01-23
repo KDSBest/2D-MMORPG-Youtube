@@ -14,25 +14,28 @@ namespace Assets.Scripts.Character
 {
 	public class PlayerController : MonoBehaviour
 	{
-		private PlayerControls controls;
-		private PlayerControls.MovementActions movementActions;
-		private PlayerControls.SkillsActions skillActions;
-		private PlayerControls.UIsActions uiActions;
-		private Vector2 movementVector = Vector2.zero;
-		private IPubSub pubsub;
 		public Rigidbody2D Rigidbody2D;
 		public float Speed = 20;
 		public Transform MirrorTransform;
 		public CircleCollider2D FloorCollider;
 		public LayerMask FloorLayer;
-		private ContactFilter2D floorFilter;
 		public float JumpVelocity = 10;
 		public Animator Animator;
 		public float GravityDefault = 5;
 		public float GravityFall = 10;
 		public List<PlayerSkill> Skills = new List<PlayerSkill>() { new PlayerSkill(SkillCastType.Fireball), new PlayerSkill(SkillCastType.LightningBolt) };
 		public LayerMask NPCLayerMask;
+		public Vector2? ForcePosition = null;
+
+		private ContactFilter2D floorFilter;
 		private NPCController currentNPC;
+		private ICurrentContext context;
+		private PlayerControls controls;
+		private PlayerControls.MovementActions movementActions;
+		private PlayerControls.SkillsActions skillActions;
+		private PlayerControls.UIsActions uiActions;
+		private Vector2 movementVector = Vector2.zero;
+		private IPubSub pubsub;
 
 		public void Awake()
 		{
@@ -41,6 +44,9 @@ namespace Assets.Scripts.Character
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			pubsub.Subscribe<PlayerControlEnable>(OnPlayerControlEnable, this.GetType().Name);
 			pubsub.Subscribe<DialogDone>(OnDialogDone, this.GetType().Name);
+
+			context = DI.Instance.Resolve<ICurrentContext>();
+			context.PlayerController = this;
 
 			floorFilter = new ContactFilter2D();
 			floorFilter.useLayerMask = true;
@@ -104,6 +110,13 @@ namespace Assets.Scripts.Character
 
 			HandleNPC();
 
+			if(ForcePosition != null)
+			{
+				Rigidbody2D.velocity = Vector2.zero;
+				Rigidbody2D.position = ForcePosition.Value;
+				ForcePosition = null;
+			}
+
 			PlayerState state = new PlayerState()
 			{
 				Animation = Animator.GetInteger(Constants.AnimationStateName),
@@ -111,6 +124,11 @@ namespace Assets.Scripts.Character
 				Position = new System.Numerics.Vector2(this.transform.position.x, this.transform.position.y)
 			};
 			pubsub.Publish(state);
+		}
+
+		public void SetForcePosition(Vector2 pos)
+		{
+			ForcePosition = pos;
 		}
 
 		private bool HandleMoving()
