@@ -118,7 +118,7 @@ namespace QuestService
 
 			questTracking.AcceptedQuests.Remove(finishQuestMsg.QuestName);
 			questTracking.FinishedQuests.Add(finishQuestMsg.QuestName);
-
+			await repo.SaveAsync(questTracking, questTracking.Id);
 			await invEventRepo.LeaseManagement.TryFreeAsync(lease);
 			SendQuestTracking();
 		}
