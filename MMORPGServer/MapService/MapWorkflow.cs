@@ -15,6 +15,9 @@ using Common.IoC;
 using Common.PublishSubscribe;
 using Common;
 using Common.Protocol.Map.Interfaces;
+using Common.GameDesign;
+using System.Linq;
+using CommonServer.CosmosDb;
 
 namespace MapService
 {
@@ -29,19 +32,31 @@ namespace MapService
 		private IPubSub pubsubLocal;
 		private UdpPeer peer;
 		private MapPartitionManagement mapPartitionManagement = new MapPartitionManagement();
+		private PlayerStateMessage lastAcceptedPlayerStateMessage = null;
+		private MapData mapData;
+		private MapRepository repo = new MapRepository();
+		private long lastServerTimeSave;
 
 		public MapWorkflow()
 		{
 			pubsubLocal = DI.Instance.Resolve<IPubSub>();
+			mapData = DI.Instance.Resolve<MapData>();
 		}
 
 		public async Task OnStartAsync(UdpPeer peer)
 		{
 			this.peer = peer;
+
+			if (lastAcceptedPlayerStateMessage != null)
+			{
+				ForcePlayerState(lastAcceptedPlayerStateMessage);
+			}
 		}
 
 		public async Task OnDisconnectedAsync(DisconnectInfo disconnectInfo)
 		{
+			await HandleSave(DateTime.UtcNow.Ticks, true);
+
 			pubsubLocal.Unsubscribe<RemoveStateMessage>(playerName);
 			pubsubLocal.Unsubscribe<PlayerWorldEvent<PlayerStateMessage>>(playerName);
 			pubsubLocal.Unsubscribe<PlayerWorldEvent<PropStateMessage>>(playerName);
@@ -59,31 +74,61 @@ namespace MapService
 
 		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
+			long serverTime = DateTime.UtcNow.Ticks;
+
 			var playerStateMessage = new PlayerStateMessage();
 			if(playerStateMessage.Read(reader))
 			{
-				long serverTime = DateTime.UtcNow.Ticks;
-
 				// newer than our time?
 				if (playerStateMessage.ServerTime > serverTime)
 					return;
 
 				// too old (2 seconds)
-				if (serverTime - playerStateMessage.ServerTime > MapConfiguration.MaxPlayerStateTime)
+				var stateMessageServerTimeDiff = serverTime - playerStateMessage.ServerTime;
+				if (stateMessageServerTimeDiff > MapConfiguration.MaxPlayerStateTime)
 					return;
+
+				if (lastAcceptedPlayerStateMessage != null)
+				{
+					if (lastAcceptedPlayerStateMessage.ServerTime > playerStateMessage.ServerTime)
+						return;
+
+					if (lastAcceptedPlayerStateMessage.ServerTime == playerStateMessage.ServerTime)
+						return;
+
+					float diffPlayerStateTime = (float)(playerStateMessage.ServerTime - lastAcceptedPlayerStateMessage.ServerTime) / (float)TimeSpan.TicksPerSecond;
+
+					if (diffPlayerStateTime == 0)
+						return;
+
+					float diffPlayerPosition = (playerStateMessage.Position - lastAcceptedPlayerStateMessage.Position).LengthSquared();
+					float playerSpeedPerSecond = diffPlayerPosition / diffPlayerStateTime;
+
+					if (playerSpeedPerSecond > MapConfiguration.MaxPlayerSpeedSquared + MapConfiguration.MaxPlayerSpeedEpsilon)
+					{
+						lastAcceptedPlayerStateMessage.ServerTime = serverTime;
+						ForcePlayerState(lastAcceptedPlayerStateMessage);
+						return;
+					}
+				}
 
 				playerStateMessage.Name = this.playerName;
 
 				var removedPartitions = mapPartitionManagement.UpdatePlayerPartitionRegistrations(playerStateMessage);
-				foreach(var removedPartition in removedPartitions)
+				foreach (var removedPartition in removedPartitions)
 				{
 					RemovePartition(removedPartition);
 				}
 
+				lastAcceptedPlayerStateMessage = playerStateMessage;
+
+				// no await, because we don't want to block for save
+				HandleSave(serverTime, false);
+
 				RedisPubSub.Publish<PlayerStateMessage>(RedisConfiguration.MapChannelNewPlayerStatePrefix + MapConfiguration.MapName, playerStateMessage);
 
 				var worldPackage = worldState.GetPackage(maxPackageSize);
-				if(worldPackage.Length > 0)
+				if (worldPackage.Length > 0)
 				{
 					peer.Send(worldPackage, ChannelType.Unreliable);
 				}
@@ -98,6 +143,41 @@ namespace MapService
 				UdpManager.SendMsg(this.peer.ConnectId, timeSync, ChannelType.Reliable);
 				return;
 			}
+
+			var teleportMessage = new TeleportMessage();
+			if (teleportMessage.Read(reader))
+			{
+				var npc = mapData.NPCs.FirstOrDefault(x => x.Name == teleportMessage.Name);
+
+				if (npc == null || !npc.IsTeleporter)
+					return;
+
+				if (lastAcceptedPlayerStateMessage == null)
+					return;
+
+				lastAcceptedPlayerStateMessage.ServerTime = serverTime;
+				lastAcceptedPlayerStateMessage.Position = npc.Position;
+				ForcePlayerState(lastAcceptedPlayerStateMessage);
+
+				return;
+			}
+		}
+
+		private async Task HandleSave(long serverTime, bool force)
+		{
+			if (force || serverTime - lastServerTimeSave > MapConfiguration.ServerSaveTime)
+			{
+				lastServerTimeSave = serverTime;
+				await repo.SaveAsync(lastAcceptedPlayerStateMessage, this.playerName);
+			}
+		}
+
+		private void ForcePlayerState(PlayerStateMessage state)
+		{
+			lastAcceptedPlayerStateMessage = state;
+			var forceMessage = state.Clone();
+			forceMessage.ForcePosition = true;
+			UdpManager.SendMsg(this.peer.ConnectId, forceMessage, ChannelType.Reliable);
 		}
 
 		public void OnToken(string token)
@@ -107,6 +187,9 @@ namespace MapService
 			pubsubLocal.Subscribe<PlayerWorldEvent<PropStateMessage>>(OnNewState, playerName);
 			pubsubLocal.Subscribe<PlayerWorldEvent<PlayerStateMessage>>(OnNewState, playerName);
 			pubsubLocal.Subscribe<RemoveStateMessage>(OnPlayerDisconnected, playerName);
+
+			lastServerTimeSave = DateTime.UtcNow.Ticks;
+			lastAcceptedPlayerStateMessage = repo.GetAsync(playerName).Result;
 		}
 
 		private void OnNewSkillEffect(PlayerWorldOneTimeEvent<SkillCastMessage> ev)

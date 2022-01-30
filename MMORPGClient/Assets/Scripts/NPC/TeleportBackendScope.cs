@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Character;
 using Common;
 using Common.IoC;
+using Common.Protocol.Map;
 using Common.Protocol.Quest;
 using Common.PublishSubscribe;
 using Common.ScriptLanguage.AST;
@@ -39,8 +40,6 @@ namespace Assets.Scripts.NPC
 			};
 		}
 
-
-
 		private VMVar TeleportTo(string teleportname)
 		{
 			if (!context.NPC.ContainsKey(teleportname))
@@ -52,7 +51,10 @@ namespace Assets.Scripts.NPC
 				};
 			}
 
-			context.PlayerController.SetForcePosition(context.NPC[teleportname].transform.position);
+			pubsub.Publish(new TeleportMessage()
+			{
+				Name = teleportname
+			});
 
 			return new VMVar()
 			{

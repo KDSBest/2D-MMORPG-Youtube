@@ -22,6 +22,7 @@
         UpdateCharacter = 62,
         PlayerState = 80,
         PropState = 81,
+        Teleport = 89,
         TimeSync = 90,
         RemovePartition = 100,
         PlayerEvent = 110,

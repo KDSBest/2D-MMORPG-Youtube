@@ -1,0 +1,29 @@
+{
+  "Name": "Town",
+  "NPCs": [
+    {
+      "Name": "hans",
+      "IsTeleporter": false,
+      "Position": {
+        "X": -5.812,
+        "Y": -24.236
+      }
+    },
+    {
+      "Name": "teleportup",
+      "IsTeleporter": true,
+      "Position": {
+        "X": 4.71,
+        "Y": -22.83
+      }
+    },
+    {
+      "Name": "teleportdown",
+      "IsTeleporter": true,
+      "Position": {
+        "X": 39.21,
+        "Y": -43.1200027
+      }
+    }
+  ]
+}

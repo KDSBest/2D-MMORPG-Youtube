@@ -16,4 +16,14 @@
     <ProjectReference Include="..\UnityAzureNetworkEngine\Core\ReliableUdp\ReliableUdp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Maps\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\MMORPGClient\Assets\StreamingAssets\Maps\town.map" Link="Maps\town.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

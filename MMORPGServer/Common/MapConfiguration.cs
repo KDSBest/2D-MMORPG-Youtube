@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace Common
 {
@@ -18,6 +19,10 @@ namespace Common
 		public static int UnregistrationBorder = 2;
 		public static int PlayerPriority = 100;
 		public static float SmallDistance = 0.0001f;
-		public static long MaxPlayerStateTime = TimeSpan.TicksPerMillisecond * 2000;
+		public static long MaxPlayerStateTime = TimeSpan.TicksPerSecond * 2;
+		public static long ServerSaveTime = TimeSpan.TicksPerSecond * 10;
+
+		public static float MaxPlayerSpeedSquared = (new Vector2(20, 35)).LengthSquared();//1625;
+		public static float MaxPlayerSpeedEpsilon = 0.01f;
 	}
 }

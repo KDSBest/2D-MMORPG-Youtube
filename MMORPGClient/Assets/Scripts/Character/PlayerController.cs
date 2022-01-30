@@ -5,6 +5,7 @@ using Assets.Scripts.PubSubEvents.StartUI;
 using Common.GameDesign;
 using Common.IoC;
 using Common.Protocol.Combat;
+using Common.Protocol.Map;
 using Common.PublishSubscribe;
 using System;
 using System.Collections.Generic;
@@ -19,10 +20,10 @@ namespace Assets.Scripts.Character
 		public Transform MirrorTransform;
 		public CircleCollider2D FloorCollider;
 		public LayerMask FloorLayer;
-		public float JumpVelocity = 10;
+		public float JumpVelocity = 35;
 		public Animator Animator;
 		public float GravityDefault = 5;
-		public float GravityFall = 10;
+		public float GravityFall = 15;
 		public List<PlayerSkill> Skills = new List<PlayerSkill>() { new PlayerSkill(SkillCastType.Fireball), new PlayerSkill(SkillCastType.LightningBolt) };
 		public LayerMask NPCLayerMask;
 		public Vector2? ForcePosition = null;
@@ -44,6 +45,7 @@ namespace Assets.Scripts.Character
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			pubsub.Subscribe<PlayerControlEnable>(OnPlayerControlEnable, this.GetType().Name);
 			pubsub.Subscribe<DialogDone>(OnDialogDone, this.GetType().Name);
+			pubsub.Subscribe<PlayerStateMessage>(OnPlayerState, this.GetType().Name);
 
 			context = DI.Instance.Resolve<ICurrentContext>();
 			context.PlayerController = this;
@@ -64,6 +66,15 @@ namespace Assets.Scripts.Character
 
 			uiActions = controls.UIs;
 			uiActions.ToggleInventory.performed += ctx => pubsub.Publish<ToggleInventoryScreen>(new ToggleInventoryScreen());
+		}
+
+		private void OnPlayerState(PlayerStateMessage data)
+		{
+			if (!data.ForcePosition)
+				return;
+
+			ForcePosition = new Vector2(data.Position.X, data.Position.Y);
+			LookDirection(data.IsLookingRight);
 		}
 
 		private void OnDialogDone(DialogDone data)
@@ -133,22 +144,31 @@ namespace Assets.Scripts.Character
 
 		private bool HandleMoving()
 		{
-			float xScaleAbs = Math.Abs(MirrorTransform.localScale.x);
 			if (movementVector.x < 0)
 			{
-				MirrorTransform.localScale = new Vector3(-xScaleAbs, MirrorTransform.localScale.y, MirrorTransform.localScale.z);
+				LookDirection(false);
 				Rigidbody2D.velocity = new Vector2(-Speed, Rigidbody2D.velocity.y);
 				return true;
 			}
 			else if (movementVector.x > 0)
 			{
-				MirrorTransform.localScale = new Vector3(xScaleAbs, MirrorTransform.localScale.y, MirrorTransform.localScale.z);
+				LookDirection(true);
 				Rigidbody2D.velocity = new Vector2(Speed, Rigidbody2D.velocity.y);
 				return true;
 			}
 
 			Rigidbody2D.velocity = new Vector2(0, Rigidbody2D.velocity.y);
 			return false;
+		}
+
+		private void LookDirection(bool isRight)
+		{
+			float xScaleAbs = Math.Abs(MirrorTransform.localScale.x);
+
+			if (isRight)
+				MirrorTransform.localScale = new Vector3(xScaleAbs, MirrorTransform.localScale.y, MirrorTransform.localScale.z);
+			else
+				MirrorTransform.localScale = new Vector3(-xScaleAbs, MirrorTransform.localScale.y, MirrorTransform.localScale.z);
 		}
 
 		private void HandleJump(bool isGrounded)

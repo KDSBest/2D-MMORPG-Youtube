@@ -21,6 +21,7 @@ namespace CommonServer.CosmosDb
         public Lazy<Container> CharacterContainer { get; private set; }
 
         public Lazy<Container> QuestTrackingContainer { get; private set; }
+        public Lazy<Container> MapContainer { get; private set; }
         public Lazy<Container> InventoryContainer { get; private set; }
         public Lazy<Container> InventoryEventContainer { get; private set; }
         public Lazy<Container> InventoryEventLeaseContainer { get; private set; }
@@ -50,6 +51,7 @@ namespace CommonServer.CosmosDb
             UserLastLoginContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbUserLastLoginDbCollection, "/id").Result.Container);
             CharacterContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbCharacterDbCollection, "/id").Result.Container);
             QuestTrackingContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbQuestTrackingDbCollection, "/id").Result.Container);
+            MapContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbMapDbCollection, "/id").Result.Container);
             InventoryContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryDbCollection, "/id").Result.Container);
             InventoryEventContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventDbCollection, "/playerId").Result.Container);
             InventoryEventLeaseContainer = new Lazy<Container>(() => Database.CreateContainerIfNotExistsAsync(CosmosDbConfiguration.CosmosDbInventoryEventLeaseDbCollection, "/id").Result.Container);

@@ -22,7 +22,7 @@ namespace Common.Client.Workflow
 
 			_ = Task.Run(async () =>
 			  {
-				  while(!HasServerTokenAccepted)
+				  while (!HasServerTokenAccepted)
 				  {
 					  await Task.Delay(ResendTimeSyncMs);
 				  }
@@ -61,7 +61,7 @@ namespace Common.Client.Workflow
 				}
 
 				var propMsg = new PropStateMessage();
-				if(propMsg.Read(reader))
+				if (propMsg.Read(reader))
 				{
 					PubSub.Publish(propMsg);
 					continue;
@@ -75,7 +75,7 @@ namespace Common.Client.Workflow
 				}
 
 				var skillCast = new SkillCastMessage();
-				if(skillCast.Read(reader))
+				if (skillCast.Read(reader))
 				{
 					PubSub.Publish(skillCast);
 					continue;
@@ -115,6 +115,18 @@ namespace Common.Client.Workflow
 		public long GetServerTime()
 		{
 			return DateTime.UtcNow.Ticks + UtcDiff;
+		}
+
+		public async Task SendTeleportTo(string name)
+		{
+			if (!HasServerTokenAccepted)
+				return;
+
+			var message = new TeleportMessage()
+			{
+				Name = name
+			};
+			UdpManager.SendMsg(message, ChannelType.Reliable);
 		}
 
 		public async Task SendStateAsync(Vector2 position, int animation, bool isLookingRight)

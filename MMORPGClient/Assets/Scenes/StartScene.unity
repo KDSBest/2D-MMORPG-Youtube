@@ -4914,7 +4914,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 605889772}
-  m_LocalRotation: {x: -0.036324948, y: 0.000000019668107, z: 0.0000000031879124, w: 0.99934006}
+  m_LocalRotation: {x: -0.036324948, y: 0.0000000071475093, z: 0.0000000011585066, w: 0.99934006}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6845,6 +6845,10 @@ PrefabInstance:
     - target: {fileID: 7454053567713965093, guid: 5e1c94d5e7f00ef4d81d8a7e48e9a227, type: 3}
       propertyPath: Name
       value: teleportdown
+      objectReference: {fileID: 0}
+    - target: {fileID: 7454053567713965093, guid: 5e1c94d5e7f00ef4d81d8a7e48e9a227, type: 3}
+      propertyPath: IsTeleporter
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8239969933026905138, guid: 5e1c94d5e7f00ef4d81d8a7e48e9a227, type: 3}
       propertyPath: m_Name
@@ -10683,6 +10687,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: hans
   SelectionMarker: {fileID: 1023683025}
+  IsTeleporter: 0
 --- !u!61 &1145478807
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -14773,7 +14778,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1480082801}
-  m_LocalRotation: {x: -0.0000000037252903, y: -0.000000011618571, z: -0.0000000014523212, w: 1}
+  m_LocalRotation: {x: -0.0000000037252903, y: 0.000000011618571, z: 0.0000000014523212, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -15578,7 +15583,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1547102995}
-  m_LocalRotation: {x: -0.0000000037252903, y: -0.0000000096359, z: -0.0000000012044872, w: 1}
+  m_LocalRotation: {x: -0.0000000037252903, y: 0.0000000096359, z: 0.0000000012044872, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -16432,7 +16437,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
-  m_LocalRotation: {x: -0.062137436, y: -0.000000008209051, z: -5.1107696e-10, w: 0.9980676}
+  m_LocalRotation: {x: -0.062137436, y: 0.000000008209051, z: 5.1107696e-10, w: 0.9980676}
   m_LocalPosition: {x: 0, y: -19.67, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -19873,6 +19878,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1980701788}
+  - component: {fileID: 1980701789}
   m_Layer: 0
   m_Name: MapTownFluff
   m_TagString: Untagged
@@ -19903,6 +19909,19 @@ Transform:
   m_Father: {fileID: 534412439}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1980701789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1980701787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e81254ba3aaaa24d972e045df37f748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Town
 --- !u!1 &1988008657
 GameObject:
   m_ObjectHideFlags: 0
@@ -20997,6 +21016,10 @@ PrefabInstance:
     - target: {fileID: 5507586655487623690, guid: 5e1c94d5e7f00ef4d81d8a7e48e9a227, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7454053567713965093, guid: 5e1c94d5e7f00ef4d81d8a7e48e9a227, type: 3}
+      propertyPath: IsTeleporter
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8239969933026905138, guid: 5e1c94d5e7f00ef4d81d8a7e48e9a227, type: 3}
       propertyPath: m_Name

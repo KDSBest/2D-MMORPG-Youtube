@@ -20,6 +20,7 @@ namespace Assets.Scripts.NPC
 	{
 		public string Name;
 		public GameObject SelectionMarker;
+		public bool IsTeleporter = false;
 		private BehaviourGraphData graph;
 		private DialogNodeData currentDialogNode;
 		private IPubSub pubsub;
