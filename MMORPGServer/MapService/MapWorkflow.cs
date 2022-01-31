@@ -102,6 +102,7 @@ namespace MapService
 						return;
 
 					float diffPlayerPosition = (playerStateMessage.Position - lastAcceptedPlayerStateMessage.Position).LengthSquared();
+
 					float playerSpeedPerSecond = diffPlayerPosition / diffPlayerStateTime;
 
 					if (playerSpeedPerSecond > MapConfiguration.MaxPlayerSpeedSquared + MapConfiguration.MaxPlayerSpeedEpsilon)
@@ -122,8 +123,7 @@ namespace MapService
 
 				lastAcceptedPlayerStateMessage = playerStateMessage;
 
-				// no await, because we don't want to block for save
-				HandleSave(serverTime, false);
+				await HandleSave(serverTime, false);
 
 				RedisPubSub.Publish<PlayerStateMessage>(RedisConfiguration.MapChannelNewPlayerStatePrefix + MapConfiguration.MapName, playerStateMessage);
 

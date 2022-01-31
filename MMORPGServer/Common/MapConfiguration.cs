@@ -22,7 +22,7 @@ namespace Common
 		public static long MaxPlayerStateTime = TimeSpan.TicksPerSecond * 2;
 		public static long ServerSaveTime = TimeSpan.TicksPerSecond * 10;
 
-		public static float MaxPlayerSpeedSquared = (new Vector2(20, 35)).LengthSquared();//1625;
+		public static float MaxPlayerSpeedSquared = (new Vector2(20, 35)).LengthSquared();
 		public static float MaxPlayerSpeedEpsilon = 0.01f;
 	}
 }
