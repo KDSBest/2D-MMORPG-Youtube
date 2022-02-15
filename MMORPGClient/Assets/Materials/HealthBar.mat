@@ -52,9 +52,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Health: 250
+    - MaxHealth: 1300
     - PixelSnap: 0
+    - Vector1_0d01ffca9b344fe4b22898c045ce5181: 0.1
     - Vector1_22d09ce614be4cb2a354e79e7c7fb2e2: 0.02
-    - Vector1_3ac6a29132ae4432864ebd2b74513051: 0.02
+    - Vector1_3ac6a29132ae4432864ebd2b74513051: 0.1
     - Vector1_4b6b11fe31dc47958ed5601c32ba651b: 550
     - Vector1_5399b48eef9d4246920239157fdbe8c1: 100
     - Vector1_5d0ce2559b3f4479b84c6bad79a2e55c: 900
