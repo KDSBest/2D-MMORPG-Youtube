@@ -16,8 +16,7 @@ namespace Assets.Scripts.UI
         public TMP_InputField Name;
         public Slider Eyes;
         public Slider Colors;
-        public CharacterStyleBehaviour PlayerStylePicker;
-        public CharacterStyleBehaviour Player;
+        public CharacterBehaviour Player;
         public GameObject Background;
 
         public void OnEnable()
@@ -37,11 +36,10 @@ namespace Assets.Scripts.UI
 
         public void OnControlScreen(ControlCharacterScreen data)
         {
-            Eyes.maxValue = PlayerStylePicker.Eyes.Count - 1;
-            Colors.maxValue = PlayerStylePicker.Colors.Count - 1;
+            Eyes.maxValue = Player.Eyes.Count - 1;
+            Colors.maxValue = Player.Colors.Count - 1;
 
             Background.SetActive(!data.Visible);
-            PlayerStylePicker.gameObject.SetActive(data.Visible);
             CharacterScreen.SetActive(data.Visible);
         }
 
@@ -58,13 +56,7 @@ namespace Assets.Scripts.UI
 
         public void UpdateCharacter()
 		{
-            Player.SetStyle(new CharacterInformation()
-            {
-                Eyes = (byte)Eyes.value,
-                Color = (byte)Colors.value,
-                Name = Name.text
-            });
-            PlayerStylePicker.SetStyle(new CharacterInformation()
+            Player.UpdateCharInfo(new CharacterInformation()
             {
                 Eyes = (byte)Eyes.value,
                 Color = (byte)Colors.value,

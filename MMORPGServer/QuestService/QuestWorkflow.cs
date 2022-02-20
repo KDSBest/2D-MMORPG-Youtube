@@ -154,7 +154,7 @@ namespace QuestService
 
 			var c = await charRepo.GetAsync(playerId);
 			var quest = QuestLoader.Quests[acceptQuestMsg.QuestName];
-			if (!quest.IsAvailable(questTracking, c.Level))
+			if (!quest.IsAvailable(questTracking, c.Stats.Level))
 			{
 				return;
 			}

@@ -64,7 +64,7 @@ public class QuestMarker : MonoBehaviour
                 continue;
             }
 
-            if (QuestLoader.Quests[q].IsAvailable(context.QuestTracking, context.Character.Level))
+            if (QuestLoader.Quests[q].IsAvailable(context.QuestTracking, context.Character.Stats.Level))
             {
                 uiImage.sprite = QuestAvailable;
                 return;

@@ -48,7 +48,11 @@ namespace PropManagementService
 				{
 					Name = config.PropPrefix + i,
 					Animation = 0,
-					MaxHealth = config.Stats.MaxHP,
+					Stats = new EntityStats()
+					{
+						MaxHP = config.Stats.MaxHP,
+						HP = config.Stats.MaxHP
+					},
 					IsLookingRight = false,
 					Type = config.Type
 				};
@@ -76,14 +80,14 @@ namespace PropManagementService
 
 			// Prop is already dead, without this a bug when the prop is attacked multiple
 			// times at the same time occurse
-			if (effectedProp.Health <= 0)
+			if (effectedProp.Stats.HP <= 0)
 				return;
 
-				effectedProp.Health -= dmg.DamageInfo.Damage;
-			if (effectedProp.Health < 0)
-				effectedProp.Health = 0;
+				effectedProp.Stats.HP -= dmg.DamageInfo.Damage;
+			if (effectedProp.Stats.HP < 0)
+				effectedProp.Stats.HP = 0;
 
-			if(effectedProp.Health == 0)
+			if(effectedProp.Stats.HP == 0)
 			{
 				await inventoryEventRepo.GiveLoot(dmg.Caster, LoottableConfiguration.Prop[effectedProp.Type], PlayerEventType.PropKill);
 
@@ -126,7 +130,7 @@ namespace PropManagementService
 		{
 			prop.ServerTime = DateTime.UtcNow.Ticks;
 			prop.Position = GetRandomPosition();
-			prop.Health = config.Stats.MaxHP;
+			prop.Stats.HP = config.Stats.MaxHP;
 
 			respawnTimer[prop.Name] = config.RespawnTimeInMs;
 		}
@@ -135,7 +139,7 @@ namespace PropManagementService
 		{
 			foreach (var prop in props)
 			{
-				if (prop.Health > 0)
+				if (prop.Stats.HP > 0)
 					continue;
 
 				respawnTimer[prop.Name] = respawnTimer[prop.Name] - timeInMs;

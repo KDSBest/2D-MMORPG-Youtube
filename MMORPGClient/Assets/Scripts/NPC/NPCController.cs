@@ -118,7 +118,7 @@ namespace Assets.Scripts.NPC
 		private string ReplaceTokens(string text)
 		{
 			return text.Replace("[Player]", context.Character.Name)
-				.Replace("[Level]", context.Character.Level.ToString());
+				.Replace("[Level]", context.Character.Stats.Level.ToString());
 		}
 
 		public void OnSelected(bool selected)

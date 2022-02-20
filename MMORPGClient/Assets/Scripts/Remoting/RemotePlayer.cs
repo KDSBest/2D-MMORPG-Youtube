@@ -14,12 +14,12 @@ namespace Assets.Scripts.Remoting
 		public SortedList<long, PlayerStateMessage> States;
 		public CharacterInformation CharacterInformation = new CharacterInformation();
 		public float LerpSpeed = 0.5f;
-		private CharacterStyleBehaviour characterStyle;
+		private CharacterBehaviour characterStyle;
 		private RemotePlayerRenderer playerRenderer;
 
 		public void Initialize()
 		{
-			characterStyle = GameObject.GetComponent<CharacterStyleBehaviour>();
+			characterStyle = GameObject.GetComponent<CharacterBehaviour>();
 			playerRenderer = GameObject.GetComponent<RemotePlayerRenderer>();
 		}
 
@@ -32,10 +32,10 @@ namespace Assets.Scripts.Remoting
 			playerRenderer.SetLooking(lastState.IsLookingRight);
 		}
 
-		public void SetStyle(CharacterInformation characterInformation)
+		public void UpdateCharInfo(CharacterInformation characterInformation)
 		{
 			CharacterInformation = characterInformation;
-			characterStyle.SetStyle(characterInformation);
+			characterStyle.UpdateCharInfo(characterInformation);
 		}
 
 		public void ShowCharacter()

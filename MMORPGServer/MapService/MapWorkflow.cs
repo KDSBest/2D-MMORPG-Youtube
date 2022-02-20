@@ -27,7 +27,6 @@ namespace MapService
 		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 
 		private PlayerWorldState worldState = new PlayerWorldState();
-		private const int maxPackageSize = 1400;
 		private string playerName = string.Empty;
 		private IPubSub pubsubLocal;
 		private UdpPeer peer;
@@ -127,7 +126,7 @@ namespace MapService
 
 				RedisPubSub.Publish<PlayerStateMessage>(RedisConfiguration.MapChannelNewPlayerStatePrefix + MapConfiguration.MapName, playerStateMessage);
 
-				var worldPackage = worldState.GetPackage(maxPackageSize);
+				var worldPackage = worldState.GetPackage(peer.PacketMtuHandler.Mtu - 1);
 				if (worldPackage.Length > 0)
 				{
 					peer.Send(worldPackage, ChannelType.Unreliable);

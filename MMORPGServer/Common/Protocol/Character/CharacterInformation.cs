@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Common.GameDesign;
+using Newtonsoft.Json;
 
 namespace Common.Protocol.Character
 {
@@ -15,7 +16,7 @@ namespace Common.Protocol.Character
 
         public byte Eyes { get; set; }
 
-        public byte Level { get; set; } = 1;
+        public EntityStats Stats { get; set; } = new EntityStats();
 
         public int Experience { get; set; } = 0;
 

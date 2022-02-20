@@ -4,8 +4,8 @@ namespace Assets.Scripts.Prop
 {
     public class PropBehaviour : MonoBehaviour
     {
-		public int Health { get; set; } = 900;
-		public int MaxHealth { get; set; } = 1000;
+		public int HP { get; set; } = 900;
+		public int MaxHP { get; set; } = 1000;
 		public string Name { get; set; }
         public SpriteRenderer Renderer;
         private Material material;
@@ -17,8 +17,8 @@ namespace Assets.Scripts.Prop
 
 		public void Update()
 		{
-			material.SetInt("Health", Health);
-			material.SetInt("MaxHealth", MaxHealth);
+			material.SetInt("Health", HP);
+			material.SetInt("MaxHealth", MaxHP);
 		}
 	}
 }

@@ -155,26 +155,32 @@ namespace CharacterService
 			CharacterInformation c = repo.GetAsync(loggedInChar).Result;
 			c.Experience += msg.ExpGain;
 
-			while (c.Level < ExpCurve.MaxLevel && c.Experience >= ExpCurve.FullExp[c.Level])
+			while (c.Stats.Level < ExpCurve.MaxLevel && c.Experience >= ExpCurve.FullExp[c.Stats.Level])
 			{
-				c.Level++;
+				//TODO update full Stats
+				c.Stats.MaxHP += 100;
+				c.Stats.HP += 100;
+				c.Stats.Level++;
 				SendPlayerCharacter(c);
 				updateOtherServices = true;
 			}
 
+			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.ReliableOrdered);
 			repo.SaveAsync(c, loggedInChar).Wait();
-
-			UdpManager.SendMsg(this.peer.ConnectId, msg, ChannelType.Reliable);
 
 			if (updateOtherServices)
 			{
-				SendCharacterUpdate();
+				SendCharacterUpdate(c.Stats);
 			}
 		}
 
-		private void SendCharacterUpdate()
+		private void SendCharacterUpdate(EntityStats stats)
 		{
-			RedisPubSub.Publish<UpdateCharacterMessage>(RedisConfiguration.CharUpdatePrefix + loggedInChar, new UpdateCharacterMessage());
+			RedisPubSub.Publish<UpdateCharacterMessage>(RedisConfiguration.CharUpdatePrefix + loggedInChar, new UpdateCharacterMessage()
+			{
+				Name = loggedInChar,
+				Stats = stats
+			});
 		}
 	}
 }

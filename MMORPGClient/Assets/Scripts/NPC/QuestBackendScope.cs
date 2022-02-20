@@ -31,7 +31,7 @@ namespace Assets.Scripts.NPC
 			{
 				case "IsAvailable":
 					questName = parameters[0].ValueString;
-					if (!QuestLoader.Quests[questName].IsAvailable(context.QuestTracking, context.Character.Level))
+					if (!QuestLoader.Quests[questName].IsAvailable(context.QuestTracking, context.Character.Stats.Level))
 					{
 						return new VMVar()
 						{

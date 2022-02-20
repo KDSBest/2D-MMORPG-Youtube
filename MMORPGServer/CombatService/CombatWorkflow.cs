@@ -78,10 +78,7 @@ namespace CombatService
 					Position = reqMsg.Position,
 					ServerTime = DateTime.UtcNow.Ticks,
 					Target = reqMsg.Target,
-					CasterStats = new EntityStats()
-					{
-						Level = charInfo.Level
-					}
+					CasterStats = charInfo.Stats
 				});
 			}
 		}
@@ -90,20 +87,20 @@ namespace CombatService
 		{
 			playerId = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
 
-			UpdateCharInfo();
+			charInfo = new CharacterInformationRepository().GetAsync(playerId).Result;
 
-			RedisPubSub.Subscribe<UpdateCharacterMessage>(RedisConfiguration.CharUpdatePrefix + playerId, OnCharUpdate);
+			RedisPubSub.Subscribe<UpdateCharacterMessage>(RedisConfiguration.CharUpdatePrefix + playerId, OnStatsUpdate);
 			RedisPubSub.Subscribe<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + playerId, OnDamageDone);
 		}
 
-		private void OnCharUpdate(RedisChannel channel, UpdateCharacterMessage msg)
+		private void OnStatsUpdate(RedisChannel channel, UpdateCharacterMessage msg)
 		{
-			UpdateCharInfo();
+			UpdateStats(msg.Stats);
 		}
 
-		public void UpdateCharInfo()
+		public void UpdateStats(EntityStats stats)
 		{
-			charInfo = new CharacterInformationRepository().GetAsync(playerId).Result;
+			charInfo.Stats = stats;
 		}
 
 		private void OnDamageDone(RedisChannel channel, DamageMessage msg)

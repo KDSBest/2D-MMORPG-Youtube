@@ -51,9 +51,9 @@ namespace Assets.Scripts.Remoting
 			}
 
 			var prop = remoteProps[state.Name];
-			prop.Health = state.Health;
-			prop.MaxHealth = state.MaxHealth;
-			prop.gameObject.SetActive(prop.Health > 0);
+			prop.HP = state.Stats.HP;
+			prop.MaxHP = state.Stats.MaxHP;
+			prop.gameObject.SetActive(prop.HP > 0);
 			prop.transform.position = new Vector3(state.Position.X, state.Position.Y, 0);
 		}
 

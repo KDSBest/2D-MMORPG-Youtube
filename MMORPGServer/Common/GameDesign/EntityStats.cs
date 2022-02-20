@@ -11,6 +11,8 @@ namespace Common.GameDesign
 		public int Level { get; set; } = 1;
         public int MaxHP { get; set; } = 50;
 
+        public int HP { get; set; } = 50;
+
         public float CritRate { get; set; } = 0.05f;
 		public float CritDamagePercent { get; set; } = 0.5f;
 
@@ -25,6 +27,7 @@ namespace Common.GameDesign
             writer.Put(MDefense);
             writer.Put(Level);
             writer.Put(MaxHP);
+            writer.Put(HP);
 
             writer.Put(CritRate);
             writer.Put(CritDamagePercent);
@@ -39,6 +42,7 @@ namespace Common.GameDesign
             MDefense = reader.GetInt();
             Level = reader.GetInt();
             MaxHP = reader.GetInt();
+            HP = reader.GetInt();
 
             CritRate = reader.GetFloat();
             CritDamagePercent = reader.GetFloat();

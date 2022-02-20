@@ -1,4 +1,5 @@
-﻿using Common.Protocol.Map.Interfaces;
+﻿using Common.GameDesign;
+using Common.Protocol.Map.Interfaces;
 using Newtonsoft.Json;
 using ReliableUdp.Utility;
 using System;
@@ -16,6 +17,8 @@ namespace Common.Protocol.Map
 		public int Animation { get; set; }
 		public long ServerTime { get; set; }
 		public bool ForcePosition { get; set; } = false;
+
+		public EntityStats Stats { get; set; } = new EntityStats();
 
 		public PlayerStateMessage() : base(MessageType.PlayerState)
 		{
@@ -38,6 +41,7 @@ namespace Common.Protocol.Map
 			writer.Put(Animation);
 			writer.Put(ServerTime);
 			writer.Put(ForcePosition);
+			Stats.WriteData(writer);
 		}
 
 		protected override bool ReadData(UdpDataReader reader)
@@ -48,6 +52,7 @@ namespace Common.Protocol.Map
 			Animation = reader.GetInt();
 			ServerTime = reader.GetLong();
 			ForcePosition = reader.GetBool();
+			Stats.ReadData(reader);
 
 			return true;
 		}

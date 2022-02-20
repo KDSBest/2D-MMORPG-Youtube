@@ -67,7 +67,7 @@ namespace Assets.Scripts.UI
 				GameObject.Destroy(child.gameObject);
 			}
 
-			if (context.QuestTracking.Inventory == null)
+			if (context.QuestTracking == null || context.QuestTracking.Inventory == null)
 			{
 				return;
 			}

@@ -47,9 +47,13 @@ namespace MapService.WorldManagement
             states = states.OrderByDescending(x => x.CurrentPriority).ToList();
 
             UdpDataWriter writer = new UdpDataWriter();
-
+            UdpDataWriter testWriter = new UdpDataWriter();
             for (int i = 0; i < states.Count && writer.Length < maxSizeBytes; i++)
             {
+                states[i].Data.Write(testWriter);
+                if (testWriter.Length > maxSizeBytes)
+                    break;
+
                 states[i].Data.Write(writer);
                 states[i].CurrentPriority = 0;
             }

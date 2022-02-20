@@ -16,8 +16,7 @@ namespace Common.Protocol.Map
         public int Animation { get; set; }
         public long ServerTime { get; set; }
 
-        public int Health { get; set; }
-        public int MaxHealth { get; set; }
+        public EntityStats Stats { get; set; } = new EntityStats();
 
         public PropStateMessage() : base(MessageType.PropState)
         {
@@ -29,8 +28,8 @@ namespace Common.Protocol.Map
                                 && Math.Abs(this.Position.Y - msg.Position.Y) < MapConfiguration.SmallDistance
                                 && this.IsLookingRight == msg.IsLookingRight
                                 && this.Animation == msg.Animation
-                                && this.Health == msg.Health
-                                && this.MaxHealth == msg.MaxHealth;
+                                && this.Stats.HP == msg.Stats.HP
+                                && this.Stats.MaxHP == msg.Stats.MaxHP;
         }
 
         protected override void WriteData(UdpDataWriter writer)
@@ -41,9 +40,8 @@ namespace Common.Protocol.Map
             writer.Put(IsLookingRight);
             writer.Put(Animation);
             writer.Put(ServerTime);
-            writer.Put(Health);
-            writer.Put(MaxHealth);
             writer.Put((byte)Type);
+            Stats.WriteData(writer);
         }
 
         protected override bool ReadData(UdpDataReader reader)
@@ -53,9 +51,8 @@ namespace Common.Protocol.Map
             IsLookingRight = reader.GetBool();
             Animation = reader.GetInt();
             ServerTime = reader.GetLong();
-            Health = reader.GetInt();
-            MaxHealth = reader.GetInt();
             Type = (PropType)reader.GetByte();
+            Stats.ReadData(reader);
 
             return true;
         }

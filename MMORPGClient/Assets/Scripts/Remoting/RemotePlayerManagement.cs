@@ -48,7 +48,7 @@ namespace Assets.Scripts.Remoting
 				return;
 
 			var player = remotePlayers[charDisplayData.Character.Name];
-			player.SetStyle(charDisplayData.Character);
+			player.UpdateCharInfo(charDisplayData.Character);
 
 			if (charDisplayData.Character.Name != context.Character.Name)
 			{
