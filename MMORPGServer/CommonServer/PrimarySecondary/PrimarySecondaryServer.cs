@@ -19,6 +19,7 @@ namespace CommonServer.PrimarySecondary
 
 		public bool IsRunning { get; private set; } = false;
 		private Task updateTask;
+		private string lastPrimary;
 
 		public PrimarySecondaryServer(Action onPrimaryUpdate, string redisKeyNamePrefix, Guid id, int updateDelay = 100, int maxPrimaryTrustDelay = 2000)
 		{
@@ -77,7 +78,6 @@ namespace CommonServer.PrimarySecondary
 
 				if (isPrimary && OnPrimaryUpdate != null)
 				{
-					Console.WriteLine($"Execute Update Action");
 					OnPrimaryUpdate();
 				}
 
@@ -133,7 +133,16 @@ namespace CommonServer.PrimarySecondary
 					}
 				}
 
-				Console.WriteLine($"Current Primary is {primary}");
+				if (lastPrimary != primary)
+				{
+					Console.WriteLine($"New Primary is {primary}");
+
+					if (isPrimary)
+					{
+						Console.WriteLine($"I am the primary!");
+					}
+					lastPrimary = primary;
+				}
 			}
 
 			return isPrimary;
