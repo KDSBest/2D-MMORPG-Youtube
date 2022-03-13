@@ -1,6 +1,7 @@
 ﻿using Common;
 using Common.GameDesign;
 using CommonServer.CosmosDb;
+using CommonServer.PrimarySecondary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,12 +44,17 @@ namespace PropManagementService
 			propManager.ForEach(x => x.Initialize());
 
 			Console.WriteLine($"Prop Management Started.");
-			while (true)
+
+			PrimarySecondaryServer server = new PrimarySecondaryServer(() =>
 			{
 				propManager.ForEach(async x =>
 				{
 					await x.Update(100);
 				});
+			}, "PropManagement", Guid.NewGuid());
+
+			while (server.IsRunning)
+			{
 				await Task.Delay(100);
 			}
 		}
