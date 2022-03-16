@@ -1,8 +1,9 @@
 ﻿using Common.GameDesign;
+using CommonServer.ServerModel.Repos;
 
-namespace PropManagementService
+namespace CommonServer.GameDesign
 {
-	public class EnemyLoadEntry
+	public class EnemyLoadEntry : INameable
 	{
 		public string Name { get; set; }
 		public EnemySpawnConfig Config { get; set; }

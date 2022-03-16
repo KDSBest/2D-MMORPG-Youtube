@@ -1,7 +1,8 @@
 ﻿using Common;
 using Common.GameDesign;
 using CommonServer.CosmosDb;
-using CommonServer.PrimarySecondary;
+using CommonServer.GameDesign;
+using CommonServer.ServerModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,39 +41,25 @@ namespace PropManagementService
 				}
 			};
 
-			//string servername = $"E*{MapConfiguration.MapName}";
-			//Console.WriteLine($"Start Load Balancing Server {servername}.");
-			//var server = new LoadBalancerServer<EnemyLoadEntry>(servername);
-			//foreach (var spawn in spawns)
-			//{
-
-			//	for (int i = 0; i < spawn.SpawnCount; i++)
-			//	{
-			//		string enemyName = $"{spawn.PropPrefix}{i + 1}";
-			//		Console.WriteLine($"Add {enemyName} to {servername}.");
-
-			//		server.AddLoadEntry(new EnemyLoadEntry()
-			//		{
-			//			Name = enemyName,
-			//			Config = spawn
-			//		});
-			//	}
-
-			//}
-			//server.Start();
-
-			var propManager = spawns.Select(x => new PropManagement(x)).ToList();
-			propManager.ForEach(x => x.Initialize());
-
-			Console.WriteLine($"Prop Management Started.");
-
-			PrimarySecondaryServer server = new PrimarySecondaryServer(() =>
+			string servername = $"E*{MapConfiguration.MapName}";
+			Console.WriteLine($"Start Load Balancing Server {servername}.");
+			var server = new LoadBalancerServer<EnemyLoadEntry>(servername);
+			foreach (var spawn in spawns)
 			{
-				propManager.ForEach(async x =>
+
+				for (int i = 0; i < spawn.SpawnCount; i++)
 				{
-					await x.Update(100);
-				});
-			}, "PropManagement", Guid.NewGuid());
+					string enemyName = $"{spawn.PropPrefix}{i + 1}";
+					Console.WriteLine($"Add {enemyName} to {servername}.");
+
+					server.AddJob(new EnemyLoadEntry()
+					{
+						Name = enemyName,
+						Config = spawn
+					});
+				}
+
+			}
 			server.Start();
 
 			while (server.IsRunning)

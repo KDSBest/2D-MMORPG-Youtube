@@ -1,68 +1,63 @@
 ﻿using Common;
 using Common.GameDesign;
 using Common.Protocol.Combat;
-using Common.Protocol.Inventory;
 using Common.Protocol.Map;
 using Common.Protocol.PlayerEvent;
 using CommonServer.Configuration;
 using CommonServer.CosmosDb;
-using CommonServer.CosmosDb.Model;
 using CommonServer.GameDesign;
 using CommonServer.Redis;
 using StackExchange.Redis;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 
-namespace PropManagementService
+namespace EnemyWorkerService
 {
 
-	public class PropManagement
+	public class EnemyManagement
 	{
-		private readonly EnemySpawnConfig config;
-		private readonly List<EnemyStateMessage> props = new List<EnemyStateMessage>();
-		private readonly Dictionary<string, int> respawnTimer = new Dictionary<string, int>();
+		private readonly ConcurrentDictionary<string, EnemyStateMessage> enemies = new ConcurrentDictionary<string, EnemyStateMessage>();
+		private readonly ConcurrentDictionary<string, int> respawnTimer = new ConcurrentDictionary<string, int>();
 		private readonly Random random = new Random();
 		private readonly DamageCalculator damageCalculator = new DamageCalculator();
 		private readonly DamageQueue damageQueue = new DamageQueue();
 		private readonly InventoryEventRepository inventoryEventRepo = new InventoryEventRepository();
 
-		public PropManagement(EnemySpawnConfig config)
+		public EnemyManagement()
 		{
-			this.config = config;
+			RedisPubSub.Subscribe<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, OnSkillCasted);
 		}
 
-		private Vector2 GetRandomPosition()
+		private Vector2 GetRandomPosition(EnemySpawnConfig config)
 		{
 			return config.SpawnStart + ((config.SpawnEnd - config.SpawnStart) * (float)random.NextDouble());
 		}
 
-		public void Initialize()
+		public void Initialize(EnemyLoadEntry enemy)
 		{
-			for (int i = 0; i < config.SpawnCount; i++)
+			if (enemies.ContainsKey(enemy.Name))
+				return;
+
+			var prop = new EnemyStateMessage()
 			{
-				var prop = new EnemyStateMessage()
+				Name = enemy.Name,
+				Animation = 0,
+				Stats = new EntityStats()
 				{
-					Name = config.PropPrefix + i,
-					Animation = 0,
-					Stats = new EntityStats()
-					{
-						MaxHP = config.Stats.MaxHP,
-						HP = config.Stats.MaxHP
-					},
-					IsLookingRight = false,
-					Type = config.Type
-				};
+					MaxHP = enemy.Config.Stats.MaxHP,
+					HP = enemy.Config.Stats.MaxHP
+				},
+				IsLookingRight = false,
+				Type = enemy.Config.Type
+			};
 
-				props.Add(prop);
-
-				SpawnProp(prop);
-			}
+			enemies.AddOrUpdate(enemy.Name, prop, (key, val) => prop);
+			SpawnProp(prop, enemy.Config);
 
 			damageQueue.OnDamage = OnDamage;
-			RedisPubSub.Subscribe<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, OnSkillCasted);
 		}
 
 		private async Task OnDamage(DamageInFuture dmg)
@@ -72,7 +67,10 @@ namespace PropManagementService
 				return;
 			}
 
-			var effectedProp = props.FirstOrDefault(x => x.Name == dmg.Target.TargetName);
+			if (!enemies.ContainsKey(dmg.Target.TargetName))
+				return;
+
+			var effectedProp = enemies[dmg.Target.TargetName];
 			if (effectedProp == null)
 				return;
 
@@ -81,11 +79,11 @@ namespace PropManagementService
 			if (effectedProp.Stats.HP <= 0)
 				return;
 
-				effectedProp.Stats.HP -= dmg.DamageInfo.Damage;
+			effectedProp.Stats.HP -= dmg.DamageInfo.Damage;
 			if (effectedProp.Stats.HP < 0)
 				effectedProp.Stats.HP = 0;
 
-			if(effectedProp.Stats.HP == 0)
+			if (effectedProp.Stats.HP == 0)
 			{
 				await inventoryEventRepo.GiveLoot(dmg.Caster, LoottableConfiguration.Prop[effectedProp.Type], PlayerEventType.PropKill);
 
@@ -108,7 +106,10 @@ namespace PropManagementService
 			EnemyStateMessage effectedProp = null;
 			if (msg.Target.TargetType == SkillCastTargetType.SingleTarget)
 			{
-				effectedProp = props.FirstOrDefault(x => x.Name == msg.Target.TargetName);
+				if (!enemies.ContainsKey(msg.Target.TargetName))
+					return;
+
+				effectedProp = enemies[msg.Target.TargetName];
 				propName = effectedProp.Name;
 			}
 
@@ -126,40 +127,48 @@ namespace PropManagementService
 			});
 		}
 
-		private void SpawnProp(EnemyStateMessage prop)
+		private void SpawnProp(EnemyStateMessage prop, EnemySpawnConfig config)
 		{
 			prop.ServerTime = DateTime.UtcNow.Ticks;
-			prop.Position = GetRandomPosition();
+			prop.Position = GetRandomPosition(config);
 			prop.Stats.HP = config.Stats.MaxHP;
 
 			respawnTimer[prop.Name] = config.RespawnTimeInMs;
 		}
 
-		private void HandleRespawn(int timeInMs)
+		private void HandleRespawn(int timeInMs, EnemyLoadEntry enemy)
 		{
-			foreach (var prop in props)
+			string enemyName = enemy.Name;
+			if (!enemies.ContainsKey(enemyName))
+				return;
+
+			var prop = enemies[enemyName];
+			if (prop.Stats.HP > 0)
+				return;
+
+			respawnTimer[prop.Name] = respawnTimer[prop.Name] - timeInMs;
+
+			if (respawnTimer[prop.Name] <= 0)
 			{
-				if (prop.Stats.HP > 0)
-					continue;
-
-				respawnTimer[prop.Name] = respawnTimer[prop.Name] - timeInMs;
-
-				if (respawnTimer[prop.Name] <= 0)
-				{
-					SpawnProp(prop);
-				}
+				SpawnProp(prop, enemy.Config);
 			}
 		}
 
-		public async Task Update(int timeInMs)
+		public async Task Update(int timeInMs, EnemyLoadEntry enemy)
 		{
-			HandleRespawn(timeInMs);
+			Initialize(enemy);
+			HandleRespawn(timeInMs, enemy);
 			await damageQueue.Update(timeInMs);
 
-			foreach (var prop in props)
-			{
-				RedisPubSub.Publish<EnemyStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, prop);
-			}
+			SendToMapServer(enemy);
+		}
+
+		private void SendToMapServer(EnemyLoadEntry enemy)
+		{
+			if (!enemies.ContainsKey(enemy.Name))
+				return;
+			var prop = enemies[enemy.Name];
+			RedisPubSub.Publish<EnemyStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, prop);
 		}
 	}
 }

@@ -1,12 +1,25 @@
-﻿using System;
+﻿using Common;
+using CommonServer.GameDesign;
+using CommonServer.ServerModel;
+using System;
+using System.Threading.Tasks;
 
 namespace EnemyWorkerService
 {
-	class Program
+	public class Program
 	{
-		static void Main(string[] args)
+		public static async Task Main(string[] args)
 		{
-			Console.WriteLine("Hello World!");
+			string servername = $"E*{MapConfiguration.MapName}";
+			Console.WriteLine($"Start Load Balancing Worker {servername}.");
+			var server = new EnemyLoadBalancerWorker(servername);
+
+			server.Start();
+
+			while (server.IsRunning)
+			{
+				await Task.Delay(100);
+			}
 		}
 	}
 }
