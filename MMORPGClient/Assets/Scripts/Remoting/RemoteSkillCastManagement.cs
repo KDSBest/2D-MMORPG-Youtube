@@ -28,7 +28,7 @@ namespace Assets.Scripts.Remoting
 
 			pubsub = DI.Instance.Resolve<IPubSub>();
 			pubsub.Subscribe<SkillCastMessage>(OnCastSkill, this.GetType().Name);
-			pubsub.Subscribe<PropStateMessage>(OnPropState, this.GetType().Name);
+			pubsub.Subscribe<EnemyStateMessage>(OnPropState, this.GetType().Name);
 		}
 
 		private void OnCastSkill(SkillCastMessage msg)
@@ -92,7 +92,7 @@ namespace Assets.Scripts.Remoting
 			return Vector3.zero;
 		}
 
-		private void OnPropState(PropStateMessage state)
+		private void OnPropState(EnemyStateMessage state)
 		{
 			if (!targetLocations.ContainsKey(state.Name))
 			{

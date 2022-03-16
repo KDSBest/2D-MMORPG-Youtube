@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Common.GameDesign
 {
-	public enum PropType : byte
+	public enum EnemyType : byte
 	{
 		Flower
 	}

@@ -6,9 +6,9 @@ using System.Numerics;
 
 namespace Common.Protocol.Map
 {
-	public class PropStateMessage : BaseUdpPackage, IMapStateMessage<PropStateMessage>
+	public class EnemyStateMessage : BaseUdpPackage, IMapStateMessage<EnemyStateMessage>
     {
-        public PropType Type { get; set; }
+        public EnemyType Type { get; set; }
         public string Name { get; set; } = string.Empty;
 
         public Vector2 Position { get; set; }
@@ -18,11 +18,11 @@ namespace Common.Protocol.Map
 
         public EntityStats Stats { get; set; } = new EntityStats();
 
-        public PropStateMessage() : base(MessageType.PropState)
+        public EnemyStateMessage() : base(MessageType.EnemyState)
         {
         }
 
-        public bool HasNoVisibleDifference(PropStateMessage msg)
+        public bool HasNoVisibleDifference(EnemyStateMessage msg)
         {
             return Math.Abs(this.Position.X - msg.Position.X) < MapConfiguration.SmallDistance
                                 && Math.Abs(this.Position.Y - msg.Position.Y) < MapConfiguration.SmallDistance
@@ -51,7 +51,7 @@ namespace Common.Protocol.Map
             IsLookingRight = reader.GetBool();
             Animation = reader.GetInt();
             ServerTime = reader.GetLong();
-            Type = (PropType)reader.GetByte();
+            Type = (EnemyType)reader.GetByte();
             Stats.ReadData(reader);
 
             return true;

@@ -5,11 +5,11 @@ using CommonServer.PrimarySecondary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PropManagementService
 {
-
 	public class Program
 	{
 		public static async Task Main(string[] args)
@@ -18,9 +18,9 @@ namespace PropManagementService
 			var repo = new InventoryEventRepository();
 
 			Console.WriteLine($"Loading Map... {MapConfiguration.MapName}.");
-			var spawns = new List<PropSpawnConfig>()
+			var spawns = new List<EnemySpawnConfig>()
 			{
-				new PropSpawnConfig()
+				new EnemySpawnConfig()
 				{
 					PropPrefix = "F*",
 					Stats = new EntityStats()
@@ -36,9 +36,30 @@ namespace PropManagementService
 					SpawnStart = new System.Numerics.Vector2(-10, -44.5f),
 					SpawnEnd = new System.Numerics.Vector2(44, -44.5f),
 					RespawnTimeInMs = 10000,
-					Type = PropType.Flower
+					Type = EnemyType.Flower
 				}
 			};
+
+			//string servername = $"E*{MapConfiguration.MapName}";
+			//Console.WriteLine($"Start Load Balancing Server {servername}.");
+			//var server = new LoadBalancerServer<EnemyLoadEntry>(servername);
+			//foreach (var spawn in spawns)
+			//{
+
+			//	for (int i = 0; i < spawn.SpawnCount; i++)
+			//	{
+			//		string enemyName = $"{spawn.PropPrefix}{i + 1}";
+			//		Console.WriteLine($"Add {enemyName} to {servername}.");
+
+			//		server.AddLoadEntry(new EnemyLoadEntry()
+			//		{
+			//			Name = enemyName,
+			//			Config = spawn
+			//		});
+			//	}
+
+			//}
+			//server.Start();
 
 			var propManager = spawns.Select(x => new PropManagement(x)).ToList();
 			propManager.ForEach(x => x.Initialize());
@@ -52,6 +73,7 @@ namespace PropManagementService
 					await x.Update(100);
 				});
 			}, "PropManagement", Guid.NewGuid());
+			server.Start();
 
 			while (server.IsRunning)
 			{

@@ -17,9 +17,16 @@ namespace CommonServer.PrimarySecondary
 		public int MaxPrimaryTrustDelay { get; private set; }
 		public Action OnPrimaryUpdate { get; set; }
 
+		public Action OnPrimaryStart { get; set; }
+
 		public bool IsRunning { get; private set; } = false;
 		private Task updateTask;
 		private string lastPrimary;
+
+		public PrimarySecondaryServer(string redisKeyNamePrefix) : this(null, redisKeyNamePrefix, Guid.NewGuid())
+		{
+
+		}
 
 		public PrimarySecondaryServer(Action onPrimaryUpdate, string redisKeyNamePrefix, Guid id, int updateDelay = 100, int maxPrimaryTrustDelay = 2000)
 		{
@@ -29,8 +36,6 @@ namespace CommonServer.PrimarySecondary
 
 			this.UpdateDelay = updateDelay;
 			this.MaxPrimaryTrustDelay = maxPrimaryTrustDelay;
-
-			this.Start();
 		}
 
 		private void SetRedisKeyNamePrefix(string redisKeyNamePrefix)
@@ -140,6 +145,10 @@ namespace CommonServer.PrimarySecondary
 					if (isPrimary)
 					{
 						Console.WriteLine($"I am the primary!");
+						if(OnPrimaryStart != null)
+						{
+							OnPrimaryStart();
+						}
 					}
 					lastPrimary = primary;
 				}

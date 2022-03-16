@@ -27,7 +27,7 @@ namespace MapService.WorldManagement
 		{
 			pubsubLocal = DI.Instance.Resolve<IPubSub>();
 			RedisPubSub.Subscribe<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, OnOneTimeEvent);
-			RedisPubSub.Subscribe<PropStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, OnStateChange);
+			RedisPubSub.Subscribe<EnemyStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, OnStateChange);
 			RedisPubSub.Subscribe<PlayerStateMessage>(RedisConfiguration.MapChannelNewPlayerStatePrefix + MapConfiguration.MapName, OnPlayerStateChange);
 			RedisPubSub.Subscribe<RemoveStateMessage>(RedisConfiguration.MapChannelRemoveStatePrefix + MapConfiguration.MapName, OnDisconnectedPlayer);
 		}

@@ -58,7 +58,7 @@ namespace MapService
 
 			pubsubLocal.Unsubscribe<RemoveStateMessage>(playerName);
 			pubsubLocal.Unsubscribe<PlayerWorldEvent<PlayerStateMessage>>(playerName);
-			pubsubLocal.Unsubscribe<PlayerWorldEvent<PropStateMessage>>(playerName);
+			pubsubLocal.Unsubscribe<PlayerWorldEvent<EnemyStateMessage>>(playerName);
 			RedisPubSub.Publish<RemoveStateMessage>(RedisConfiguration.MapChannelRemoveStatePrefix + MapConfiguration.MapName, new RemoveStateMessage()
 			{
 				Name = playerName,
@@ -183,7 +183,7 @@ namespace MapService
 		{
 			playerName = JwtTokenHelper.GetTokenClaim(token, SecurityConfiguration.CharClaimType);
 			pubsubLocal.Subscribe<PlayerWorldOneTimeEvent<SkillCastMessage>>(OnNewSkillEffect, playerName);
-			pubsubLocal.Subscribe<PlayerWorldEvent<PropStateMessage>>(OnNewState, playerName);
+			pubsubLocal.Subscribe<PlayerWorldEvent<EnemyStateMessage>>(OnNewState, playerName);
 			pubsubLocal.Subscribe<PlayerWorldEvent<PlayerStateMessage>>(OnNewState, playerName);
 			pubsubLocal.Subscribe<RemoveStateMessage>(OnPlayerDisconnected, playerName);
 

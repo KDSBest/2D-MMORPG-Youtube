@@ -60,7 +60,7 @@ namespace Common.Client.Workflow
 					continue;
 				}
 
-				var propMsg = new PropStateMessage();
+				var propMsg = new EnemyStateMessage();
 				if (propMsg.Read(reader))
 				{
 					PubSub.Publish(propMsg);

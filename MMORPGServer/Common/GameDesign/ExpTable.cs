@@ -6,9 +6,9 @@ namespace Common.GameDesign
 {
 	public static class ExpTable
 	{
-		public static Dictionary<PropType, int> Prop = new Dictionary<PropType, int>()
+		public static Dictionary<EnemyType, int> Prop = new Dictionary<EnemyType, int>()
 		{
-			{ PropType.Flower, 5 }
+			{ EnemyType.Flower, 5 }
 		};
 	}
 }

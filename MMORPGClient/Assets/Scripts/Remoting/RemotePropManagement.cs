@@ -33,10 +33,10 @@ namespace Assets.Scripts.Remoting
 			remoteProps = new Dictionary<string, PropBehaviour>();
 
 			pubsub = DI.Instance.Resolve<IPubSub>();
-			pubsub.Subscribe<PropStateMessage>(OnPropState, this.GetType().Name);
+			pubsub.Subscribe<EnemyStateMessage>(OnPropState, this.GetType().Name);
 		}
 
-		private void OnPropState(PropStateMessage state)
+		private void OnPropState(EnemyStateMessage state)
 		{
 			if (!remoteProps.ContainsKey(state.Name))
 			{

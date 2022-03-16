@@ -22,10 +22,10 @@ namespace Common.GameDesign
 			}
 		};
 
-		public static Dictionary<PropType, Lotttable> Prop = new Dictionary<PropType, Lotttable>()
+		public static Dictionary<EnemyType, Lotttable> Prop = new Dictionary<EnemyType, Lotttable>()
 		{
 			{
-				PropType.Flower,
+				EnemyType.Flower,
 				new Lotttable
 				{
 					new LoottableEntry()

@@ -37,11 +37,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerEventProcessorService
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerEventService", "PlayerEventService\PlayerEventService.csproj", "{ED0E684F-2F6C-4D9D-861B-5E8F202FDA65}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PropManagementService", "PropManagementService\PropManagementService.csproj", "{A39B04D0-A163-42D1-A94E-D67B1FEAF3B9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CombatService", "CombatService\CombatService.csproj", "{10D6AC34-89C7-472E-A2F1-F4C907509DC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestService", "QuestService\QuestService.csproj", "{2A79E849-DC96-435F-911F-1F388C1BDF24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuestService", "QuestService\QuestService.csproj", "{2A79E849-DC96-435F-911F-1F388C1BDF24}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnemyLoadBalancerService", "EnemyLoadBalancerService\EnemyLoadBalancerService.csproj", "{F4F9CA8C-0F86-4745-BEB9-09D312B92A41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnemyWorkerService", "EnemyWorkerService\EnemyWorkerService.csproj", "{56066A4C-29BF-4B1F-B1FB-73F7A0995140}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,10 +107,6 @@ Global
 		{ED0E684F-2F6C-4D9D-861B-5E8F202FDA65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED0E684F-2F6C-4D9D-861B-5E8F202FDA65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED0E684F-2F6C-4D9D-861B-5E8F202FDA65}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A39B04D0-A163-42D1-A94E-D67B1FEAF3B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A39B04D0-A163-42D1-A94E-D67B1FEAF3B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A39B04D0-A163-42D1-A94E-D67B1FEAF3B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A39B04D0-A163-42D1-A94E-D67B1FEAF3B9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{10D6AC34-89C7-472E-A2F1-F4C907509DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{10D6AC34-89C7-472E-A2F1-F4C907509DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10D6AC34-89C7-472E-A2F1-F4C907509DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -117,6 +115,14 @@ Global
 		{2A79E849-DC96-435F-911F-1F388C1BDF24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A79E849-DC96-435F-911F-1F388C1BDF24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A79E849-DC96-435F-911F-1F388C1BDF24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4F9CA8C-0F86-4745-BEB9-09D312B92A41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4F9CA8C-0F86-4745-BEB9-09D312B92A41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4F9CA8C-0F86-4745-BEB9-09D312B92A41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4F9CA8C-0F86-4745-BEB9-09D312B92A41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56066A4C-29BF-4B1F-B1FB-73F7A0995140}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56066A4C-29BF-4B1F-B1FB-73F7A0995140}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56066A4C-29BF-4B1F-B1FB-73F7A0995140}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56066A4C-29BF-4B1F-B1FB-73F7A0995140}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

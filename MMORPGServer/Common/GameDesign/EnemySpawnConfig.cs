@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Common.GameDesign
 {
-	public class PropSpawnConfig
+	public class EnemySpawnConfig
 	{
 		public string PropPrefix;
 
@@ -24,7 +24,7 @@ namespace Common.GameDesign
 
 		public int SpawnCount;
 
-		public PropType Type;
+		public EnemyType Type;
 		public int RespawnTimeInMs;
 	}
 }

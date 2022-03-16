@@ -21,7 +21,7 @@ namespace Assets.Scripts.Character
 		public CharacterBehaviourAffinity CharacterAffinity = CharacterBehaviourAffinity.RemotePlayer;
 		private Material material;
 		private IPubSub pubsub;
-		private string name;
+		private string charName;
 
 		public void Awake()
 		{
@@ -36,13 +36,13 @@ namespace Assets.Scripts.Character
 
 		public void OnDisable()
 		{
-			pubsub.Unsubscribe<PlayerStateMessage>(this.GetType().Name + "_" + CharacterAffinity.ToString() + "_" + name);
+			pubsub.Unsubscribe<PlayerStateMessage>(this.GetType().Name + "_" + CharacterAffinity.ToString() + "_" + charName);
 		}
 
 		public void UpdateCharInfo(CharacterInformation charInfo)
 		{
-			name = charInfo.Name;
-			pubsub.Subscribe<PlayerStateMessage>(OnPlayerState, this.GetType().Name + "_" + CharacterAffinity.ToString() + "_" + name);
+			charName = charInfo.Name;
+			pubsub.Subscribe<PlayerStateMessage>(OnPlayerState, this.GetType().Name + "_" + CharacterAffinity.ToString() + "_" + charName);
 
 			UpdateStats(charInfo.Stats);
 			SetStyle(charInfo);
@@ -50,7 +50,7 @@ namespace Assets.Scripts.Character
 
 		private void OnPlayerState(PlayerStateMessage msg)
 		{
-			if (msg.Name != name)
+			if (msg.Name != charName)
 				return;
 
 			if(CharacterAffinity == CharacterBehaviourAffinity.LocalPlayer)

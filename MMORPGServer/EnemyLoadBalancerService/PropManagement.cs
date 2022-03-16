@@ -21,16 +21,15 @@ namespace PropManagementService
 
 	public class PropManagement
 	{
-		private readonly PropSpawnConfig config;
-		private readonly List<PropStateMessage> props = new List<PropStateMessage>();
+		private readonly EnemySpawnConfig config;
+		private readonly List<EnemyStateMessage> props = new List<EnemyStateMessage>();
 		private readonly Dictionary<string, int> respawnTimer = new Dictionary<string, int>();
-		private readonly Dictionary<string, EntityStats> propStats = new Dictionary<string, EntityStats>();
 		private readonly Random random = new Random();
 		private readonly DamageCalculator damageCalculator = new DamageCalculator();
 		private readonly DamageQueue damageQueue = new DamageQueue();
 		private readonly InventoryEventRepository inventoryEventRepo = new InventoryEventRepository();
 
-		public PropManagement(PropSpawnConfig config)
+		public PropManagement(EnemySpawnConfig config)
 		{
 			this.config = config;
 		}
@@ -44,7 +43,7 @@ namespace PropManagementService
 		{
 			for (int i = 0; i < config.SpawnCount; i++)
 			{
-				var prop = new PropStateMessage()
+				var prop = new EnemyStateMessage()
 				{
 					Name = config.PropPrefix + i,
 					Animation = 0,
@@ -58,7 +57,6 @@ namespace PropManagementService
 				};
 
 				props.Add(prop);
-				propStats.Add(prop.Name, config.Stats);
 
 				SpawnProp(prop);
 			}
@@ -107,15 +105,17 @@ namespace PropManagementService
 		private void OnSkillCasted(RedisChannel channel, SkillCastMessage msg)
 		{
 			string propName = string.Empty;
+			EnemyStateMessage effectedProp = null;
 			if (msg.Target.TargetType == SkillCastTargetType.SingleTarget)
 			{
-				var effectedProp = props.FirstOrDefault(x => x.Name == msg.Target.TargetName);
+				effectedProp = props.FirstOrDefault(x => x.Name == msg.Target.TargetName);
 				propName = effectedProp.Name;
-				if (effectedProp == null)
-					return;
 			}
 
-			var damageInfo = damageCalculator.GetDamage(msg.CasterStats, propStats[propName], GameDesignConfiguration.Skills.SkillTable[msg.Type].GetStats(1));
+			if (effectedProp == null)
+				return;
+
+			var damageInfo = damageCalculator.GetDamage(msg.CasterStats, effectedProp.Stats, GameDesignConfiguration.Skills.SkillTable[msg.Type].GetStats(1));
 
 			damageQueue.Enqueue(new DamageInFuture()
 			{
@@ -126,7 +126,7 @@ namespace PropManagementService
 			});
 		}
 
-		private void SpawnProp(PropStateMessage prop)
+		private void SpawnProp(EnemyStateMessage prop)
 		{
 			prop.ServerTime = DateTime.UtcNow.Ticks;
 			prop.Position = GetRandomPosition();
@@ -158,7 +158,7 @@ namespace PropManagementService
 
 			foreach (var prop in props)
 			{
-				RedisPubSub.Publish<PropStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, prop);
+				RedisPubSub.Publish<EnemyStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, prop);
 			}
 		}
 	}
