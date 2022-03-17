@@ -26,6 +26,11 @@ namespace CommonServer.ServerModel.Repos
 			RedisList.AddUnique(RedisKeyWorker, id.ToString());
 		}
 
+		public void RemoveWorker(Guid id)
+		{
+			RedisList.Remove(RedisKeyWorker, id.ToString());
+		}
+
 		public List<Guid> GetAllWorker()
 		{
 			return RedisList.Get(RedisKeyWorker).ConvertAll(x => new Guid(x)).ToList();

@@ -31,6 +31,11 @@ namespace CommonServer.ServerModel.Repos
 			RedisKV.Set(this.GetKey(id), DateTime.UtcNow.Ticks.ToString());
 		}
 
+		public void Remove(Guid id)
+		{
+			RedisKV.Remove(this.GetKey(id));
+		}
+
 		public bool IsHeartbeatOk(Guid id)
 		{
 			string hbTicksStr = RedisKV.Get(this.GetKey(id));

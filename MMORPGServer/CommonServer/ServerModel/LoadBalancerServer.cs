@@ -186,6 +186,8 @@ namespace CommonServer.ServerModel
 			{
 				serverWorkerJobRepo.UnAssignWorkerAllJobs(worker);
 				trustfulPerformance.Remove(worker);
+				serverHeartbeatRepo.Remove(worker);
+				serverWorkerListRepo.RemoveWorker(worker);
 			}
 		}
 
