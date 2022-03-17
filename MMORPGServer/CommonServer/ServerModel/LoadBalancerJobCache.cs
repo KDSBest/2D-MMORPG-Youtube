@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CommonServer.ServerModel
 {
-	public class LoadBalancerJobCache<T> where T : INameable
+	public class LoadBalancerJobCache<T> where T : class, INameable
 	{
 		public RedisServerWorkerJobRepository<T> ServerWorkerJobRepo { get; }
 		private ConcurrentDictionary<string, T> cache = new ConcurrentDictionary<string, T>();

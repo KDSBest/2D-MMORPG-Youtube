@@ -5,10 +5,10 @@ using System.Linq;
 
 namespace CommonServer.ServerModel
 {
-	public class LoadBalancerServer<T> : PrimarySecondaryServer where T : INameable
+	public class LoadBalancerServer<T> : PrimarySecondaryServer where T : class, INameable
 	{
-		public long RebalanceCost = 100;
-		public int MaxRebalancePerUpdate = 10;
+		public long RebalanceCost = 50;
+		public int MaxRebalancePerUpdate = 100;
 
 		private RedisServerHeartbeatRepository serverHeartbeatRepo;
 		private RedisServerPerformanceRepository serverPerformanceRepo;
@@ -81,7 +81,6 @@ namespace CommonServer.ServerModel
 				string jobName = assignedWorkerJobs[rebalanceSource][jobIndex];
 				assignedWorkerJobs[rebalanceSource].RemoveAt(jobIndex);
 
-				Console.WriteLine($"Rebalance from {rebalanceSource} to {rebalanceTarget} job {jobName}.");
 				serverWorkerJobRepo.UnAssignWorkerToJob(rebalanceSource, jobName);
 				serverWorkerJobRepo.AssignWorkerToJob(rebalanceTarget, jobName);
 				assignedWorkerJobs[rebalanceTarget].Add(jobName);

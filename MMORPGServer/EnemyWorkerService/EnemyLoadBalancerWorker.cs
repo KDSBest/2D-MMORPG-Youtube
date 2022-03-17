@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace EnemyWorkerService
 {
-	public class EnemyLoadBalancerWorker : LoadBalancerWorker<EnemyLoadEntry>
+	public class EnemyLoadBalancerWorker : LoadBalancerWorker<EnemyJob>
 	{
 		private EnemyManagement enemyManagement;
 
@@ -14,10 +14,9 @@ namespace EnemyWorkerService
 			enemyManagement = new EnemyManagement();
 		}
 
-		protected override async Task HandleLoad(EnemyLoadEntry jobContext)
+		protected override async Task HandleLoad(EnemyJob jobContext)
 		{
-			Console.WriteLine($"Handle {jobContext.Name}");
-			this.enemyManagement.Update(this.UpdateDelay, jobContext);
+			await this.enemyManagement.Update(this.UpdateDelay, jobContext);
 		}
 	}
 }

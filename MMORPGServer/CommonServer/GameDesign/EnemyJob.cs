@@ -3,7 +3,7 @@ using CommonServer.ServerModel.Repos;
 
 namespace CommonServer.GameDesign
 {
-	public class EnemyLoadEntry : INameable
+	public class EnemyJob : INameable
 	{
 		public string Name { get; set; }
 		public EnemySpawnConfig Config { get; set; }

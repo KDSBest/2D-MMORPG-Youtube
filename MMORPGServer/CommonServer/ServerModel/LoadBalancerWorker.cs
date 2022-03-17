@@ -1,11 +1,12 @@
 ﻿using CommonServer.ServerModel.Repos;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CommonServer.ServerModel
 {
-	public abstract class LoadBalancerWorker<T> : Server where T : INameable
+	public abstract class LoadBalancerWorker<T> : Server where T : class, INameable
 	{
 		public string RedisKeyNamePrefix { get; private set; }
 		public int LoadBalanceUpdateDelay { get; private set; }
@@ -40,6 +41,7 @@ namespace CommonServer.ServerModel
 			serverHeartbeatRepo.UpdateHeartbeat(this.Id);
 
 			List<Task> jobs = new List<Task>();
+			Console.WriteLine($"Handle {this.Jobs.Count} Jobs");
 			foreach(var job in this.Jobs)
 			{
 				var jobScoped = job;
@@ -54,6 +56,7 @@ namespace CommonServer.ServerModel
 			if(currentLoadBalanceUpdateDelay <= 0)
 			{
 				serverPerformanceRepo.SetPerformance(this.Id, this.UpdateDuration);
+				Console.WriteLine($"Update Loop took {this.UpdateDuration} ms");
 				Jobs = serverWorkerJobRepo.GetJobs(this.Id);
 
 				// when we have no load two things can be the case

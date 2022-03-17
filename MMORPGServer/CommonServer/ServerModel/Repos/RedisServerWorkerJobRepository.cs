@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace CommonServer.ServerModel.Repos
 {
-	public class RedisServerWorkerJobRepository<T> where T : INameable
+	public class RedisServerWorkerJobRepository<T> where T : class, INameable
 	{
 		public string RedisKeyNamePrefix { get; private set; }
 		public string RedisKeyWorker { get; private set; }
@@ -36,7 +36,7 @@ namespace CommonServer.ServerModel.Repos
 
 		public void AddJob(T job)
 		{
-			RedisKV.Set(GetJobKey(job.Name), JsonConvert.SerializeObject(job));
+			RedisKV.Set<T>(GetJobKey(job.Name), job);
 		}
 
 		public void UnAssignWorkerToJob(Guid workerId, string name)
@@ -61,8 +61,7 @@ namespace CommonServer.ServerModel.Repos
 
 		public T GetJob(string name)
 		{
-			string redisObj = RedisKV.Get(GetJobKey(name));
-			return JsonConvert.DeserializeObject<T>(redisObj);
+			return RedisKV.Get<T>(GetJobKey(name));
 		}
 	}
 }

@@ -43,7 +43,7 @@ namespace PropManagementService
 
 			string servername = $"E*{MapConfiguration.MapName}";
 			Console.WriteLine($"Start Load Balancing Server {servername}.");
-			var server = new LoadBalancerServer<EnemyLoadEntry>(servername);
+			var server = new LoadBalancerServer<EnemyJob>(servername);
 			foreach (var spawn in spawns)
 			{
 
@@ -52,7 +52,7 @@ namespace PropManagementService
 					string enemyName = $"{spawn.PropPrefix}{i + 1}";
 					Console.WriteLine($"Add {enemyName} to {servername}.");
 
-					server.AddJob(new EnemyLoadEntry()
+					server.AddJob(new EnemyJob()
 					{
 						Name = enemyName,
 						Config = spawn

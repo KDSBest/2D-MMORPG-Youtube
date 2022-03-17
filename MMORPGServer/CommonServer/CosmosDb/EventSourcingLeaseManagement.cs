@@ -42,7 +42,7 @@ namespace CommonServer.CosmosDb
 					return true;
 				}
 			}
-			catch (CosmosException ex)
+			catch (CosmosException)
 			{
 				return false;
 			}

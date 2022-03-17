@@ -11,7 +11,7 @@ namespace CommonServer.ServerModel
 	{
 		public string RedisKeyNamePrefix { get; private set; }
 		public Action OnPrimaryUpdate { get; set; }
-		public Guid Id { get; }
+
 		public int MaxPrimaryTrustDelay { get; }
 		public Action OnPrimaryStart { get; set; }
 
@@ -27,7 +27,6 @@ namespace CommonServer.ServerModel
 
 		public PrimarySecondaryServer(string redisKeyNamePrefix, Guid id, int updateDelay = 100, int maxPrimaryTrustDelay = 2000) : base(id, updateDelay)
 		{
-			Id = id;
 			MaxPrimaryTrustDelay = maxPrimaryTrustDelay;
 			RedisKeyNamePrefix = redisKeyNamePrefix;
 

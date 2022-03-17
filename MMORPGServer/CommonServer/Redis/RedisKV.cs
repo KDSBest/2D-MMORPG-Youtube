@@ -30,5 +30,19 @@ namespace CommonServer.Redis
         {
             redis.GetDatabase().KeyDelete(new RedisKey(key));
         }
+
+		public static void Set<T>(string key, T data)
+		{
+            Set(key, JsonConvert.SerializeObject(data));
+		}
+
+		public static T Get<T>(string key) where T : class
+		{
+            string redisObj = Get(key);
+            if (string.IsNullOrEmpty(redisObj))
+                return null;
+
+            return JsonConvert.DeserializeObject<T>(redisObj); 
+        }
     }
 }
