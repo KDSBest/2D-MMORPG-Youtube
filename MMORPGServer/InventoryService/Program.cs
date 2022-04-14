@@ -14,7 +14,7 @@ namespace InventoryService
             Console.WriteLine("Initialize CosmosDb Connection.");
             var repo = new InventoryRepository();
 
-            UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new InventoryUdpListener());
+            UdpManagerListener udpManagerListener = new UdpManagerListener(new InventoryUdpListener());
 
             Console.WriteLine("Open Inventory Service");
             await udpManagerListener.StartAsync(PortConfiguration.InventoryPort);

@@ -8,7 +8,7 @@ namespace CommonServer.ServerModel
 	public class LoadBalancerServer<T> : PrimarySecondaryServer where T : class, INameable
 	{
 		public long RebalanceCost = 50;
-		public int MaxRebalancePerUpdate = 100;
+		public int MaxRebalancePerUpdate = 10000;
 
 		private RedisServerHeartbeatRepository serverHeartbeatRepo;
 		private RedisServerPerformanceRepository serverPerformanceRepo;

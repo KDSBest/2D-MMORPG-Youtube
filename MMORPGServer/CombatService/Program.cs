@@ -10,7 +10,7 @@ namespace CombatService
 	{
 		public static async Task Main(string[] args)
 		{
-            UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new CombatUdpListener());
+            UdpManagerListener udpManagerListener = new UdpManagerListener(new CombatUdpListener());
 
             Console.WriteLine("Open Combat Service");
             await udpManagerListener.StartAsync(PortConfiguration.CombatPort);

@@ -10,7 +10,7 @@ namespace EventService
 	{
 		public static async Task Main(string[] args)
 		{
-            UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new PlayerEventUdpListener());
+            UdpManagerListener udpManagerListener = new UdpManagerListener(new PlayerEventUdpListener());
 
             Console.WriteLine("Open Player Event Service");
             await udpManagerListener.StartAsync(PortConfiguration.EventPort);

@@ -24,4 +24,10 @@
 	  </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\Certificate\mmo.pfx" Link="mmo.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

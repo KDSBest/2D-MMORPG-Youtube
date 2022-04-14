@@ -15,7 +15,7 @@ namespace QuestService
 		{
 			try
 			{
-				UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new QuestUdpListener());
+				UdpManagerListener udpManagerListener = new UdpManagerListener(new QuestUdpListener());
 
 				Console.WriteLine("Reading all Quest Files...");
 				QuestLoader.Load();

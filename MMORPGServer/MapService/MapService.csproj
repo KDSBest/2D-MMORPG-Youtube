@@ -21,6 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\Certificate\mmo.pfx" Link="mmo.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\MMORPGClient\Assets\StreamingAssets\Maps\town.map" Link="Maps\town.map">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

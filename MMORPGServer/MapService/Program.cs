@@ -29,7 +29,7 @@ namespace MapService
 				DI.Instance.Register<IPubSub>(() => new PubSub(), RegistrationType.Singleton);
 				DI.Instance.Register<IPlayerWorldManagement>(() => new PlayerWorldManagement(), RegistrationType.Singleton);
 				DI.Instance.Resolve<IPlayerWorldManagement>().Initialize();
-				UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new MapUdpListener());
+				UdpManagerListener udpManagerListener = new UdpManagerListener(new MapUdpListener());
 
 				Console.WriteLine("Open Map Service");
 				await udpManagerListener.StartAsync(PortConfiguration.MapPort);

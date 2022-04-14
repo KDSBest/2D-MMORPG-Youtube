@@ -16,7 +16,7 @@ namespace CharacterService
                 Console.WriteLine("Initialize CosmosDb Connection.");
                 var repo = new CharacterInformationRepository();
 
-                UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new CharacterUdpListener());
+                UdpManagerListener udpManagerListener = new UdpManagerListener(new CharacterUdpListener());
 
                 Console.WriteLine("Open Character Service");
                 await udpManagerListener.StartAsync(PortConfiguration.CharacterPort);

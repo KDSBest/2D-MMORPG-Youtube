@@ -4,6 +4,7 @@ using Assets.Scripts.GameDesign;
 using Assets.Scripts.Language;
 using Assets.Scripts.PubSubEvents.StartUI;
 using Common;
+using Common.Client;
 using Common.Client.Interfaces;
 using Common.IoC;
 using Common.Protocol.Character;
@@ -39,7 +40,11 @@ namespace Assets.Scripts
 
 		public void OnEnable()
 		{
+			Console.SetOut(new UnityConsoleTextWriter());
+
+			BaseClientSettings.Cert = File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath, "mmo.cer"));
 			DILoader.Initialize();
+
 			this.context = DI.Instance.Resolve<ICurrentContext>();
 
 			pubsub = DI.Instance.Resolve<IPubSub>();

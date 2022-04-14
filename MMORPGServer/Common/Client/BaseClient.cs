@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace Common.Client
 {
-
 	public class BaseClient<TWorkflow> : BaseUdpListener<TWorkflow>, IBaseClient<TWorkflow> where TWorkflow : class, IWorkflow, new()
 	{
 		public UdpPeer Peer { get; set; }
@@ -34,7 +33,13 @@ namespace Common.Client
 		{
 			return await Task.Run<bool>(async () =>
 			{
-				this.UdpManager = new UdpManager(this, ProtocolConstants.ConnectionKey);
+				this.UdpManager = new UdpManager(this);
+
+				if(BaseClientSettings.Cert != null)
+				{
+					this.UdpManager.Settings.Cert = BaseClientSettings.Cert;
+				}
+
 				this.Peer = this.UdpManager.Connect(host, port);
 
 				while (this.Peer.ConnectionState == ConnectionState.InProgress && currentMaxWait > 0)

@@ -50,7 +50,7 @@ namespace PropManagementService
 				for (int i = 0; i < spawn.SpawnCount; i++)
 				{
 					string enemyName = $"{spawn.PropPrefix}{i + 1}";
-					Console.WriteLine($"Add {enemyName} to {servername}.");
+					// Console.WriteLine($"Add {enemyName} to {servername}.");
 
 					server.AddJob(new EnemyJob()
 					{

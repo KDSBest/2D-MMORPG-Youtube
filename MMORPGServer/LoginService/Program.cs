@@ -16,7 +16,7 @@ namespace LoginService
                 Console.WriteLine("Initialize CosmosDb Connection.");
                 var repo = new UserInformationRepository();
 
-                UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new LoginUdpListener());
+                UdpManagerListener udpManagerListener = new UdpManagerListener(new LoginUdpListener());
 
                 Console.WriteLine("Open Login Service");
                 await udpManagerListener.StartAsync(PortConfiguration.LoginPort);

@@ -12,7 +12,7 @@ namespace WorldChatService
         {
             try
             {
-                UdpManagerListener udpManagerListener = new UdpManagerListener(ProtocolConstants.ConnectionKey, new ChatUdpListener());
+                UdpManagerListener udpManagerListener = new UdpManagerListener(new ChatUdpListener());
 
                 Console.WriteLine("Open Chat Service");
                 await udpManagerListener.StartAsync(PortConfiguration.WorldChatPort);

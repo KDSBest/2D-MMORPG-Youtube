@@ -1,6 +1,7 @@
 ﻿using Common.Udp;
 using ReliableUdp;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace CommonServer.Udp
@@ -8,7 +9,6 @@ namespace CommonServer.Udp
 	public class UdpManagerListener
     {
         private UdpManager udp;
-        private readonly string connKey;
         private IUdpListener udpListener;
 
         public bool IsRunning
@@ -22,19 +22,13 @@ namespace CommonServer.Udp
             }
         }
 
-        public UdpManagerListener(string connKey, IUdpListener udpListener)
+        public UdpManagerListener(IUdpListener udpListener)
         {
             if (udpListener == null)
             {
                 throw new ArgumentNullException(nameof(udpListener));
             }
 
-            if(string.IsNullOrEmpty(connKey))
-            {
-                throw new ArgumentException($"{nameof(connKey)} is empty or null.");
-            }
-
-            this.connKey = connKey;
             this.udpListener = udpListener;
         }
 
@@ -48,7 +42,12 @@ namespace CommonServer.Udp
         {
             try
             {
-                this.udp = new UdpManager(this.udpListener, connKey, int.MaxValue);
+                this.udp = new UdpManager(this.udpListener, int.MaxValue);
+
+                if(File.Exists("mmo.pfx"))
+				{
+                    this.udp.Settings.Cert = File.ReadAllBytes("mmo.pfx");
+				}
 
                 if (!this.udp.Start(port))
                 {
