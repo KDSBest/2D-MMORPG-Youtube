@@ -30,14 +30,21 @@ steps:
       Write-Host "Get KubeConfig"
       az aks get-credentials --name ${{ parameters.ClusterName }} --resource-group ${{ parameters.RGName }}
 
+      Write-Host "Go to WorkingDir prometheus stack"
+      cd ${{ parameters.WorkingDir }}/prometheus/charts/kube-prometheus-stack/
+
+      helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      helm repo add grafana https://grafana.github.io/helm-charts
+      helm dependency build
+
+      Write-Host "Install Prometheus"
+      helm upgrade -i prometheus ./ --namespace prometheus --create-namespace
+
       Write-Host "Go to WorkingDir"
       cd ${{ parameters.WorkingDir }}
 
-      Write-Host "Install Prometheus"
-      helm upgrade -i prometheus ./prometheus/charts/kube-prometheus-stack --namespace prometheus --create-namespace
-
       Write-Host "Install Redis Exporter"
-      helm upgrade -i redis-exporeter ./prometheus/charts/prometheus-redis-exporter --namespace prometheus --set "redisAddress=${{ parameters.RedisUrl }}"
+      helm upgrade -i redis-exporter ./prometheus/charts/prometheus-redis-exporter --namespace prometheus --set "redisAddress=${{ parameters.RedisUrl }}"
 
       Write-Host "Install Prometheus Target"
       kubectl apply -f ./RedisExporter.yaml --namespace prometheus

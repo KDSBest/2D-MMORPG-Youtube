@@ -6,8 +6,7 @@ metadata:
     app: plaeventproc
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
-  replicas: 2
-  revisionHistoryLimit: 2
+  replicas: 1
   selector:
     matchLabels:
       app: plaeventproc
@@ -23,7 +22,7 @@ spec:
       {{- end }}
       containers:
       - name: playereventprocessorservice
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         image: {{ .Values.playerEventProcessorServiceImage }}
         env:
         - name: CosmosUrl

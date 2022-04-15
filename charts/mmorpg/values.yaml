@@ -8,11 +8,15 @@ mapTownPort: 3336
 mapFieldPort: 3337
 playerEventPort: 3338
 inventoryPort: 3339
-combattownPort: 3340
-combafieldPort: 3341
+combatTownPort: 3340
+combaFieldPort: 3341
+questPort: 3342
 
-cosmosUrl: "@@{CosmosUrl}@@"
-cosmosKey: "@@{CosmosKey}@@"
+cosmos:
+  emulator:
+    deploy: false
+  url: "@@{CosmosUrl}@@"
+  key: "@@{CosmosKey}@@"
 
 loginServiceImage: "@@{GameName}@@acr.azurecr.io/loginservice:@@{Build.BuildNumber}@@"
 characterServiceImage: "@@{GameName}@@acr.azurecr.io/characterservice:@@{Build.BuildNumber}@@"
@@ -23,9 +27,14 @@ inventoryEventProcessorServiceImage: "@@{GameName}@@acr.azurecr.io/inventoryeven
 playerEventProcessorServiceImage: "@@{GameName}@@acr.azurecr.io/playereventprocessorservice:@@{Build.BuildNumber}@@"
 playerEventServiceImage: "@@{GameName}@@acr.azurecr.io/playereventservice:@@{Build.BuildNumber}@@"
 inventoryServiceImage: "@@{GameName}@@acr.azurecr.io/inventoryservice:@@{Build.BuildNumber}@@"
-propManagementServiceImage: "@@{GameName}@@acr.azurecr.io/propmanagementservice:@@{Build.BuildNumber}@@"
+enemyLoadBalancerServiceImage: "@@{GameName}@@acr.azurecr.io/enemyloadbalancerservice:@@{Build.BuildNumber}@@"
+enemyWorkerServiceImage: "@@{GameName}@@acr.azurecr.io/enemyworkerservice:@@{Build.BuildNumber}@@"
 combatServiceImage: "@@{GameName}@@acr.azurecr.io/combatservice:@@{Build.BuildNumber}@@"
+questServiceImage: "@@{GameName}@@acr.azurecr.io/questservice:@@{Build.BuildNumber}@@"
 
 serviceType: ClusterIP
+redis:
+  deploy: true
+  url: redis-svc
 
 jwtSecret: "@@{JwtSecret}@@"

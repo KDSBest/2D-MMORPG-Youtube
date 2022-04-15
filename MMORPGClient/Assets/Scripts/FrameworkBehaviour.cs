@@ -12,6 +12,7 @@ using Common.Protocol.Inventory;
 using Common.Protocol.Login;
 using Common.Protocol.Quest;
 using Common.PublishSubscribe;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.IO;
@@ -23,15 +24,8 @@ namespace Assets.Scripts
 {
 	public class FrameworkBehaviour : MonoBehaviour
 	{
-		private static readonly string host = "localhost";
-		private static readonly int worldChatPort = 3333;
-		private static readonly int loginPort = 3334;
-		private static readonly int characterPort = 3335;
-		private static readonly int mapPort = 3336;
-		private static readonly int eventPort = 3337;
-		private static readonly int inventoryPort = 3338;
-		private static readonly int combatPort = 3339;
-		private static readonly int questTrackingPort = 3340;
+		private string selectedServer = "minikube";
+		private ServerConfiguration server;
 
 		private const int waitMS = 50;
 		private IPubSub pubsub;
@@ -42,6 +36,8 @@ namespace Assets.Scripts
 		{
 			Console.SetOut(new UnityConsoleTextWriter());
 
+			LoadServerConfig();
+
 			BaseClientSettings.Cert = File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath, "mmo.cer"));
 			DILoader.Initialize();
 
@@ -51,6 +47,12 @@ namespace Assets.Scripts
 			pubsub.Subscribe<LoginRegisterResponseMessage>(OnNewLoginToken, this.GetType().Name);
 			pubsub.Subscribe<CharacterMessage>(OnCharacterMessage, this.GetType().Name);
 			SceneManager.sceneLoaded += OnSceneLoaded;
+		}
+
+		private void LoadServerConfig()
+		{
+			string serverConfigFile = Path.Combine(Application.streamingAssetsPath, "Servers", $"{selectedServer}.server.config");
+			server = JsonConvert.DeserializeObject<ServerConfiguration>(File.ReadAllText(serverConfigFile));
 		}
 
 		public void OnDisable()
@@ -94,7 +96,7 @@ namespace Assets.Scripts
 		{
 
 			var client = DI.Instance.Resolve<IMapClientWrapper>();
-			this.StartCoroutine(InitializeClientWrapper(client, mapPort, DI.Instance.Resolve<ILanguage>().ConnectToGame, () =>
+			this.StartCoroutine(InitializeClientWrapper(client, this.server.MapPort, DI.Instance.Resolve<ILanguage>().ConnectToGame, () =>
 			{
 				pubsub.Publish<PlayerControlEnable>(new PlayerControlEnable());
 				InitQuestTrackingClient();
@@ -105,7 +107,7 @@ namespace Assets.Scripts
 		public void InitQuestTrackingClient()
 		{
 			var client = DI.Instance.Resolve<IQuestTrackingClientWrapper>();
-			this.StartCoroutine(InitializeClientWrapper(client, questTrackingPort, DI.Instance.Resolve<ILanguage>().ConnectToQuestTracking, () =>
+			this.StartCoroutine(InitializeClientWrapper(client, this.server.QuestTrackingPort, DI.Instance.Resolve<ILanguage>().ConnectToQuestTracking, () =>
 			{
 				QuestLoader.Load(Path.Combine(Application.streamingAssetsPath, "Quests"));
 				pubsub.Publish<ControlQuestScreen>(new ControlQuestScreen());
@@ -116,7 +118,7 @@ namespace Assets.Scripts
 		public void InitChatClient()
 		{
 			var client = DI.Instance.Resolve<IChatClientWrapper>();
-			this.StartCoroutine(InitializeClientWrapper(client, worldChatPort, DI.Instance.Resolve<ILanguage>().ConnectToChat, () =>
+			this.StartCoroutine(InitializeClientWrapper(client, this.server.WorldChatPort, DI.Instance.Resolve<ILanguage>().ConnectToChat, () =>
 			{
 				pubsub.Publish<ControlChatScreen>(new ControlChatScreen());
 				InitCombatClient();
@@ -126,7 +128,7 @@ namespace Assets.Scripts
 		public void InitCombatClient()
 		{
 			var client = DI.Instance.Resolve<ICombatClientWrapper>();
-			this.StartCoroutine(InitializeClientWrapper(client, combatPort, DI.Instance.Resolve<ILanguage>().ConnectToCombat, () =>
+			this.StartCoroutine(InitializeClientWrapper(client, this.server.CombatPort, DI.Instance.Resolve<ILanguage>().ConnectToCombat, () =>
 			{
 				InitInventoryClient();
 			}, 0.35f, 0.5f));
@@ -135,7 +137,7 @@ namespace Assets.Scripts
 		public void InitInventoryClient()
 		{
 			var client = DI.Instance.Resolve<IInventoryClientWrapper>();
-			this.StartCoroutine(InitializeClientWrapper(client, inventoryPort, DI.Instance.Resolve<ILanguage>().ConnectToInventory, () =>
+			this.StartCoroutine(InitializeClientWrapper(client, this.server.InventoryPort, DI.Instance.Resolve<ILanguage>().ConnectToInventory, () =>
 			{
 				DI.Instance.Resolve<IPubSub>().Publish<RequestInventoryMessage>(new RequestInventoryMessage());
 				InitPlayerEventClient();
@@ -145,7 +147,7 @@ namespace Assets.Scripts
 		public void InitPlayerEventClient()
 		{
 			var client = DI.Instance.Resolve<IPlayerEventClientWrapper>();
-			this.StartCoroutine(InitializeClientWrapper(client, eventPort, DI.Instance.Resolve<ILanguage>().ConnectToPlayerEvent, () =>
+			this.StartCoroutine(InitializeClientWrapper(client, this.server.EventPort, DI.Instance.Resolve<ILanguage>().ConnectToPlayerEvent, () =>
 			{
 			}, 0.75f, 1.0f));
 		}
@@ -168,7 +170,7 @@ namespace Assets.Scripts
 			});
 
 			var client = DI.Instance.Resolve<ICharacterClientWrapper>();
-			this.StartCoroutine(InitializeClientWrapper(client, characterPort, DI.Instance.Resolve<ILanguage>().ConnectToCharacter, () =>
+			this.StartCoroutine(InitializeClientWrapper(client, this.server.CharacterPort, DI.Instance.Resolve<ILanguage>().ConnectToCharacter, () =>
 			{
 				pubsub.Publish<ControlCharacterScreen>(new ControlCharacterScreen());
 			}));
@@ -177,7 +179,7 @@ namespace Assets.Scripts
 		public void InitLoginClient()
 		{
 			var client = DI.Instance.Resolve<ILoginClientWrapper>();
-			this.StartCoroutine(InitializeClientWrapper(client, loginPort, DI.Instance.Resolve<ILanguage>().ConnectToLogin, () =>
+			this.StartCoroutine(InitializeClientWrapper(client, this.server.LoginPort, DI.Instance.Resolve<ILanguage>().ConnectToLogin, () =>
 			{
 				DI.Instance.Resolve<IPubSub>().Publish<ControlLoginScreen>(new ControlLoginScreen());
 			}));
@@ -191,7 +193,7 @@ namespace Assets.Scripts
 
 			UpdateProgress(startProgress + ((maxProgress - startProgress) / 2), statusMessage);
 
-			Task<bool> connectTask = client.ConnectAsync(host, port);
+			Task<bool> connectTask = client.ConnectAsync(this.server.Host, port);
 
 			while (!connectTask.Wait(waitMS))
 			{

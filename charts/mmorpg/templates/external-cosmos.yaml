@@ -1,0 +1,47 @@
+{{ if .Values.cosmos.emulator.deploy }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cosmos
+  labels:
+    app: cosmos
+    {{ include "mmorpg.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cosmos
+  template:
+    metadata:
+      labels:
+        app: cosmos
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: master
+        image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
+        imagePullPolicy: "Always"
+        ports:
+        - name: cosmos
+          containerPort: 8081
+        env:
+        - name: AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE
+          value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cosmos-svc
+  labels:
+    app: cosmos
+spec:
+  selector:
+    app: cosmos
+  ports:
+  - name: cosmos
+    port: 8081
+    targetPort: 8081
+{{ end }}

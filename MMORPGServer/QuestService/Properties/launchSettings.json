@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "QuestService": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -6,8 +6,7 @@ metadata:
     app: maptown
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
-  replicas: 2
-  revisionHistoryLimit: 2
+  replicas: 1
   selector:
     matchLabels:
       app: maptown
@@ -23,14 +22,14 @@ spec:
       {{- end }}
       containers:
       - name: mapservice
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         image: {{ .Values.mapServiceImage }}
         ports:
         - name: maptown
           containerPort: 3336
         env:
         - name: MAPNAME
-          value: Town
+          value: town
         - name: CosmosUrl
           valueFrom:
             secretKeyRef:
@@ -43,3 +42,5 @@ spec:
               key: CosmosKey
         - name: JwtSecret
           value: {{ .Values.jwtSecret }}
+        - name: REDIS
+          value: {{ .Values.redis.url }}

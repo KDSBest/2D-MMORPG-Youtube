@@ -126,13 +126,13 @@ stages:
         ServicePath: InventoryEventProcessorService
         RepositoryName: inventoryeventprocessorservice
 
-- stage: PropManagementService
-  displayName: PropManagementService
+- stage: PlayerEventProcessorService
+  displayName: PlayerEventProcessorService
   dependsOn:
   - Infrastructure
   jobs:
-  - job: PropManagementService
-    displayName: PropManagementService
+  - job: PlayerEventProcessorService
+    displayName: PlayerEventProcessorService
     pool: 
       vmImage: ubuntu-latest
     workspace:
@@ -140,8 +140,42 @@ stages:
     steps:
     - template: steps/servicebuild.yaml
       parameters:
-        ServicePath: PropManagementService
-        RepositoryName: propmanagementservice
+        ServicePath: PlayerEventProcessorService
+        RepositoryName: playereventprocessorservice
+
+- stage: PlayerEventService
+  displayName: PlayerEventService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: PlayerEventService
+    displayName: PlayerEventService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: PlayerEventService
+        RepositoryName: playereventservice
+
+- stage: QuestService
+  displayName: QuestService
+  dependsOn:
+  - Infrastructure
+  jobs:
+  - job: QuestService
+    displayName: QuestService
+    pool: 
+      vmImage: ubuntu-latest
+    workspace:
+        clean: all
+    steps:
+    - template: steps/servicebuild.yaml
+      parameters:
+        ServicePath: QuestService
+        RepositoryName: questservice
 
 - stage: CombatService
   displayName: CombatService
@@ -176,14 +210,14 @@ stages:
       parameters:
         ServicePath: InventoryService
         RepositoryName: inventoryservice
-
-- stage: PlayerEventService
-  displayName: PlayerEventService
+        
+- stage: EnemyLoadBalancerService
+  displayName: EnemyLoadBalancerService
   dependsOn:
   - Infrastructure
   jobs:
-  - job: PlayerEventService
-    displayName: PlayerEventService
+  - job: EnemyLoadBalancerService
+    displayName: EnemyLoadBalancerService
     pool: 
       vmImage: ubuntu-latest
     workspace:
@@ -191,16 +225,17 @@ stages:
     steps:
     - template: steps/servicebuild.yaml
       parameters:
-        ServicePath: PlayerEventService
-        RepositoryName: playereventservice
+        ServicePath: EnemyLoadBalancerService
+        RepositoryName: enemyloadbalancerservice
 
-- stage: PlayerEventProcessorService
-  displayName: PlayerEventProcessorService
+        
+- stage: EnemyWorkerService
+  displayName: EnemyWorkerService
   dependsOn:
   - Infrastructure
   jobs:
-  - job: PlayerEventProcessorService
-    displayName: PlayerEventProcessorService
+  - job: EnemyWorkerService
+    displayName: EnemyWorkerService
     pool: 
       vmImage: ubuntu-latest
     workspace:
@@ -208,8 +243,8 @@ stages:
     steps:
     - template: steps/servicebuild.yaml
       parameters:
-        ServicePath: PlayerEventProcessorService
-        RepositoryName: playereventprocessorservice
+        ServicePath: EnemyWorkerService
+        RepositoryName: enemyworkerservice
 
 - stage: Monitoring
   displayName: Monitoring

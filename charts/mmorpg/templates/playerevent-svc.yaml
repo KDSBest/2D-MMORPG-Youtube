@@ -14,7 +14,7 @@ spec:
   ports:
   - name: playerevent
     protocol: UDP
-    port: {{ .Values.playerEventPort }}
+    port: 3337
     targetPort: 3337
     {{- if eq .Values.serviceType "NodePort" }}
     nodePort: {{ .Values.playerEventPort }}

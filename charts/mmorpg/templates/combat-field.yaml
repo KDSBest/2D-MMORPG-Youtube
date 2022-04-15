@@ -6,8 +6,7 @@ metadata:
     app: combatfield
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
-  replicas: 2
-  revisionHistoryLimit: 2
+  replicas: 1
   selector:
     matchLabels:
       app: combatfield
@@ -23,12 +22,14 @@ spec:
       {{- end }}
       containers:
       - name: combatfieldservice
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         image: {{ .Values.combatServiceImage }}
         ports:
         - name: combatfield
           containerPort: 3339
         env:
+        - name: MAPNAME
+          value: field
         - name: CosmosUrl
           valueFrom:
             secretKeyRef:
@@ -41,3 +42,5 @@ spec:
               key: CosmosKey
         - name: JwtSecret
           value: {{ .Values.jwtSecret }}
+        - name: REDIS
+          value: {{ .Values.redis.url }}

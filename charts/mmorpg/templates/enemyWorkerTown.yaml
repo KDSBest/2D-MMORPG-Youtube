@@ -1,20 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: propmgrfield
+  name: enemyworkertown
   labels:
-    app: propmgrfield
+    app: enemyworkertown
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
   replicas: 1
-  revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: propmgrfield
+      app: enemyworkertown
   template:
     metadata:
       labels:
-        app: propmgrfield
+        app: enemyworkertown
         {{ include "mmorpg.labels" . | nindent 8 }}
     spec:
       {{- if .Values.imagePullSecrets }}
@@ -22,12 +21,12 @@ spec:
         {{ toYaml .Values.imagePullSecrets | nindent 8 }}
       {{- end }}
       containers:
-      - name: propmanagementservice
-        imagePullPolicy: Always
-        image: {{ .Values.propManagementServiceImage }}
+      - name: enemyworkertown
+        imagePullPolicy: IfNotPresent
+        image: {{ .Values.enemyWorkerServiceImage }}
         env:
         - name: MAPNAME
-          value: Field
+          value: town
         - name: CosmosUrl
           valueFrom:
             secretKeyRef:
@@ -38,4 +37,5 @@ spec:
             secretKeyRef:
               name: cosmossecret
               key: CosmosKey
-
+        - name: REDIS
+          value: {{ .Values.redis.url }}

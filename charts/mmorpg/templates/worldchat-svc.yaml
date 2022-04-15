@@ -14,7 +14,7 @@ spec:
   ports:
   - name: worldchat
     protocol: UDP
-    port: {{ .Values.worldChatPort }}
+    port: 3333
     targetPort: 3333
     {{- if eq .Values.serviceType "NodePort" }}
     nodePort: {{ .Values.worldChatPort }}

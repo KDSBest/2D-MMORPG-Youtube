@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: monitoring-redis-svc
+  labels:
+    app: redis-svc-service-monitor
+    serviceapp: redis-servicemonitor
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: prometheus-redis-exporter
+  endpoints:
+  - interval: 15s
+    path: /metrics
+    port: redis-exporter
+  namespaceSelector:
+    matchNames:
+    - prometheus

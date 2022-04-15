@@ -6,8 +6,7 @@ metadata:
     app: dailylogin
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
-  replicas: 2
-  revisionHistoryLimit: 2
+  replicas: 1
   selector:
     matchLabels:
       app: dailylogin
@@ -23,7 +22,7 @@ spec:
       {{- end }}
       containers:
       - name: dailyloginservice
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         image: {{ .Values.dailyLoginServiceImage }}
         env:
         - name: CosmosUrl
@@ -36,4 +35,6 @@ spec:
             secretKeyRef:
               name: cosmossecret
               key: CosmosKey
+        - name: REDIS
+          value: {{ .Values.redis.url }}
 

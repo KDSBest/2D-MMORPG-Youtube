@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: quest-svc
+
+spec:
+  entryPoints:
+    - quest
+  routes:
+  - services:
+    - name: quest-svc
+      port: 3340

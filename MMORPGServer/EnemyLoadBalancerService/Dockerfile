@@ -5,19 +5,19 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["PropManagementService/PropManagementService.csproj", "PropManagementService/"]
+COPY ["EnemyLoadBalancerService/EnemyLoadBalancerService.csproj", "EnemyLoadBalancerService/"]
 COPY ["Common/Common.csproj", "Common/"]
 COPY ["UnityAzureNetworkEngine/Core/ReliableUdp/ReliableUdp.csproj", "UnityAzureNetworkEngine/Core/ReliableUdp/"]
 COPY ["CommonServer/CommonServer.csproj", "CommonServer/"]
-RUN dotnet restore "PropManagementService/PropManagementService.csproj"
+RUN dotnet restore "EnemyLoadBalancerService/EnemyLoadBalancerService.csproj"
 COPY . .
-WORKDIR "/src/PropManagementService"
-RUN dotnet build "PropManagementService.csproj" -c Release -o /app/build
+WORKDIR "/src/EnemyLoadBalancerService"
+RUN dotnet build "EnemyLoadBalancerService.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "PropManagementService.csproj" -c Release -o /app/publish
+RUN dotnet publish "EnemyLoadBalancerService.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PropManagementService.dll"]
+ENTRYPOINT ["dotnet", "EnemyLoadBalancerService.dll"]

@@ -1,20 +1,20 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: monitoring-redis-svc
-  namespace: prometheus
+  name: monitoring-traefik-svc
   labels:
-    app: redis-svc-service-monitor
-    serviceapp: redis-servicemonitor
+    app: traefik-service-monitor
+    serviceapp: traefik-servicemonitor
     release: prometheus
 spec:
   selector:
     matchLabels:
-      app: prometheus-redis-exporter
+      app.kubernetes.io/instance: traefik
+      app.kubernetes.io/name: traefik
   endpoints:
   - interval: 15s
     path: /metrics
-    targetPort: 9121
+    port: metrics
   namespaceSelector:
     matchNames:
-    - prometheus
+    - traefik

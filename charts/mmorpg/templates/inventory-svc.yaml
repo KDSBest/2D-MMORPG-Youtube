@@ -14,8 +14,8 @@ spec:
   ports:
   - name: inventory
     protocol: UDP
-    port: {{ .Values.playerEventPort }}
+    port: 3338
     targetPort: 3338
     {{- if eq .Values.serviceType "NodePort" }}
-    nodePort: {{ .Values.playerEventPort }}
+    nodePort: {{ .Values.inventoryPort }}
     {{- end }}

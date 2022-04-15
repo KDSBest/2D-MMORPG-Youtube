@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,18 +17,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\..\MMORPGClient\Assets\StreamingAssets\Quests\Collect10Flowers.quest" Link="Quests\Collect10Flowers.quest">
+    <Content Include="..\Quests\Collect10Flowers.quest" Link="Quests\Collect10Flowers.quest">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-	  <Content Include="..\..\MMORPGClient\Assets\StreamingAssets\Quests\CollectOrKillFlower 1.quest" Link="Quests\CollectOrKillFlower 1.quest">
+	  <Content Include="..\Quests\CollectOrKillFlower 1.quest" Link="Quests\CollectOrKillFlower 1.quest">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\Certificate\mmo.pfx" Link="mmo.pfx">
+    <None Include="..\mmo.pfx" Link="mmo.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
   </ItemGroup>
 
 </Project>

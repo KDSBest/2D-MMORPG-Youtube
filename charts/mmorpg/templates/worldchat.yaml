@@ -6,8 +6,7 @@ metadata:
     app: worldchat
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
-  replicas: 2
-  revisionHistoryLimit: 2
+  replicas: 1
   selector:
     matchLabels:
       app: worldchat
@@ -23,7 +22,7 @@ spec:
       {{- end }}
       containers:
       - name: worldchatservice
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         image: {{ .Values.worldChatServiceImage }}
         ports:
         - name: worldchat
@@ -41,3 +40,5 @@ spec:
               key: CosmosKey
         - name: JwtSecret
           value: {{ .Values.jwtSecret }}
+        - name: REDIS
+          value: {{ .Values.redis.url }}

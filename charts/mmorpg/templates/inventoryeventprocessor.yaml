@@ -6,8 +6,7 @@ metadata:
     app: inveventproc
     {{ include "mmorpg.labels" . | nindent 4 }}
 spec:
-  replicas: 2
-  revisionHistoryLimit: 2
+  replicas: 1
   selector:
     matchLabels:
       app: inveventproc
@@ -23,7 +22,7 @@ spec:
       {{- end }}
       containers:
       - name: inventoryeventprocessorservice
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         image: {{ .Values.inventoryEventProcessorServiceImage }}
         env:
         - name: CosmosUrl

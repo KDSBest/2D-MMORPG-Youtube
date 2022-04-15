@@ -1,0 +1,23 @@
+imagePullSecrets: []
+
+cosmos:
+  emulator:
+    deploy: true
+  url: "https://cosmos-svc:8081"
+  key: "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
+
+loginServiceImage: "loginservice:latest"
+characterServiceImage: "characterservice:latest"
+worldChatServiceImage: "worldchatservice:latest"
+mapServiceImage: "mapservice:latest"
+dailyLoginServiceImage: "dailyloginservice:latest"
+inventoryEventProcessorServiceImage: "inventoryeventprocessorservice:latest"
+playerEventProcessorServiceImage: "playereventprocessorservice:latest"
+playerEventServiceImage: "playereventservice:latest"
+inventoryServiceImage: "inventoryservice:latest"
+enemyLoadBalancerServiceImage: "enemyloadbalancerservice:latest"
+enemyWorkerServiceImage: "enemyworkerservice:latest"
+combatServiceImage: "combatservice:latest"
+questServiceImage: "questservice:latest"
+
+jwtSecret: "597efad3-5a4c-4769-98bc-50933a36f812"

@@ -14,7 +14,7 @@ spec:
   ports:
   - name: combattown
     protocol: UDP
-    port: {{ .Values.combatTownPort }}
+    port: 3339
     targetPort: 3339
     {{- if eq .Values.serviceType "NodePort" }}
     nodePort: {{ .Values.combatTownPort }}

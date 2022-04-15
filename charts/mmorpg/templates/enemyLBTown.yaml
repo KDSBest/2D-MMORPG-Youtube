@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enemylbtown
+  labels:
+    app: enemylbtown
+    {{ include "mmorpg.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: enemylbtown
+  template:
+    metadata:
+      labels:
+        app: enemylbtown
+        {{ include "mmorpg.labels" . | nindent 8 }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: enemylbtown
+        imagePullPolicy: IfNotPresent
+        image: {{ .Values.enemyLoadBalancerServiceImage }}
+        env:
+        - name: MAPNAME
+          value: town
+        - name: CosmosUrl
+          valueFrom:
+            secretKeyRef:
+              name: cosmossecret
+              key: CosmosUrl
+        - name: CosmosKey
+          valueFrom:
+            secretKeyRef:
+              name: cosmossecret
+              key: CosmosKey
+        - name: REDIS
+          value: {{ .Values.redis.url }}

@@ -13,7 +13,7 @@ spec:
   ports:
   - name: login
     protocol: UDP
-    port: {{ .Values.loginPort }}
+    port: 3334
     targetPort: 3334
     {{- if eq .Values.serviceType "NodePort" }}
     nodePort: {{ .Values.loginPort }}

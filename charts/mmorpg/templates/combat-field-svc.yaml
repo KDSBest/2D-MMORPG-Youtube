@@ -14,8 +14,8 @@ spec:
   ports:
   - name: combatfield
     protocol: UDP
-    port: {{ .Values.combatfieldPort }}
+    port: 3339
     targetPort: 3339
     {{- if eq .Values.serviceType "NodePort" }}
-    nodePort: {{ .Values.combatfieldPort }}
+    nodePort: {{ .Values.combaFieldPort }}
     {{- end }}

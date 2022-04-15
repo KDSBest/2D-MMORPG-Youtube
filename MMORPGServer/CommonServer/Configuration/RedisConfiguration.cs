@@ -1,12 +1,10 @@
-﻿namespace CommonServer.Configuration
+﻿using System;
+
+namespace CommonServer.Configuration
 {
     public static class RedisConfiguration
     {
-#if DEBUG
-        public static readonly string ConnectionString = "localhost:6379";
-#else
-        public static readonly string ConnectionString = "redis-svc";
-#endif
+        public static readonly string ConnectionString = Environment.GetEnvironmentVariable("REDIS") ?? "localhost:6379";
 
         public static readonly string WorldChatChannelPrefix = "WorldChat";
         public static readonly string MapChannelNewPlayerStatePrefix = "PlMapState-";

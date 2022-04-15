@@ -9,7 +9,7 @@ namespace Common
 		{
 			get
 			{
-				return Environment.GetEnvironmentVariable("MAPNAME") ?? "Town";
+				return Environment.GetEnvironmentVariable("MAPNAME") ?? "town";
 
 			}
 		}
