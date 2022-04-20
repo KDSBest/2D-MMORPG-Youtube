@@ -1,6 +1,6 @@
 ﻿using Common;
 
-namespace MapService.WorldManagement
+namespace CommonServer.WorldManagement
 {
 	public class PlayerWorldOneTimeEvent<T>
 	{

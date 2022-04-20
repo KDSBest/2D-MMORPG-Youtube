@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
@@ -7,7 +6,7 @@ namespace Common.GameDesign
 {
 	public class EnemySpawnConfig
 	{
-		public string PropPrefix;
+		public string Prefix;
 
 		public EntityStats Stats = new EntityStats()
 		{
@@ -25,6 +24,7 @@ namespace Common.GameDesign
 		public int SpawnCount;
 
 		public EnemyType Type;
+		public EnemyAIConfig AIConfig;
 		public int RespawnTimeInMs;
 	}
 }

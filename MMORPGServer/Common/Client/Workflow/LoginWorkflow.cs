@@ -1,5 +1,4 @@
-﻿using Common.Crypto;
-using Common.Extensions;
+﻿using Common.Extensions;
 using Common.IoC;
 using Common.Protocol.Login;
 using Common.PublishSubscribe;
@@ -12,9 +11,8 @@ using System.Threading.Tasks;
 
 namespace Common.Client.Workflow
 {
-	public class LoginWorkflow : ICryptoWorkflow
+	public class LoginWorkflow : IWorkflow
 	{
-		public CryptoProvider Crypto { get; set; }
 		public UdpManager UdpManager { get; set; }
 		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 
@@ -46,8 +44,8 @@ namespace Common.Client.Workflow
 		{
 			var loginMsg = new LoginMessage
 			{
-				EMailEnc = Crypto.Encrypt(email),
-				PasswordEnc = Crypto.Encrypt(password)
+				EMail = email,
+				Password = password
 			};
 			UdpManager.SendMsg(loginMsg, ChannelType.ReliableOrdered);
 		}
@@ -56,8 +54,8 @@ namespace Common.Client.Workflow
 		{
 			var loginMsg = new RegisterMessage
 			{
-				EMailEnc = Crypto.Encrypt(email),
-				PasswordEnc = Crypto.Encrypt(password)
+				EMail = email,
+				Password = password
 			};
 			UdpManager.SendMsg(loginMsg, ChannelType.ReliableOrdered);
 		}

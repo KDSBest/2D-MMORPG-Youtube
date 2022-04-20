@@ -18,6 +18,7 @@ using Common;
 using StackExchange.Redis;
 using Common.GameDesign;
 using Common.Protocol.Character;
+using CommonServer.GameDesign;
 
 namespace CombatService
 {
@@ -28,7 +29,7 @@ namespace CombatService
 
 		private string playerId = string.Empty;
 		private UdpPeer peer;
-		private Dictionary<SkillCastType, DateTime> usedSkill = new Dictionary<SkillCastType, DateTime>();
+		private CooldownManagement cooldownManagement = new CooldownManagement();
 		private CharacterInformation charInfo;
 
 		public async Task OnStartAsync(UdpPeer peer)
@@ -46,30 +47,15 @@ namespace CombatService
 		{
 		}
 
-		private bool CheckCooldown(ReqSkillCastMessage reqMsg)
-		{
-			if (usedSkill.ContainsKey(reqMsg.Type))
-			{
-				var elapsedTime = (DateTime.UtcNow - usedSkill[reqMsg.Type]).TotalMilliseconds + GameDesignConfiguration.CooldownLatencyAllowance;
-				if (elapsedTime < GameDesignConfiguration.Skills.SkillTable[reqMsg.Type].GetStats(1).Cooldown)
-					return false;
-
-				usedSkill[reqMsg.Type] = DateTime.UtcNow;
-			}
-			else
-			{
-				usedSkill.Add(reqMsg.Type, DateTime.UtcNow);
-			}
-			return true;
-		}
-
 		public async Task OnReceiveAsync(UdpDataReader reader, ChannelType channel)
 		{
 			var reqMsg = new ReqSkillCastMessage();
 			if (reqMsg.Read(reader))
 			{
-				if (!CheckCooldown(reqMsg))
+				if (!cooldownManagement.CanCast(reqMsg.Type, 1, GameDesignConfiguration.CooldownLatencyAllowance))
 					return;
+
+				cooldownManagement.Cast(reqMsg.Type);
 
 				RedisPubSub.Publish<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, new SkillCastMessage()
 				{

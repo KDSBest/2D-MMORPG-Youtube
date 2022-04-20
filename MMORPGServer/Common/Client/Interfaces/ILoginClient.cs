@@ -4,8 +4,7 @@ using ReliableUdp;
 
 namespace Common.Client.Interfaces
 {
-	public interface ILoginClient : IBaseClient<CryptoWorkflow<LoginWorkflow>>
+	public interface ILoginClient : IBaseClient<LoginWorkflow>
 	{
-		LoginWorkflow WorkflowAfterCrypto { get; set; }
 	}
 }

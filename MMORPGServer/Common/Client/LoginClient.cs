@@ -6,7 +6,7 @@ using ReliableUdp;
 namespace Common.Client
 {
 
-	public class LoginClient : CryptoBaseClient<LoginWorkflow>, ILoginClient
+	public class LoginClient : BaseClient<LoginWorkflow>, ILoginClient
 	{
 
 	}

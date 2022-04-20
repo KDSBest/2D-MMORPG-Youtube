@@ -1,5 +1,4 @@
-﻿using Common.Crypto;
-using Common.Extensions;
+﻿using Common.Extensions;
 using Common.Protocol.Login;
 using Common.Workflow;
 using CommonServer;
@@ -19,11 +18,10 @@ using CommonServer.Redis.Model;
 
 namespace LoginService
 {
-	public class LoginWorkflow : ICryptoWorkflow
+	public class LoginWorkflow : IWorkflow
 	{
 		public UdpManager UdpManager { get; set; }
 		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
-		public CryptoProvider Crypto { get; set; }
 		private UdpPeer peer;
 		private readonly UserInformationRepository repo = new UserInformationRepository();
 
@@ -48,8 +46,8 @@ namespace LoginService
 
 			if (registerMessage.Read(reader))
 			{
-				string email = Crypto.Decrypt(registerMessage.EMailEnc);
-				string password = Crypto.Decrypt(registerMessage.PasswordEnc);
+				string email = registerMessage.EMail;
+				string password = registerMessage.Password;
 				await RegisterAsync(email, password);
 				return;
 			}
@@ -57,8 +55,8 @@ namespace LoginService
 			var loginMessage = new LoginMessage();
 			if (loginMessage.Read(reader))
 			{
-				string email = Crypto.Decrypt(loginMessage.EMailEnc);
-				string password = Crypto.Decrypt(loginMessage.PasswordEnc);
+				string email = loginMessage.EMail;
+				string password = loginMessage.Password;
 				await LoginAsync(email, password);
 				return;
 			}

@@ -35,11 +35,15 @@ namespace CommonServer.ServerModel
 
 		protected abstract Task HandleLoad(T jobContext);
 
+		protected abstract void PrepareUpdate();
+
 		protected override async Task Update()
 		{
 			currentLoadBalanceUpdateDelay -= this.UpdateDelay;
 			serverHeartbeatRepo.UpdateHeartbeat(this.Id);
 
+			Console.WriteLine($"Prepare Jobs");
+			PrepareUpdate();
 			List<Task> jobs = new List<Task>();
 			Console.WriteLine($"Handle {this.Jobs.Count} Jobs");
 			foreach(var job in this.Jobs)

@@ -3,7 +3,7 @@ using CommonServer.Workflow;
 
 namespace LoginService
 {
-	public class LoginUdpListener : BaseUdpListener<CryptoWorkflow<LoginWorkflow>>, IUdpListener
+	public class LoginUdpListener : BaseUdpListener<LoginWorkflow>, IUdpListener
     {
     }
 }

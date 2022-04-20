@@ -10,7 +10,6 @@ using CommonServer;
 using Common.Protocol.Map;
 using Common.Extensions;
 using CommonServer.Redis;
-using MapService.WorldManagement;
 using Common.IoC;
 using Common.PublishSubscribe;
 using Common;
@@ -18,6 +17,7 @@ using Common.Protocol.Map.Interfaces;
 using Common.GameDesign;
 using System.Linq;
 using CommonServer.CosmosDb;
+using CommonServer.WorldManagement;
 
 namespace MapService
 {

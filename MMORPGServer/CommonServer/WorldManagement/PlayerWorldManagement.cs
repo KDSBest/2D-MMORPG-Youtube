@@ -12,22 +12,36 @@ using StackExchange.Redis;
 using System;
 using System.Collections.Concurrent;
 
-namespace MapService.WorldManagement
+namespace CommonServer.WorldManagement
 {
 
 	public class PlayerWorldManagement : IPlayerWorldManagement
 	{
-		private ConcurrentDictionary<string, IMapStateMessage> LastState = new ConcurrentDictionary<string, IMapStateMessage>();
-		private ConcurrentDictionary<string, Vector2Int> LastStatePartition = new ConcurrentDictionary<string, Vector2Int>();
+		public ConcurrentDictionary<string, IMapStateMessage> LastState { get; private set; } = new ConcurrentDictionary<string, IMapStateMessage>();
+		public ConcurrentDictionary<string, Vector2Int> LastStatePartition { get; private set; } = new ConcurrentDictionary<string, Vector2Int>();
 		private IPubSub pubsubLocal;
-		private ConcurrentDictionary<string, CharacterInformation> Characters = new ConcurrentDictionary<string, CharacterInformation>();
+		public ConcurrentDictionary<string, CharacterInformation> Characters { get; private set; } = new ConcurrentDictionary<string, CharacterInformation>();
 		private CharacterInformationRepository charRepo = new CharacterInformationRepository();
 
 		public void Initialize()
 		{
+			Initialize(true, true);
+		}
+
+		public void Initialize(bool registerForEnemyStates, bool registerForSkillCasts)
+		{
 			pubsubLocal = DI.Instance.Resolve<IPubSub>();
-			RedisPubSub.Subscribe<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, OnOneTimeEvent);
-			RedisPubSub.Subscribe<EnemyStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, OnStateChange);
+
+			if (registerForSkillCasts)
+			{
+				RedisPubSub.Subscribe<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, OnOneTimeEvent);
+			}
+
+			if(registerForEnemyStates)
+			{
+				RedisPubSub.Subscribe<EnemyStateMessage>(RedisConfiguration.MapChannelNewPropStatePrefix + MapConfiguration.MapName, OnStateChange);
+			}
+			
 			RedisPubSub.Subscribe<PlayerStateMessage>(RedisConfiguration.MapChannelNewPlayerStatePrefix + MapConfiguration.MapName, OnPlayerStateChange);
 			RedisPubSub.Subscribe<RemoveStateMessage>(RedisConfiguration.MapChannelRemoveStatePrefix + MapConfiguration.MapName, OnDisconnectedPlayer);
 		}

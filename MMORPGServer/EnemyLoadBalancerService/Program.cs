@@ -23,7 +23,7 @@ namespace PropManagementService
 			{
 				new EnemySpawnConfig()
 				{
-					PropPrefix = "F*",
+					Prefix = "F*",
 					Stats = new EntityStats()
 					{
 						Attack = 1,
@@ -37,7 +37,37 @@ namespace PropManagementService
 					SpawnStart = new System.Numerics.Vector2(-10, -44.5f),
 					SpawnEnd = new System.Numerics.Vector2(44, -44.5f),
 					RespawnTimeInMs = 10000,
-					Type = EnemyType.Flower
+					Type = EnemyType.Flower,
+					AIConfig = null
+				},
+				new EnemySpawnConfig()
+				{
+					Prefix = "E*",
+					Stats = new EntityStats()
+					{
+						Attack = 1,
+						Defense = 1,
+						MAttack = 1,
+						MDefense = 1,
+						Level = 1,
+						MaxHP = 25
+					},
+					SpawnCount = 2,
+					SpawnStart = new System.Numerics.Vector2(-10, -44.5f),
+					SpawnEnd = new System.Numerics.Vector2(44, -44.5f),
+					RespawnTimeInMs = 10000,
+					Type = EnemyType.SimpleEnemy,
+					AIConfig = new EnemyAIConfig()
+					{
+						Skills = new Dictionary<SkillCastType, int> ()
+						{
+							{SkillCastType.LightningBolt, 1 }
+						},
+						CastOrder = new List<SkillCastType>
+						{
+							SkillCastType.LightningBolt
+						}
+					}
 				}
 			};
 
@@ -49,7 +79,7 @@ namespace PropManagementService
 
 				for (int i = 0; i < spawn.SpawnCount; i++)
 				{
-					string enemyName = $"{spawn.PropPrefix}{i + 1}";
+					string enemyName = $"{spawn.Prefix}{i + 1}";
 					// Console.WriteLine($"Add {enemyName} to {servername}.");
 
 					server.AddJob(new EnemyJob()

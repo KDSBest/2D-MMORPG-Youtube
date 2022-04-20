@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MapService.WorldManagement
+namespace CommonServer.WorldManagement
 {
 	public class MapPartitionManagement
 	{

@@ -56,9 +56,11 @@ namespace CharacterService
 					LoginTime = DateTime.Now
 				});
 
-				if(string.IsNullOrEmpty(loggedInChar) || loggedInChar != c.Name)
+				if (string.IsNullOrEmpty(loggedInChar) || loggedInChar != c.Name)
 				{
 					RedisPubSub.Subscribe<ExpMessage>(RedisConfiguration.PlayerExpPrefix + c.Name, OnExpGain);
+					RedisPubSub.Subscribe<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + c.Name, OnDamageReceived);
+
 					loggedInChar = c.Name;
 				}
 
@@ -70,6 +72,22 @@ namespace CharacterService
 			}
 
 			SendPlayerCharacter(c, token);
+		}
+
+		private void OnDamageReceived(RedisChannel channel, DamageMessage msg)
+		{
+			if (msg.Target.TargetType != SkillCastTargetType.SingleTarget || msg.Target.TargetName != this.loggedInChar)
+				return;
+
+			CharacterInformation c = repo.GetAsync(loggedInChar).Result;
+			c.Stats.HP -= msg.DamageInfo.Damage;
+
+			if (c.Stats.HP < 0)
+				c.Stats.HP = 0;
+
+			repo.SaveAsync(c, loggedInChar).Wait();
+
+			SendCharacterUpdate(c.Stats);
 		}
 
 		private async Task SendPlayerCharacterAsync(string charName)

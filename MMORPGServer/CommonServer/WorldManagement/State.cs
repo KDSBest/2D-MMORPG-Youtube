@@ -1,7 +1,7 @@
 ﻿using Common;
 using Common.Protocol;
 
-namespace MapService.WorldManagement
+namespace CommonServer.WorldManagement
 {
 	public class State
     {

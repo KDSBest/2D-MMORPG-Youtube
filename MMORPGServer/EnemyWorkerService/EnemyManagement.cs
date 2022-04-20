@@ -8,6 +8,7 @@ using CommonServer.CosmosDb;
 using CommonServer.GameDesign;
 using CommonServer.GameDesign.Repos;
 using CommonServer.Redis;
+using CommonServer.WorldManagement;
 using StackExchange.Redis;
 using System;
 using System.Collections.Concurrent;
@@ -21,6 +22,7 @@ namespace EnemyWorkerService
 	public class EnemyManagement
 	{
 		private readonly ConcurrentDictionary<string, EnemyStateMessage> enemies = new ConcurrentDictionary<string, EnemyStateMessage>();
+		private readonly ConcurrentDictionary<string, EnemyAI> enemyAIs = new ConcurrentDictionary<string, EnemyAI>();
 		private readonly ConcurrentDictionary<string, int> respawnTimer = new ConcurrentDictionary<string, int>();
 		private readonly Random random = new Random();
 		private readonly DamageCalculator damageCalculator = new DamageCalculator();
@@ -44,11 +46,11 @@ namespace EnemyWorkerService
 			if (enemies.ContainsKey(enemy.Name))
 				return;
 
-			var prop = enemyStateRepo.Get(enemy.Name);
+			var enemyState = enemyStateRepo.Get(enemy.Name);
 
-			if (prop == null)
+			if (enemyState == null)
 			{
-				prop = new EnemyStateMessage()
+				enemyState = new EnemyStateMessage()
 				{
 					Name = enemy.Name,
 					Animation = 0,
@@ -60,11 +62,17 @@ namespace EnemyWorkerService
 					IsLookingRight = false,
 					Type = enemy.Config.Type
 				};
-				SpawnProp(prop, enemy.Config);
+				SpawnEnemy(enemyState, enemy.Config);
 			}
 
-			enemies.AddOrUpdate(enemy.Name, prop, (key, val) => prop);
-			InitializeRespawnTimer(prop, enemy.Config);
+			enemies.AddOrUpdate(enemy.Name, enemyState, (key, val) => enemyState);
+
+			if(enemy.Config.AIConfig != null)
+			{
+				var ai = new EnemyAI(enemy.Name, enemy.Config.Stats, enemy.Config.AIConfig);
+				enemyAIs.AddOrUpdate(enemy.Name, ai, (k, oldAi) => ai);
+			}
+			InitializeRespawnTimer(enemyState, enemy.Config);
 		}
 
 		private async Task OnDamage(DamageInFuture dmg)
@@ -134,7 +142,7 @@ namespace EnemyWorkerService
 			});
 		}
 
-		private void SpawnProp(EnemyStateMessage prop, EnemySpawnConfig config)
+		private void SpawnEnemy(EnemyStateMessage prop, EnemySpawnConfig config)
 		{
 			prop.ServerTime = DateTime.UtcNow.Ticks;
 			prop.Position = GetRandomPosition(config);
@@ -146,33 +154,47 @@ namespace EnemyWorkerService
 			respawnTimer[enemy.Name] = config.RespawnTimeInMs;
 		}
 
-		private void HandleRespawn(int timeInMs, EnemyJob enemyJob)
+		private void HandleRespawn(int timeInMs, EnemyJob enemyJob, EnemyStateMessage enemyStats)
 		{
-			string enemyName = enemyJob.Name;
-			if (!enemies.ContainsKey(enemyName))
+			if (enemyStats == null)
 				return;
 
-			var enemy = enemies[enemyName];
-			if (enemy.Stats.HP > 0)
+			if (enemyStats.Stats.HP > 0)
 				return;
 
-			respawnTimer[enemy.Name] = respawnTimer[enemy.Name] - timeInMs;
+			respawnTimer[enemyStats.Name] = respawnTimer[enemyStats.Name] - timeInMs;
 
-			if (respawnTimer[enemy.Name] <= 0)
+			if (respawnTimer[enemyStats.Name] <= 0)
 			{
-				SpawnProp(enemy, enemyJob.Config);
-				InitializeRespawnTimer(enemy, enemyJob.Config);
+				SpawnEnemy(enemyStats, enemyJob.Config);
+				InitializeRespawnTimer(enemyStats, enemyJob.Config);
 			}
 		}
 
-		public async Task Update(int timeInMs, EnemyJob enemy)
+		public async Task Update(int timeInMs, EnemyJob enemyJob, List<PlayerStateMessage> world)
 		{
-			Initialize(enemy);
-			HandleRespawn(timeInMs, enemy);
+			Initialize(enemyJob);
+
+			string enemyName = enemyJob.Name;
+			var enemyStats = enemies[enemyName];
+			if (enemyStats.Stats.HP > 0)
+			{
+				if(enemyJob.Config.AIConfig != null && enemyAIs.ContainsKey(enemyName))
+				{
+					enemyAIs[enemyName].Update(timeInMs, world);
+				}
+			}
+			else
+			{
+				HandleRespawn(timeInMs, enemyJob, enemyStats);
+			}
+
 			await damageQueue.Update(timeInMs);
 
-			SaveStateToRedis(enemy.Name);
-			SendToMapServer(enemy);
+
+
+			SaveStateToRedis(enemyName);
+			SendToMapServer(enemyJob);
 		}
 
 		private void SaveStateToRedis(string name)

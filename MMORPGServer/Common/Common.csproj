@@ -17,4 +17,8 @@
     <ProjectReference Include="..\UnityAzureNetworkEngine\Core\ReliableUdp\ReliableUdp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Crypto\" />
+  </ItemGroup>
+
 </Project>

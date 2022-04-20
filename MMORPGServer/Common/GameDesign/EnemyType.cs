@@ -6,6 +6,7 @@ namespace Common.GameDesign
 {
 	public enum EnemyType : byte
 	{
-		Flower
+		Flower,
+		SimpleEnemy
 	}
 }

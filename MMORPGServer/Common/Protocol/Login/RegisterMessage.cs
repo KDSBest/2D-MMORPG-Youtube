@@ -4,8 +4,8 @@ namespace Common.Protocol.Login
 {
 	public class RegisterMessage : BaseUdpPackage
     {
-        public string EMailEnc { get; set; }
-        public string PasswordEnc { get; set; }
+        public string EMail { get; set; }
+        public string Password { get; set; }
 
         public RegisterMessage() : base(MessageType.Register)
         {
@@ -13,14 +13,14 @@ namespace Common.Protocol.Login
 
         protected override void WriteData(UdpDataWriter writer)
         {
-            writer.Put(EMailEnc);
-            writer.Put(PasswordEnc);
+            writer.Put(EMail);
+            writer.Put(Password);
         }
 
         protected override bool ReadData(UdpDataReader reader)
         {
-            EMailEnc = reader.GetString();
-            PasswordEnc = reader.GetString();
+            EMail = reader.GetString();
+            Password = reader.GetString();
 
             return true;
         }

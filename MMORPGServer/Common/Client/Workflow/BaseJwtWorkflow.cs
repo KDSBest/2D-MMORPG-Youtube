@@ -1,5 +1,4 @@
 ﻿using Common.Client.Interfaces;
-using Common.Crypto;
 using Common.Extensions;
 using Common.IoC;
 using Common.Protocol.Crypto;
@@ -15,7 +14,6 @@ namespace Common.Client.Workflow
 {
 	public abstract class BaseJwtWorkflow : IWorkflow
 	{
-		public CryptoProvider Crypto { get; set; }
 		public UdpManager UdpManager { get; set; }
 		public Func<UdpPeer, IWorkflow, Task> SwitchWorkflowAsync { get; set; }
 		public IPubSub PubSub { get; set; }
