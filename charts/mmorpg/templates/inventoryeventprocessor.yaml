@@ -1,3 +1,4 @@
+{{ if .Values.mmorpg.deploy }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,4 +36,4 @@ spec:
             secretKeyRef:
               name: cosmossecret
               key: CosmosKey
-
+{{ end }}

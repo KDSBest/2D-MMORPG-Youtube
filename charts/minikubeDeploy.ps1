@@ -22,6 +22,7 @@ Write-Host "Install Game"
 
 cd mmorpg
 
+helm upgrade -i -n mmorpg -f ./values.minikube.external.yaml --create-namespace mmorpg-external ./
 helm upgrade -i -n mmorpg -f ./values.minikube.yaml --create-namespace mmorpg ./
 
 cd ..

@@ -16,7 +16,7 @@ namespace EventService
             await udpManagerListener.StartAsync(PortConfiguration.EventPort);
 
             await udpManagerListener.UpdateAsync();
-            Console.WriteLine("Chat Service is Running...");
+            Console.WriteLine("Player Event Service is Running...");
 
             while (udpManagerListener.IsRunning)
             {

@@ -17,8 +17,11 @@ namespace DailyLoginService
 	{
 		public static async Task Main(string[] args)
 		{
+			Console.WriteLine("Initialize CosmosDb Connection.");
 			UserLastLoginRepository repo = new UserLastLoginRepository();
 			InventoryEventRepository inventoryEventRepo = new InventoryEventRepository();
+
+			Console.WriteLine("Daily Login started.");
 
 			while (true)
 			{

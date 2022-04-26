@@ -1,3 +1,4 @@
+{{ if .Values.mmorpg.deploy }}
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRouteUDP
 metadata:
@@ -10,3 +11,4 @@ spec:
   - services:
     - name: login-svc
       port: 3334
+{{ end }}

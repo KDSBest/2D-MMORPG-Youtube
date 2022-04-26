@@ -1,3 +1,4 @@
+{{ if .Values.mmorpg.deploy }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -18,3 +19,4 @@ spec:
     {{- if eq .Values.serviceType "NodePort" }}
     nodePort: {{ .Values.loginPort }}
     {{- end }}
+{{ end }}

@@ -27,6 +27,14 @@ spec:
         ports:
         - name: cosmos
           containerPort: 8081
+        - name: dc1
+          containerPort: 10251
+        - name: dc2
+          containerPort: 10252
+        - name: dc3
+          containerPort: 10253
+        - name: dc4
+          containerPort: 10254
         env:
         - name: AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE
           value: "true"
@@ -44,4 +52,16 @@ spec:
   - name: cosmos
     port: 8081
     targetPort: 8081
+  - name: dc1
+    port: 10251
+    targetPort: 10251
+  - name: dc2
+    port: 10252
+    targetPort: 10252
+  - name: dc3
+    port: 10253
+    targetPort: 10253
+  - name: dc4
+    port: 10254
+    targetPort: 10254
 {{ end }}

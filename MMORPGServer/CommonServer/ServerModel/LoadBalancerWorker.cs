@@ -13,8 +13,6 @@ namespace CommonServer.ServerModel
 
 		public List<string> Jobs = new List<string>();
 
-		private int currentLoadBalanceUpdateDelay = 0;
-
 		private RedisServerHeartbeatRepository serverHeartbeatRepo;
 		private RedisServerPerformanceRepository serverPerformanceRepo;
 		private RedisServerWorkerListRepository serverWorkerListRepo;
@@ -39,14 +37,13 @@ namespace CommonServer.ServerModel
 
 		protected override async Task Update()
 		{
-			currentLoadBalanceUpdateDelay -= this.UpdateDelay;
 			serverHeartbeatRepo.UpdateHeartbeat(this.Id);
 
 			Console.WriteLine($"Prepare Jobs");
 			PrepareUpdate();
 			List<Task> jobs = new List<Task>();
 			Console.WriteLine($"Handle {this.Jobs.Count} Jobs");
-			foreach(var job in this.Jobs)
+			foreach (var job in this.Jobs)
 			{
 				var jobScoped = job;
 				jobs.Add(Task.Run(async () =>
@@ -57,19 +54,16 @@ namespace CommonServer.ServerModel
 			}
 			await Task.WhenAll(jobs);
 
-			if(currentLoadBalanceUpdateDelay <= 0)
-			{
-				serverPerformanceRepo.SetPerformance(this.Id, this.UpdateDuration);
-				Console.WriteLine($"Update Loop took {this.UpdateDuration} ms");
-				Jobs = serverWorkerJobRepo.GetJobs(this.Id);
+			serverPerformanceRepo.SetPerformance(this.Id, this.UpdateDuration);
+			Console.WriteLine($"Update Loop took {this.UpdateDuration} ms");
+			Jobs = serverWorkerJobRepo.GetJobs(this.Id);
 
-				// when we have no load two things can be the case
-				// a) we are a new worker
-				// b) Load Distribution removed all our work, because we are not trustworthy
-				if (Jobs.Count == 0)
-				{
-					serverWorkerListRepo.AddWorker(this.Id);
-				}
+			// when we have no load two things can be the case
+			// a) we are a new worker
+			// b) Load Distribution removed all our work, because we are not trustworthy
+			if (Jobs.Count == 0)
+			{
+				serverWorkerListRepo.AddWorker(this.Id);
 			}
 		}
 	}

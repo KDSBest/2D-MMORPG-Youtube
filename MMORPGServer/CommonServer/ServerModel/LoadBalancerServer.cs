@@ -8,7 +8,7 @@ namespace CommonServer.ServerModel
 	public class LoadBalancerServer<T> : PrimarySecondaryServer where T : class, INameable
 	{
 		public long RebalanceCost = 50;
-		public int MaxRebalancePerUpdate = 10000;
+		public int MaxRebalancePerUpdate = 1000;
 
 		private RedisServerHeartbeatRepository serverHeartbeatRepo;
 		private RedisServerPerformanceRepository serverPerformanceRepo;
@@ -93,6 +93,7 @@ namespace CommonServer.ServerModel
 		{
 			foreach(var job in unassignedJobs)
 			{
+				// TODO: Round Robin
 				var worker = GetFastestWorker();
 
 				serverWorkerJobRepo.AssignWorkerToJob(worker, job);

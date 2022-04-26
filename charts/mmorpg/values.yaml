@@ -32,9 +32,12 @@ enemyWorkerServiceImage: "@@{GameName}@@acr.azurecr.io/enemyworkerservice:@@{Bui
 combatServiceImage: "@@{GameName}@@acr.azurecr.io/combatservice:@@{Build.BuildNumber}@@"
 questServiceImage: "@@{GameName}@@acr.azurecr.io/questservice:@@{Build.BuildNumber}@@"
 
+mmorpg:
+  deploy: false
+
 serviceType: ClusterIP
 redis:
-  deploy: true
+  deploy: false
   url: redis-svc
 
 jwtSecret: "@@{JwtSecret}@@"

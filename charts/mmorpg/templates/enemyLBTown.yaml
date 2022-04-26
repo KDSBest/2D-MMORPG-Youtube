@@ -1,3 +1,4 @@
+{{ if .Values.mmorpg.deploy }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -39,3 +40,4 @@ spec:
               key: CosmosKey
         - name: REDIS
           value: {{ .Values.redis.url }}
+{{ end }}
