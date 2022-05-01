@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Prop
 {
-    public class PropBehaviour : MonoBehaviour
+    public class EnemyBehaviour : MonoBehaviour
     {
 		public int HP { get; set; } = 900;
 		public int MaxHP { get; set; } = 1000;

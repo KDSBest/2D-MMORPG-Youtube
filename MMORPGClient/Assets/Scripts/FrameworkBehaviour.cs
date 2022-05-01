@@ -24,7 +24,8 @@ namespace Assets.Scripts
 {
 	public class FrameworkBehaviour : MonoBehaviour
 	{
-		private string selectedServer = "minikube";
+		private string selectedServer = "localhost";
+		//private string selectedServer = "minikube";
 		private ServerConfiguration server;
 
 		private const int waitMS = 50;
@@ -130,6 +131,7 @@ namespace Assets.Scripts
 			var client = DI.Instance.Resolve<ICombatClientWrapper>();
 			this.StartCoroutine(InitializeClientWrapper(client, this.server.CombatPort, DI.Instance.Resolve<ILanguage>().ConnectToCombat, () =>
 			{
+				AoESkillsLoader.Load(Path.Combine(Application.streamingAssetsPath, "AoESkills"));
 				InitInventoryClient();
 			}, 0.35f, 0.5f));
 		}

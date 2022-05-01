@@ -9,6 +9,8 @@ using CommonServer.WorldManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Threading.Tasks;
 
 namespace EnemyWorkerService
 {
@@ -19,60 +21,92 @@ namespace EnemyWorkerService
 		private EnemyAIConfig aIConfig;
 		private CooldownManagement cooldownManagement = new CooldownManagement();
 		private readonly DamageCalculator damageCalculator = new DamageCalculator();
-
+		private readonly DelayQueue<SkillCastMessage> delayQueue = new DelayQueue<SkillCastMessage>();
+		private List<PlayerStateMessage> worldState;
+		private float castDelay = 0;
 
 		public EnemyAI(string name, EntityStats stats, EnemyAIConfig aIConfig)
 		{
 			this.name = name;
 			this.stats = stats;
 			this.aIConfig = aIConfig;
+			this.delayQueue.OnExecute = DamageAoE;
 		}
 
-		public void Update(int timeInMs, List<PlayerStateMessage> world)
+		private async Task DamageAoE(DelayQueueEntry<SkillCastMessage> entry)
 		{
-			var nextCast = GetNextCast();
-
-			if (!nextCast.HasValue)
-				return;
-
-			if (world.Count > 0)
+			foreach (var pc in worldState)
 			{
-				var target = new SkillTarget()
-				{
-					TargetName = world[0].Name,
-					TargetPosition = world[0].Position,
-					TargetType = SkillCastTargetType.SingleTarget
-				};
+				Vector2 skillSpacePosition = pc.Position - entry.Data.Position;
 
-				RedisPubSub.Publish<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, new SkillCastMessage()
-				{
-					Caster = this.name,
-					Type = nextCast.Value,
-					Position = world[0].Position,
-					ServerTime = DateTime.UtcNow.Ticks,
-					Target = target,
-					CasterStats = this.stats
-				});
+				var sc = AoESkillsLoader.SkillCollisions[entry.Data.Type];
+				if (!sc.IsHit(skillSpacePosition))
+					continue;
 
-				var damageInfo = damageCalculator.GetDamage(this.stats, world[0].Stats, GameDesignConfiguration.Skills.SkillTable[nextCast.Value].GetStats(aIConfig.Skills[nextCast.Value]));
+				var damageInfo = damageCalculator.GetDamage(this.stats, pc.Stats, GameDesignConfiguration.Skills.SkillTable[entry.Data.Type].GetStats(aIConfig.Skills[entry.Data.Type]));
 
-				RedisPubSub.Publish<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + world[0].Name, new DamageMessage()
+				RedisPubSub.Publish<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + pc.Name, new DamageMessage()
 				{
 					DamageInfo = damageInfo,
-					Target = target,
+					Target = new SkillTarget()
+					{
+						TargetName = pc.Name,
+						TargetPosition = pc.Position,
+						TargetType = SkillCastTargetType.Position
+					}
 				});
-
-				cooldownManagement.Cast(nextCast.Value);
 			}
 		}
 
-		private SkillCastType? GetNextCast()
+		public async Task Update(int timeInMs, List<PlayerStateMessage> world)
 		{
-			foreach (var cast in this.aIConfig.CastOrder)
+			castDelay -= timeInMs;
+			worldState = world;
+			await delayQueue.Update(timeInMs);
+
+			var castPrio = GetNextCast();
+
+			if (castPrio == null)
+				return;
+
+			var target = new SkillTarget()
 			{
-				if (cooldownManagement.CanCast(cast, aIConfig.Skills[cast]))
+				TargetName = "AoE",
+				TargetPosition = new System.Numerics.Vector2(66.81f, -41.32f),
+				TargetType = SkillCastTargetType.Position
+			};
+
+			var skillCastMessage = new SkillCastMessage()
+			{
+				Caster = this.name,
+				Type = castPrio.Type,
+				Position = target.TargetPosition,
+				ServerTime = DateTime.UtcNow.Ticks,
+				Target = target,
+				CasterStats = this.stats
+			};
+			RedisPubSub.Publish<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, skillCastMessage);
+
+			delayQueue.Enqueue(new DelayQueueEntry<SkillCastMessage>()
+			{
+				Data = skillCastMessage,
+				WaitDuration = GameDesignConfiguration.SkillIndicatorDelay[castPrio.Type]
+			});
+
+			cooldownManagement.Cast(castPrio.Type);
+			castDelay = castPrio.DelayForNextSkill;
+		}
+
+		private EnemyAICastPriority GetNextCast()
+		{
+			if (castDelay > 0)
+				return null;
+
+			foreach (var castPrio in this.aIConfig.CastPriority)
+			{
+				if (cooldownManagement.CanCast(castPrio.Type, aIConfig.Skills[castPrio.Type]))
 				{
-					return cast;
+					return castPrio;
 				}
 			}
 

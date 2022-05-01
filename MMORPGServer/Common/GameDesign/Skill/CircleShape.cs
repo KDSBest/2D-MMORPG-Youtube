@@ -2,7 +2,7 @@
 
 namespace Common.GameDesign.Skill
 {
-	public class CircleShape : SkillIndicatorShape
+	public class CircleShape : SkillCollisionShape
 	{
 		public Vector2 Position;
 		public float Radius;

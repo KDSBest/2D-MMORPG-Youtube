@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Common.GameDesign.Skill
 {
-	public class PolygonShape : SkillIndicatorShape
+	public class PolygonShape : SkillCollisionShape
 	{
 		public List<Vector2> Points = new List<Vector2>();
         private List<Vector2> edges = new List<Vector2>();

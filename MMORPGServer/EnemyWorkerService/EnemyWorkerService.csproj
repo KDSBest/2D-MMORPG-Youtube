@@ -7,12 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\AoESkills\Boss1Attack1.json" Link="AoESkills\Boss1Attack1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\AoESkills\Boss1Attack2.json" Link="AoESkills\Boss1Attack2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CommonServer\CommonServer.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AoESkills\" />
   </ItemGroup>
 
 </Project>

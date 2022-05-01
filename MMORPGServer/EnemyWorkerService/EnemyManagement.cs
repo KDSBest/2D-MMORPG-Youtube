@@ -24,15 +24,16 @@ namespace EnemyWorkerService
 		private readonly ConcurrentDictionary<string, EnemyStateMessage> enemies = new ConcurrentDictionary<string, EnemyStateMessage>();
 		private readonly ConcurrentDictionary<string, EnemyAI> enemyAIs = new ConcurrentDictionary<string, EnemyAI>();
 		private readonly ConcurrentDictionary<string, int> respawnTimer = new ConcurrentDictionary<string, int>();
+		private readonly ConcurrentDictionary<string, int> exp = new ConcurrentDictionary<string, int>();
 		private readonly Random random = new Random();
 		private readonly DamageCalculator damageCalculator = new DamageCalculator();
-		private readonly DamageQueue damageQueue = new DamageQueue();
+		private readonly DelayQueue<DamageInFuture> damageQueue = new DelayQueue<DamageInFuture>();
 		private readonly InventoryEventRepository inventoryEventRepo = new InventoryEventRepository();
 		private readonly EnemyStateRepo enemyStateRepo = new EnemyStateRepo();
 
 		public EnemyManagement()
 		{
-			damageQueue.OnDamage = OnDamage;
+			damageQueue.OnExecute = OnDamage;
 			RedisPubSub.Subscribe<SkillCastMessage>(RedisConfiguration.MapChannelSkillCastPrefix + MapConfiguration.MapName, OnSkillCasted);
 		}
 
@@ -66,26 +67,28 @@ namespace EnemyWorkerService
 			}
 
 			enemies.AddOrUpdate(enemy.Name, enemyState, (key, val) => enemyState);
+			exp.AddOrUpdate(enemy.Name, enemy.Config.Exp, (k, oldExp) => enemy.Config.Exp);
 
-			if(enemy.Config.AIConfig != null)
+			if (enemy.Config.AIConfig != null)
 			{
 				var ai = new EnemyAI(enemy.Name, enemy.Config.Stats, enemy.Config.AIConfig);
 				enemyAIs.AddOrUpdate(enemy.Name, ai, (k, oldAi) => ai);
 			}
+
 			InitializeRespawnTimer(enemyState, enemy.Config);
 		}
 
-		private async Task OnDamage(DamageInFuture dmg)
+		private async Task OnDamage(DelayQueueEntry<DamageInFuture> entry)
 		{
-			if (dmg.Target.TargetType != SkillCastTargetType.SingleTarget)
+			if (entry.Data.Target.TargetType != SkillCastTargetType.SingleTarget)
 			{
 				return;
 			}
 
-			if (!enemies.ContainsKey(dmg.Target.TargetName))
+			if (!enemies.ContainsKey(entry.Data.Target.TargetName))
 				return;
 
-			var effectedEnemy = enemies[dmg.Target.TargetName];
+			var effectedEnemy = enemies[entry.Data.Target.TargetName];
 			if (effectedEnemy == null)
 				return;
 
@@ -94,24 +97,24 @@ namespace EnemyWorkerService
 			if (effectedEnemy.Stats.HP <= 0)
 				return;
 
-			effectedEnemy.Stats.HP -= dmg.DamageInfo.Damage;
+			effectedEnemy.Stats.HP -= entry.Data.DamageInfo.Damage;
 			if (effectedEnemy.Stats.HP < 0)
 				effectedEnemy.Stats.HP = 0;
 
 			if (effectedEnemy.Stats.HP == 0)
 			{
-				await inventoryEventRepo.GiveLoot(dmg.Caster, LoottableConfiguration.Prop[effectedEnemy.Type], PlayerEventType.PropKill);
+				await inventoryEventRepo.GiveLoot(entry.Data.Caster, LoottableConfiguration.Prop[effectedEnemy.Type], PlayerEventType.PropKill);
 
-				RedisPubSub.Publish<ExpMessage>(RedisConfiguration.PlayerExpPrefix + dmg.Caster, new ExpMessage()
+				RedisPubSub.Publish<ExpMessage>(RedisConfiguration.PlayerExpPrefix + entry.Data.Caster, new ExpMessage()
 				{
-					ExpGain = ExpTable.Prop[effectedEnemy.Type]
+					ExpGain = this.exp[entry.Data.Target.TargetName]
 				});
 			}
 
-			RedisPubSub.Publish<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + dmg.Caster, new DamageMessage()
+			RedisPubSub.Publish<DamageMessage>(RedisConfiguration.PlayerDamagePrefix + entry.Data.Caster, new DamageMessage()
 			{
-				DamageInfo = dmg.DamageInfo,
-				Target = dmg.Target,
+				DamageInfo = entry.Data.DamageInfo,
+				Target = entry.Data.Target,
 			});
 		}
 
@@ -133,11 +136,14 @@ namespace EnemyWorkerService
 
 			var damageInfo = damageCalculator.GetDamage(msg.CasterStats, effectedProp.Stats, GameDesignConfiguration.Skills.SkillTable[msg.Type].GetStats(1));
 
-			damageQueue.Enqueue(new DamageInFuture()
+			damageQueue.Enqueue(new DelayQueueEntry<DamageInFuture>()
 			{
-				Caster = msg.Caster,
-				DamageInfo = damageInfo,
-				Target = msg.Target,
+				Data = new DamageInFuture()
+				{
+					Caster = msg.Caster,
+					DamageInfo = damageInfo,
+					Target = msg.Target
+				},
 				WaitDuration = GameDesignConfiguration.AnimationDelay[msg.Type] - (int)(DateTime.UtcNow - new DateTime(msg.ServerTime)).TotalMilliseconds
 			});
 		}
@@ -181,7 +187,7 @@ namespace EnemyWorkerService
 			{
 				if(enemyJob.Config.AIConfig != null && enemyAIs.ContainsKey(enemyName))
 				{
-					enemyAIs[enemyName].Update(timeInMs, world);
+					await enemyAIs[enemyName].Update(timeInMs, world);
 				}
 			}
 			else

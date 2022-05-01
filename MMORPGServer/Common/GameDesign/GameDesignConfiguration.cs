@@ -11,7 +11,13 @@ namespace Common.GameDesign
 		public static Dictionary<SkillCastType, int> AnimationDelay = new Dictionary<SkillCastType, int>()
 		{
 			{ SkillCastType.Fireball, 1000  },
-			{ SkillCastType.LightningBolt, 700  },
+			{ SkillCastType.LightningBolt, 700  }
+		};
+
+		public static Dictionary<SkillCastType, int> SkillIndicatorDelay = new Dictionary<SkillCastType, int>()
+		{
+			{ SkillCastType.Boss1Attack1, 5000  },
+			{ SkillCastType.Boss1Attack2, 5000  }
 		};
 
 		public static int CooldownLatencyAllowance = 100;

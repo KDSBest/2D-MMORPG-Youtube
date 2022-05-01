@@ -20,6 +20,7 @@ namespace Common.GameDesign
                 case SkillCastTargetType.Position:
                     writer.Put(TargetPosition.X);
                     writer.Put(TargetPosition.Y);
+                    writer.Put(TargetName);
                     break;
                 case SkillCastTargetType.SingleTarget:
                     writer.Put(TargetName);
@@ -35,6 +36,7 @@ namespace Common.GameDesign
             {
                 case SkillCastTargetType.Position:
                     TargetPosition = new Vector2(reader.GetFloat(), reader.GetFloat());
+                    TargetName = reader.GetString();
                     break;
                 case SkillCastTargetType.SingleTarget:
                     TargetName = reader.GetString();

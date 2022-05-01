@@ -6,7 +6,6 @@ namespace CommonServer.GameDesign
 	public class DamageInFuture
 	{
 		public string Caster;
-		public int WaitDuration;
 		public SkillTarget Target;
 		public DamageInfo DamageInfo;
 	}

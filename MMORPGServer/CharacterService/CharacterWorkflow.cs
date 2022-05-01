@@ -76,7 +76,7 @@ namespace CharacterService
 
 		private void OnDamageReceived(RedisChannel channel, DamageMessage msg)
 		{
-			if (msg.Target.TargetType != SkillCastTargetType.SingleTarget || msg.Target.TargetName != this.loggedInChar)
+			if (msg.Target.TargetName != this.loggedInChar)
 				return;
 
 			CharacterInformation c = repo.GetAsync(loggedInChar).Result;

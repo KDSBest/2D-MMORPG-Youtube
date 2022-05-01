@@ -1,0 +1,27 @@
+{
+  "CastType": 2,
+  "Shapes": [
+    {
+      "$type": "Common.GameDesign.Skill.CircleShape, Common",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "Radius": 10.0,
+      "IsExcluding": false
+    },
+    {
+      "$type": "Common.GameDesign.Skill.CircleShape, Common",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "Radius": 3.0,
+      "IsExcluding": true
+    }
+  ],
+  "Size": {
+    "X": 24,
+    "Y": 24
+  }
+}

@@ -54,7 +54,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Health: 726
+    - Health: 0
     - MaxHealth: 1000
     - PixelSnap: 0
     - Vector1_0d01ffca9b344fe4b22898c045ce5181: 0.1

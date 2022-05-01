@@ -24,6 +24,7 @@ namespace PropManagementService
 				new EnemySpawnConfig()
 				{
 					Prefix = "F*",
+					Exp = 5,
 					Stats = new EntityStats()
 					{
 						Attack = 1,
@@ -42,30 +43,39 @@ namespace PropManagementService
 				},
 				new EnemySpawnConfig()
 				{
-					Prefix = "E*",
+					Prefix = "Boss1*",
+					Exp = 100,
 					Stats = new EntityStats()
 					{
-						Attack = 1,
+						Attack = 100,
 						Defense = 1,
-						MAttack = 1,
+						MAttack = 100,
 						MDefense = 1,
 						Level = 1,
-						MaxHP = 25
+						MaxHP = 250
 					},
-					SpawnCount = 2,
-					SpawnStart = new System.Numerics.Vector2(-10, -44.5f),
-					SpawnEnd = new System.Numerics.Vector2(44, -44.5f),
+					SpawnCount = 1,
+					SpawnStart = new System.Numerics.Vector2(80, -45.55f),
+					SpawnEnd = new System.Numerics.Vector2(80, -45.55f),
 					RespawnTimeInMs = 10000,
-					Type = EnemyType.SimpleEnemy,
+					Type = EnemyType.Boss1,
 					AIConfig = new EnemyAIConfig()
 					{
 						Skills = new Dictionary<SkillCastType, int> ()
 						{
-							{SkillCastType.LightningBolt, 1 }
+							{ SkillCastType.Boss1Attack1, 1 },
+							{ SkillCastType.Boss1Attack2, 1 }
 						},
-						CastOrder = new List<SkillCastType>
+						CastPriority = new List<EnemyAICastPriority>
 						{
-							SkillCastType.LightningBolt
+							new EnemyAICastPriority() {
+								Type = SkillCastType.Boss1Attack1,
+								DelayForNextSkill = 5000
+							},
+							new EnemyAICastPriority() {
+								Type = SkillCastType.Boss1Attack2,
+								DelayForNextSkill = 5000
+							}
 						}
 					}
 				}

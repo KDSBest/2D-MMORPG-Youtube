@@ -59,6 +59,36 @@ namespace Common.GameDesign
 						}
 					}
 				}
+			}, 
+			{
+				EnemyType.Boss1,
+				new Lotttable
+				{
+					new LoottableEntry()
+					{
+						Loots = new List<LoottableEntryItemDrop>()
+						{
+							new LoottableEntryItemDrop()
+							{
+								MinAmount = 2,
+								MaxAmount = 4,
+								ItemId = InventoryItemIds.Flowers
+							}
+						}
+					},
+					new LoottableEntry()
+					{
+						Loots = new List<LoottableEntryItemDrop>()
+						{
+							new LoottableEntryItemDrop()
+							{
+								MinAmount = 10,
+								MaxAmount = 100,
+								ItemId = InventoryItemIds.Coins
+							}
+						}
+					}
+				}
 			}
 		};
 	}

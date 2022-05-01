@@ -4,19 +4,17 @@ using Common.IoC;
 using Common.Protocol.Character;
 using Common.Protocol.Map;
 using Common.PublishSubscribe;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Remoting
 {
-
-	public class RemotePropManagement : MonoBehaviour
+	public class RemoteEnemyManagement : MonoBehaviour
 	{
-		public GameObject RemotePropPrefab;
+		public List<RemoteEnemyManagementEntry> Config = new List<RemoteEnemyManagementEntry>();
 		private IPubSub pubsub;
-		private Dictionary<string, PropBehaviour> remoteProps;
+		private Dictionary<string, EnemyBehaviour> remoteProps;
 
 		public int PlayerCount
 		{
@@ -30,21 +28,21 @@ namespace Assets.Scripts.Remoting
 		{
 			DILoader.Initialize();
 
-			remoteProps = new Dictionary<string, PropBehaviour>();
+			remoteProps = new Dictionary<string, EnemyBehaviour>();
 
 			pubsub = DI.Instance.Resolve<IPubSub>();
-			pubsub.Subscribe<EnemyStateMessage>(OnPropState, this.GetType().Name);
+			pubsub.Subscribe<EnemyStateMessage>(OnEnemyState, this.GetType().Name);
 		}
 
-		private void OnPropState(EnemyStateMessage state)
+		private void OnEnemyState(EnemyStateMessage state)
 		{
 			if (!remoteProps.ContainsKey(state.Name))
 			{
-				GameObject go = GameObject.Instantiate(RemotePropPrefab);
+				GameObject go = GameObject.Instantiate(Config.First(x => x.Type == state.Type).Prefab);
 				go.transform.SetParent(this.transform);
 				go.name = state.Name;
 
-				var newProp = go.GetComponent<PropBehaviour>();
+				var newProp = go.GetComponent<EnemyBehaviour>();
 				newProp.Name = state.Name;
 				
 				remoteProps.Add(state.Name, newProp);

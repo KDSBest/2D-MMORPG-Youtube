@@ -22,6 +22,7 @@ namespace Common.GameDesign
 		public Vector2 SpawnEnd;
 
 		public int SpawnCount;
+		public int Exp = 5;
 
 		public EnemyType Type;
 		public EnemyAIConfig AIConfig;

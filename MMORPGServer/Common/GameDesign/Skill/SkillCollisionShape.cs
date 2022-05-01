@@ -2,7 +2,7 @@
 
 namespace Common.GameDesign.Skill
 {
-	public abstract class SkillIndicatorShape
+	public abstract class SkillCollisionShape
 	{
 		public bool IsExcluding = false;
 

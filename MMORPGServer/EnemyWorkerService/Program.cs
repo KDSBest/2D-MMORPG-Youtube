@@ -13,6 +13,10 @@ namespace EnemyWorkerService
 	{
 		public static async Task Main(string[] args)
 		{
+			Console.WriteLine("Reading all AoESkill Files...");
+			AoESkillsLoader.Load();
+			Console.WriteLine($"{AoESkillsLoader.SkillCollisions.Count} AoESkills Loaded.");
+
 			DI.Instance.Register<IPubSub>(() => new PubSub(), RegistrationType.Singleton);
 			DI.Instance.Register<IPlayerWorldManagement>(() => new PlayerWorldManagement(), RegistrationType.Singleton);
 
