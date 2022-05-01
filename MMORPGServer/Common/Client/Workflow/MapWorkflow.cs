@@ -12,7 +12,6 @@ namespace Common.Client.Workflow
 {
 	public class MapWorkflow : BaseJwtWorkflow, IWorkflow
 	{
-		private long UtcDiff = 0;
 		private const int ResendTimeSyncMs = 1000;
 		private const int TimeSyncRuns = 3;
 
@@ -101,20 +100,15 @@ namespace Common.Client.Workflow
 			long delay = (now - timeSyncMsg.MyTime) / 2;
 			long ourTimeAtServerRecv = now - delay;
 
-			if (UtcDiff == 0)
+			if (ServerTimeTracking.UtcDiff == 0)
 			{
-				UtcDiff = timeSyncMsg.ServerTime - ourTimeAtServerRecv;
+				ServerTimeTracking.UtcDiff = timeSyncMsg.ServerTime - ourTimeAtServerRecv;
 			}
 			else
 			{
-				UtcDiff += timeSyncMsg.ServerTime - ourTimeAtServerRecv;
-				UtcDiff /= 2;
+				ServerTimeTracking.UtcDiff += timeSyncMsg.ServerTime - ourTimeAtServerRecv;
+				ServerTimeTracking.UtcDiff /= 2;
 			}
-		}
-
-		public long GetServerTime()
-		{
-			return DateTime.UtcNow.Ticks + UtcDiff;
 		}
 
 		public async Task SendTeleportTo(string name)
@@ -138,7 +132,7 @@ namespace Common.Client.Workflow
 			state.Position = position;
 			state.Animation = animation;
 			state.IsLookingRight = isLookingRight;
-			state.ServerTime = GetServerTime();
+			state.ServerTime = ServerTimeTracking.GetServerTime();
 			UdpManager.SendMsg(state, ChannelType.UnreliableOrdered);
 		}
 	}

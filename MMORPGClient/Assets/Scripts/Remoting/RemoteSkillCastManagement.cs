@@ -1,9 +1,11 @@
 ﻿using Assets.Scripts.Skills;
 using Common;
+using Common.Client.Workflow;
 using Common.GameDesign;
 using Common.IoC;
 using Common.Protocol.Map;
 using Common.PublishSubscribe;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -51,7 +53,6 @@ namespace Assets.Scripts.Remoting
 			if (aoe != null)
 			{
 				HandleAoE(msg, aoe);
-
 			}
 		}
 
@@ -68,7 +69,12 @@ namespace Assets.Scripts.Remoting
 			aoe.WorldSize = new Vector2(sc.Size.X, sc.Size.Y);
 			aoe.Type = msg.Type;
 			aoe.RenderingDelay = 1.0f;
-			aoe.IndicatorDelay = ((float)GameDesignConfiguration.SkillIndicatorDelay[msg.Type]) / 1000.0f;
+			var serverTimeCast = new DateTime(msg.ServerTime);
+			var currentServerTime = new DateTime(ServerTimeTracking.GetServerTime());
+			var elapsedMs = (float)(currentServerTime - serverTimeCast).TotalMilliseconds;
+
+			float maxIndicatorDelay = GameDesignConfiguration.SkillIndicatorDelay[msg.Type];
+			aoe.IndicatorDelay = (maxIndicatorDelay - elapsedMs) / 1000.0f;
 		}
 	}
 }
