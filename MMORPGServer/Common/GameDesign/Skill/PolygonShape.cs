@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace Common.GameDesign.Skill
@@ -9,6 +10,9 @@ namespace Common.GameDesign.Skill
         private List<Vector2> edges = new List<Vector2>();
         private List<Vector2> axis = new List<Vector2>();
 
+        public List<Vector2> Edges => edges.ToList();
+        public List<Vector2> Axis => axis.ToList();
+
         public void PrecalculatePolygonValues()
 		{
             if (edges.Count == Points.Count)
@@ -18,19 +22,30 @@ namespace Common.GameDesign.Skill
             edges.Clear();
 
             for (int i = 0; i < Points.Count; i++)
-            {
-                Vector2 a = Points[i];
-                Vector2 b = Points[(i + 1) % Points.Count];
-                Vector2 edge = b - a;
-                Vector2 axis = new Vector2(-edge.Y, edge.X);
-                axis = Vector2.Normalize(axis);
+			{
+				Vector2 a = Points[i];
+				Vector2 b = Points[(i + 1) % Points.Count];
+				Vector2 edge = CreateEdge(a, b);
+				Vector2 axis = CreateAxis(edge);
 
-                edges.Add(edge);
-                this.axis.Add(axis);
-            }
-        }
+				edges.Add(edge);
+				this.axis.Add(axis);
+			}
+		}
 
-        public override bool IsHit(Vector2 position)
+		private static Vector2 CreateEdge(Vector2 a, Vector2 b)
+		{
+			return b - a;
+		}
+
+		private static Vector2 CreateAxis(Vector2 edge)
+		{
+			Vector2 axis = new Vector2(-edge.Y, edge.X);
+			axis = Vector2.Normalize(axis);
+			return axis;
+		}
+
+		public override bool IsHit(Vector2 position)
 		{
             List<Vector2> positionPoints = new List<Vector2>()
             {
@@ -41,8 +56,8 @@ namespace Common.GameDesign.Skill
 
             for (int i = 0; i < this.axis.Count; i++)
 			{
-                Vector2 projection = this.Project(this.axis[i], this.Points);
-                Vector2 projection2 = this.Project(this.axis[i], positionPoints);
+                Vector2 projection = ScalarProjection(this.axis[i], this.Points);
+                Vector2 projection2 = ScalarProjection(this.axis[i], positionPoints);
 
                 if (!IntervalIntersection(projection, projection2))
                     return false;
@@ -51,7 +66,7 @@ namespace Common.GameDesign.Skill
             return true;
 		}
         
-        public Vector2 Project(Vector2 axis, List<Vector2> points)
+        public static Vector2 ScalarProjection(Vector2 axis, List<Vector2> points)
         {
             float dotProduct = Vector2.Dot(points[0], axis);
             Vector2 result = new Vector2(dotProduct, dotProduct);
@@ -77,16 +92,9 @@ namespace Common.GameDesign.Skill
             return result;
         }
 
-        public bool IntervalIntersection(Vector2 a, Vector2 b)
+        public static bool IntervalIntersection(Vector2 a, Vector2 b)
         {
-            if (a.X < b.X)
-            {
-                return b.X - a.Y < 0;
-            }
-            else
-            {
-                return a.X - b.Y < 0;
-            }
+            return (a.Y >= b.X && b.Y >= a.X);
         }
     }
 }
