@@ -21,6 +21,9 @@ namespace Assets.Scripts.Debug
 
 		public bool MoveUp = false;
 		public bool MoveDown = false;
+		public bool MoveLeft = false;
+		public bool MoveRight = false;
+		public bool Rotate = false;
 
 		public GameObject IsHitNotifier;
 
@@ -99,6 +102,12 @@ namespace Assets.Scripts.Debug
 					Gizmos.DrawLine(ToVec3(outsideEdge + (axis[i] * projection.X)), ToVec3(outsideEdge + (axis[i] * projection.Y)));
 					Gizmos.color = col2;
 					Gizmos.DrawLine(ToVec3(outsideEdge + (axis[i] * projection2.X)), ToVec3(outsideEdge + (axis[i] * projection2.Y)));
+
+					Gizmos.color = col;
+					Gizmos.DrawLine(ToVec3((axis[i] * projection.X)), ToVec3((axis[i] * projection.Y)));
+					Gizmos.color = col2;
+					Gizmos.DrawLine(ToVec3((axis[i] * projection2.X)), ToVec3((axis[i] * projection2.Y)));
+
 				}
 
 				if (!PolygonShape.IntervalIntersection(projection, projection2))
@@ -119,7 +128,9 @@ namespace Assets.Scripts.Debug
 					var outsideEdge = shape.Points[i] + (edges[i] * 4);
 					var middleEdge = shape.Points[i] + (edges[i] / 2);
 					Gizmos.DrawLine(ToVec3(middleEdge), ToVec3(middleEdge + axis[i] * 10));
-					Gizmos.DrawLine(ToVec3(outsideEdge - axis[i] * 1000), ToVec3(outsideEdge + axis[i] * 1000));
+					Gizmos.DrawLine(ToVec3(- (axis[i] * 1000)), ToVec3((axis[i] * 1000)));
+					Gizmos.DrawLine(ToVec3(outsideEdge + middleEdge), ToVec3(outsideEdge + middleEdge + axis[i] * 10));
+					Gizmos.DrawLine(ToVec3(outsideEdge -(axis[i] * 1000)), ToVec3(outsideEdge + (axis[i] * 1000)));
 				}
 			}
 		}
@@ -153,21 +164,63 @@ namespace Assets.Scripts.Debug
 		{
 			if (MoveUp)
 			{
-				MoveShape(sc, 10 * Time.deltaTime);
+				MoveShape(sc, 10 * Time.deltaTime, 0);
 			}
 			if (MoveDown)
 			{
-				MoveShape(sc, -10 * Time.deltaTime);
+				MoveShape(sc, -10 * Time.deltaTime, 0);
+			}
+			if (MoveRight)
+			{
+				MoveShape(sc, 0, 10 * Time.deltaTime);
+			}
+			if (MoveLeft)
+			{
+				MoveShape(sc, 0, -10 * Time.deltaTime);
+			}
+			if(Rotate)
+			{
+				RotateShape(sc, Time.deltaTime);
 			}
 		}
 
-		private void MoveShape(SkillCollision sc, float val)
+		private void RotateShape(SkillCollision sc, float angleRad)
+		{
+			foreach (PolygonShape shape in sc.Shapes)
+			{
+				var midPoint = new System.Numerics.Vector2(0, 0);
+				for (int i = 0; i < shape.Points.Count; i++)
+				{
+					midPoint += shape.Points[i];
+				}
+
+				midPoint /= shape.Points.Count;
+
+				for (int i = 0; i < shape.Points.Count; i++)
+				{
+					shape.Points[i] -= midPoint;
+
+					float x = shape.Points[i].X;
+					float y = shape.Points[i].Y;
+					float cos = Mathf.Cos(angleRad);
+					float sin = Mathf.Sin(angleRad);
+
+					shape.Points[i] = new System.Numerics.Vector2(x * cos - y * sin, x * sin + y * cos);
+					shape.Points[i] += midPoint;
+				}
+
+				shape.ClearPolygonValues();
+			}
+
+		}
+
+		private void MoveShape(SkillCollision sc, float valy, float valx)
 		{
 			foreach (PolygonShape shape in sc.Shapes)
 			{
 				for (int i = 0; i < shape.Points.Count; i++)
 				{
-					shape.Points[i] = new System.Numerics.Vector2(shape.Points[i].X, shape.Points[i].Y + val);
+					shape.Points[i] = new System.Numerics.Vector2(shape.Points[i].X + valx, shape.Points[i].Y + valy);
 				}
 			}
 		}

@@ -78,6 +78,10 @@ public class SkillTextureGen : MonoBehaviour
 		tex = DrawAA(tex);
 		tex = DrawAA(tex);
 		tex = DrawAA(tex);
+		tex = DrawAA(tex);
+		tex = DrawAA(tex);
+		tex = DrawAA(tex);
+		tex = DrawAA(tex);
 		tex.Apply();
 
 		var bytes = tex.EncodeToPNG();

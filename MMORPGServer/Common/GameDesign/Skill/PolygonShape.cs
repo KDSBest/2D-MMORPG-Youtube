@@ -13,6 +13,12 @@ namespace Common.GameDesign.Skill
         public List<Vector2> Edges => edges.ToList();
         public List<Vector2> Axis => axis.ToList();
 
+        public void ClearPolygonValues()
+		{
+            axis.Clear();
+            edges.Clear();
+		}
+
         public void PrecalculatePolygonValues()
 		{
             if (edges.Count == Points.Count)
