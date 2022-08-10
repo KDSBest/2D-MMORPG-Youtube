@@ -28,6 +28,12 @@ namespace Common
 
         public Vector2Int(float x, float y)
         {
+            if (x < 0)
+                x -= MapConfiguration.MapAreaSize;
+
+            if (y < 0)
+                y -= MapConfiguration.MapAreaSize;
+
             X = (int)(x / MapConfiguration.MapAreaSize) * (int)MapConfiguration.MapAreaSize;
             Y = (int)(y / MapConfiguration.MapAreaSize) * (int)MapConfiguration.MapAreaSize;
         }
