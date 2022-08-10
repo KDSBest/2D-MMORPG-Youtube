@@ -9,16 +9,18 @@
   </Target>
 
   <ItemGroup>
+    <Compile Remove="Crypto\**" />
+    <EmbeddedResource Remove="Crypto\**" />
+    <None Remove="Crypto\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\UnityAzureNetworkEngine\Core\ReliableUdp\ReliableUdp.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Crypto\" />
   </ItemGroup>
 
 </Project>

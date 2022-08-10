@@ -12,12 +12,6 @@ namespace CommonServer.WorldManagement
 	{
 		private List<Vector2Int> registeredPartitions = new List<Vector2Int>(18);
 		private Vector2Int lastPartition = null;
-		private IPubSub pubsub;
-
-		public MapPartitionManagement()
-		{
-			pubsub = DI.Instance.Resolve<IPubSub>();
-		}
 
 		public List<Vector2Int> UpdatePlayerPartitionRegistrations(PlayerStateMessage playerStateMessage)
 		{
