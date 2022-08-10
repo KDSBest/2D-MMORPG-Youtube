@@ -27,10 +27,10 @@ namespace CommonServer.WorldManagement
 
 			RegisterPartitionsAround(newPartition);
 			lastPartition = newPartition;
-			return UnregisterTooFarPartitions(newPartition, playerStateMessage.ServerTime);
+			return UnregisterTooFarPartitions(newPartition);
 		}
 
-		private List<Vector2Int> UnregisterTooFarPartitions(Vector2Int newPartition, long serverTime)
+		private List<Vector2Int> UnregisterTooFarPartitions(Vector2Int newPartition)
 		{
 			List<Vector2Int> removedPartitions = new List<Vector2Int>();
 
