@@ -13,6 +13,11 @@ namespace CommonServer.WorldManagement
 		private List<Vector2Int> registeredPartitions = new List<Vector2Int>(18);
 		private Vector2Int lastPartition = null;
 
+		public List<Vector2Int> GetRegisteredPartitions()
+		{
+			return registeredPartitions.ToList();
+		}
+
 		public List<Vector2Int> UpdatePlayerPartitionRegistrations(PlayerStateMessage playerStateMessage)
 		{
 			var newPartition = new Vector2Int(playerStateMessage.Position);
