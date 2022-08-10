@@ -109,18 +109,25 @@ namespace QuestService
 			}
 
 			var quest = QuestLoader.Quests[finishQuestMsg.QuestName];
-			this.questTracking.Inventory = await invRepo.GetClientInventoryAsync(this.playerId);
+			try
+			{
+				this.questTracking.Inventory = await invRepo.GetClientInventoryAsync(this.playerId, lease.LatestEvent);
 
-			if (!quest.Task.IsFinished(finishQuestMsg.QuestName, this.questTracking))
-				return;
+				if (!quest.Task.IsFinished(finishQuestMsg.QuestName, this.questTracking))
+					return;
 
-			await GiveReward(finishQuestMsg, quest);
+				await GiveReward(finishQuestMsg, quest);
 
-			questTracking.AcceptedQuests.Remove(finishQuestMsg.QuestName);
-			questTracking.FinishedQuests.Add(finishQuestMsg.QuestName);
-			await repo.SaveAsync(questTracking, questTracking.Id);
-			await invEventRepo.LeaseManagement.TryFreeAsync(lease);
-			SendQuestTracking();
+				questTracking.AcceptedQuests.Remove(finishQuestMsg.QuestName);
+				questTracking.FinishedQuests.Add(finishQuestMsg.QuestName);
+				await repo.SaveAsync(questTracking, questTracking.Id);
+				await invEventRepo.LeaseManagement.TryFreeAsync(lease);
+				SendQuestTracking();
+			}
+			catch(InventoryNotUpdatedException)
+			{
+				SendQuestTracking();
+			}
 		}
 
 		private async Task GiveReward(FinishQuestMessage finishQuestMsg, Quest quest)

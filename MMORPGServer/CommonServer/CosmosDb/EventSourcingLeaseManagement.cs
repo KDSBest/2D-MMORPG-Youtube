@@ -120,11 +120,13 @@ namespace CommonServer.CosmosDb
 			{
 				var createResponse = await this.container.CreateItemAsync<EventSourcingLease>(newLease, new PartitionKey(id));
 
+				// LatestEvent is empty, because there can't be an event before us, that needs leasing
 				return new EventSourcingLeaseResult()
 				{
 					Id = id,
 					AcquiredEtag = createResponse.ETag,
-					Acquired = createResponse.StatusCode == HttpStatusCode.Created
+					Acquired = createResponse.StatusCode == HttpStatusCode.Created,
+					LatestEvent = DateTime.MinValue
 				};
 			}
 			catch (CosmosException)
