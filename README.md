@@ -4,7 +4,7 @@
 # Introduction
 
 A small 2D MMORPG, which is developed as a learning course on my Youtube Channel:
-https://www.youtube.com/channel/UCkwjnD2xjL8QiAzdx2gBjlg
+https://www.youtube.com/c/KDSBestGameDev
 
 ![Game](https://github.com/KDSBest/2D-MMORPG-Youtube/raw/main/Example.png)
 
